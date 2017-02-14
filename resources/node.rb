@@ -18,7 +18,7 @@ property :collector_textfile_directory, String
 property :collector_netdev_ignored_devices, String
 property :collector_diskstats_ignored_devices, String
 property :collector_filesystem_ignored_fs_types, String
-property :collector_filesystem_ignored_mount_point, String
+property :collector_filesystem_ignored_mount_points, String
 property :custom_options, String
 
 action :install do
@@ -50,7 +50,7 @@ action :install do
   options += " -collector.netdev.ignored-devices '#{collector_netdev_ignored_devices}'" if collector_netdev_ignored_devices
   options += " -collector.diskstats.ignored-devices '#{collector_diskstats_ignored_devices}'" if collector_diskstats_ignored_devices
   options += " -collector.filesystem.ignored-fs-types '#{collector_filesystem_ignored_fs_types}'" if collector_filesystem_ignored_fs_types
-  options += " -collector.filesystem.ignored-mount-points #{collector_filesystem_ignored_mount_point}" if collector_filesystem_ignored_mount_point
+  options += " -collector.filesystem.ignored-mount-points '#{collector_filesystem_ignored_mount_points}'" if collector_filesystem_ignored_mount_points
   options += " #{custom_options}" if custom_options
 
   service 'node_exporter' do
