@@ -50,3 +50,22 @@ or just set
 * `node['prometheus_exporters']['node']['ignored_net_devs']`
 
 and add `recipe['prometheus_exporters::node]` to your run_list.
+
+## postgres_exporter
+
+* `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
+* `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
+* `extend_query_path` Path to custom queries to run
+* `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
+* `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9187")
+* `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
+* `user` System user to run exporter as. (default "postgres")
+
+```ruby
+
+postgres_exporter '9.5_main' do
+  data_source_name 'postgresql://localhost:5432/example'
+  user 'postgres'
+end
+```
