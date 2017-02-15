@@ -25,7 +25,7 @@ action :install do
     path '/usr/local/sbin/postgres_exporter'
     owner 'root'
     group 'root'
-    mode '0644'
+    mode '0755'
     source node['prometheus_exporters']['postgres']['url']
     checksum node['prometheus_exporters']['postgres']['checksum']
   end
