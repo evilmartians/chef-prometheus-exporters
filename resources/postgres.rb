@@ -30,10 +30,10 @@ action :install do
     checksum node['prometheus_exporters']['postgres']['checksum']
   end
 
-  options = "-web.listen-address #{web_listen_address}"
-  options += " -web.telemetry-path #{web_telemetry_path}" if web_telemetry_path
+  options = "-web.listen-address '#{web_listen_address}'"
+  options += " -web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
   options += " -log.level #{log_level}" if log_level
-  options += " -log.format #{log_format}"
+  options += " -log.format '#{log_format}'"
   options += " -extend.query-path #{extend_query_path}" if extend_query_path
 
   service "postgres_exporter_#{instance_name}" do
