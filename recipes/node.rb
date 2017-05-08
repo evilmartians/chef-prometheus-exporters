@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_interface']]['addresses'].find { |address, data| data['family'] == 'inet' }.first unless node['prometheus_exporters']['disable']
+listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_interface']]['addresses'].find { |_address, data| data['family'] == 'inet' }.first unless node['prometheus_exporters']['disable']
 
 node_exporter 'main' do
   web_listen_address "#{listen_ip}:9100"

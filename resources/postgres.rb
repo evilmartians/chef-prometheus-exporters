@@ -75,7 +75,7 @@ action :install do
       cmd: "/usr/local/sbin/postgres_exporter #{options}",
       service_description: 'Prometheus Node Exporter',
       env: {
-        'DATA_SOURCE_NAME' => data_source_name
+        'DATA_SOURCE_NAME' => data_source_name,
       },
       setuid: run_as
     )
