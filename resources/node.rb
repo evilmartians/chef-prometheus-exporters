@@ -72,7 +72,7 @@ action :install do
       restart_sec '30s'
     end
 
-    only_if { node['platform_version'].to_i >= 16 }
+    only_if { node['platform_version'].to_i >= 16 || (node['platform_family'] == 'rhel' && node['platform_version'].to_i >= 7) }
 
     notifies :restart, 'service[node_exporter]'
   end
@@ -87,7 +87,7 @@ action :install do
       service_description: 'Prometheus Node Exporter'
     )
 
-    only_if { node['platform_version'].to_i < 16 }
+    only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
 
     notifies :restart, 'service[node_exporter]'
   end

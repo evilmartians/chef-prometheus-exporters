@@ -9,12 +9,12 @@ stop on runlevel [!345]
 
 respawn
 
-<% if @setuid -%>
+<% if @setuid %>
 setuid <%= @setuid %>
-<% end -%>
-<% if @env && @env.kind_of? Hash
-     @env.each do |k, v| -%>
-env <%= k %>=<% v %>
-<%   end
-   end -%>
+<% end %>
+<% if @env && @env.kind_of?(Hash) %>
+  <% @env.each do |k, v| %>
+    env <%= k %>=<%= v %>
+  <% end %>
+<% end %>
 exec <%= @cmd %>
