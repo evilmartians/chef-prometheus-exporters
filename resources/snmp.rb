@@ -10,7 +10,6 @@
 resource_name :snmp_exporter
 
 property :web_listen_address, String, default: ':9116'
-property :web_telemetry_path, String, default: '/snmp'
 property :log_level, String, default: 'info'
 property :log_format, String, default: 'logger:stdout'
 property :custom_options, String
@@ -36,7 +35,6 @@ action :install do
   end
 
   options = "-web.listen-address #{web_listen_address}"
-  options += " -web.telemetry-path #{web_telemetry_path}"
   options += " -log.level #{log_level}"
   options += " -log.format #{log_format}"
   options += " #{custom_options}" if custom_options
