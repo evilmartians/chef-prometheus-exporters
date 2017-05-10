@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#^syntax detection
+# ^syntax detection
 
 source 'https://supermarket.getchef.com'
 
