@@ -21,7 +21,7 @@ action :install do
     owner 'root'
     group 'root'
     mode '0644'
-    source node['prometheus_exporters']['node']['url']
+    source node['prometheus_exporters']['snmp']['url']
     # checksum node['prometheus_exporters']['node']['checksum']
   end
 
