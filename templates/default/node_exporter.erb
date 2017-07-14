@@ -28,7 +28,7 @@ is_running() {
 start() {
   if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
     echo 'Service already running' >&2
-    return 1
+    return 0
   fi
   echo 'Starting service…' >&2
   local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
@@ -39,7 +39,7 @@ start() {
 stop() {
   if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
     echo 'Service not running' >&2
-    return 1
+    return 0
   fi
   echo 'Stopping service…' >&2
   kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
