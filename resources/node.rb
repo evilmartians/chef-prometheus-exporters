@@ -59,7 +59,7 @@ action :install do
 
   case node['platform_family']
   when /rhel/
-    if node['platform_version'] < 7
+    if node['platform_version'].to_i < 7
       %w(
         /var/run/prometheus
         /var/log/prometheus
@@ -72,7 +72,7 @@ action :install do
           action :create
         end
       end
-      
+
       template '/etc/init.d/node_exporter' do
         source 'node_exporter.erb'
         owner 'root'
