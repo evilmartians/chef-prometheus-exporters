@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+# 0.1.3
+
+- [Matt Mencel] - CentOS Support: updated only_if and not_if in node_exporter service
+- [Matt Mencel] - Chef Warnings: Fixed Chef warnings in upstart template
+
 # 0.1.2
 
 - [Kirill Kuznetsov] - PostgreSQL Exporter resource.

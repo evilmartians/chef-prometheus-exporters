@@ -8,11 +8,12 @@ Yes, It's a bit messy, but works fine.
 
 Help us to clean up a bit if you have some spare time.
 
-P.S. It's an eary release so do not expect much for at least a few weeks. :)
+P.S. It's an early release so do not expect much for at least a few weeks. :)
 
 # Supports
 
-Only Ubuntu 14 & 16 for now.
+Ubuntu 14 & 16
+CentOS 7 (probably any RHEL 7+ based)
 
 # Resources
 
