@@ -83,7 +83,7 @@ action :install do
       source 'node_exporter.erb'
       owner 'root'
       group 'root'
-      mode '0644'
+      mode '0755'
       variables(
         cmd: "/usr/local/sbin/node_exporter #{options}",
         service_description: 'Prometheus Node Exporter'
