@@ -59,38 +59,50 @@ action :install do
 
   case node['platform_family']
   when /rhel/
-    systemd_service 'node_exporter' do
-      description 'Systemd unit for Prometheus Node Exporter'
-      after %w(network.target remote-fs.target apiserver.service)
-      install do
-        wanted_by 'multi-user.target'
+    if node['platform_version'] < 7
+      %w(
+        /var/run/prometheus
+        /var/log/prometheus
+      ).each do |dir|
+        directory dir do
+          owner 'root'
+          group 'root'
+          mode '0755'
+          recursive true
+          action :create
+        end
       end
-      service do
-        type 'simple'
-        user 'root'
-        exec_start "/usr/local/sbin/node_exporter #{options}"
-        working_directory '/'
-        restart 'on-failure'
-        restart_sec '30s'
+      
+      template '/etc/init.d/node_exporter' do
+        source 'node_exporter.erb'
+        owner 'root'
+        group 'root'
+        mode '0755'
+        variables(
+          cmd: "/usr/local/sbin/node_exporter #{options}",
+          service_description: 'Prometheus Node Exporter'
+        )
+
+        only_if { node['platform_version'].to_i < 7 }
+        notifies :restart, 'service[node_exporter]'
       end
-
-      only_if { node['platform_version'].to_i >= 7 }
-
-      notifies :restart, 'service[node_exporter]'
-    end
-
-    template '/etc/init.d/node_exporter' do
-      source 'node_exporter.erb'
-      owner 'root'
-      group 'root'
-      mode '0755'
-      variables(
-        cmd: "/usr/local/sbin/node_exporter #{options}",
-        service_description: 'Prometheus Node Exporter'
-      )
-
-      only_if { node['platform_version'].to_i < 7 }
-      notifies :restart, 'service[node_exporter]'
+    else
+      systemd_service 'node_exporter' do
+        description 'Systemd unit for Prometheus Node Exporter'
+        after %w(network.target remote-fs.target apiserver.service)
+        install do
+          wanted_by 'multi-user.target'
+        end
+        service do
+          type 'simple'
+          user 'root'
+          exec_start "/usr/local/sbin/node_exporter #{options}"
+          working_directory '/'
+          restart 'on-failure'
+          restart_sec '30s'
+        end
+        notifies :restart, 'service[node_exporter]'
+      end
     end
 
   when /debian/
