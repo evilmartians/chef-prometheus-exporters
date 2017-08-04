@@ -83,13 +83,14 @@ action :install do
           service_description: 'Prometheus Node Exporter'
         )
 
-        only_if { node['platform_version'].to_i < 7 }
         notifies :restart, 'service[node_exporter]'
       end
     else
       systemd_service 'node_exporter' do
-        description 'Systemd unit for Prometheus Node Exporter'
-        after %w(network.target remote-fs.target apiserver.service)
+        unit do
+          description 'Systemd unit for Prometheus Node Exporter'
+          after %w(network.target remote-fs.target apiserver.service)
+        end
         install do
           wanted_by 'multi-user.target'
         end
@@ -107,8 +108,10 @@ action :install do
 
   when /debian/
     systemd_service 'node_exporter' do
-      description 'Systemd unit for Prometheus Node Exporter'
-      after %w(network.target remote-fs.target apiserver.service)
+      unit do
+        description 'Systemd unit for Prometheus Node Exporter'
+        after %w(network.target remote-fs.target apiserver.service)
+      end
       install do
         wanted_by 'multi-user.target'
       end
