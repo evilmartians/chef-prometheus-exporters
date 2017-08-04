@@ -44,8 +44,10 @@ action :install do
   end
 
   systemd_service 'snmp_exporter' do
-    description 'Systemd unit for Prometheus SNMP Exporter'
-    after %w(network.target remote-fs.target apiserver.service)
+    unit do
+      description 'Systemd unit for Prometheus SNMP Exporter'
+      after %w(network.target remote-fs.target apiserver.service)
+    end
     install do
       wanted_by 'multi-user.target'
     end

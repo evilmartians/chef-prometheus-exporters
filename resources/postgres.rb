@@ -25,7 +25,7 @@ action :install do
     path '/usr/local/sbin/postgres_exporter'
     owner 'root'
     group 'root'
-    mode '0755'
+    mode '0644'
     source node['prometheus_exporters']['postgres']['url']
     checksum node['prometheus_exporters']['postgres']['checksum']
   end
@@ -36,18 +36,14 @@ action :install do
   options += " -log.format '#{log_format}'"
   options += " -extend.query-path #{extend_query_path}" if extend_query_path
 
-  environment_list = "DATA_SOURCE_NAME=#{data_source_name}"
-
   service "postgres_exporter_#{instance_name}" do
     action :nothing
   end
 
   systemd_service "postgres_exporter_#{instance_name}" do
-    action [:create]
     unit do
       description 'Systemd unit for Prometheus PostgreSQL Exporter'
-      after %w(network.target remote-fs.target)
-      action :create
+      after %w(network.target remote-fs.target apiserver.service)
     end
     install do
       wanted_by 'multi-user.target'
@@ -55,18 +51,19 @@ action :install do
     service do
       type 'simple'
       user run_as
-      environment environment_list
+      environment 'DATA_SOURCE_NAME' => data_source_name
       exec_start "/usr/local/sbin/postgres_exporter #{options}"
       working_directory '/'
       restart 'on-failure'
       restart_sec '30s'
     end
-    only_if { node['init_package'] == 'systemd' }
+
+    only_if { node['platform_version'].to_i >= 16 }
+
     notifies :restart, "service[postgres_exporter_#{instance_name}]"
   end
 
-  template "/etc/init/postgres_exporter_#{instance_name}.conf" do
-    cookbook 'prometheus_exporters'
+  template '/etc/init/postgres_exporter.conf' do
     source 'upstart.conf.erb'
     owner 'root'
     group 'root'
@@ -80,7 +77,7 @@ action :install do
       setuid: run_as
     )
 
-    only_if { node['init_package'] != 'systemd' }
+    only_if { node['platform_version'].to_i < 16 }
 
     notifies :restart, "service[postgres_exporter_#{instance_name}]"
   end
