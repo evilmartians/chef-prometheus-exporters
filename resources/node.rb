@@ -104,6 +104,7 @@ action :install do
         RestartSec=30s
         EOF
         notifies :restart, 'service[node_exporter]'
+        action :create
       end
     end
 
@@ -128,6 +129,7 @@ action :install do
       only_if { node['platform_version'].to_i >= 16 }
 
       notifies :restart, 'service[node_exporter]'
+      action :create
     end
 
     template '/etc/init/node_exporter.conf' do
