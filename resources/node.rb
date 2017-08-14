@@ -86,44 +86,45 @@ action :install do
         notifies :restart, 'service[node_exporter]'
       end
     else
-      systemd_service 'node_exporter' do
-        unit do
-          description 'Systemd unit for Prometheus Node Exporter'
-          after %w(network.target remote-fs.target apiserver.service)
-        end
-        install do
-          wanted_by 'multi-user.target'
-        end
-        service do
-          type 'simple'
-          user 'root'
-          exec_start "/usr/local/sbin/node_exporter #{options}"
-          working_directory '/'
-          restart 'on-failure'
-          restart_sec '30s'
-        end
+      systemd_unit 'node_exporter.service' do
+        content <<-EOF
+        [Unit]
+        Description=Systemd unit for Prometheus Node Exporter
+        After=network.target remote-fs.target apiserver.service
+        
+        [Install]
+        WantedBy=multi-user.target
+
+        [Service]
+        Type=simple
+        User=root
+        ExecStart=/usr/local/sbin/node_exporter #{options}
+        WorkingDirectory=/
+        Restart=on-failure
+        RestartSec=30s
+        EOF
         notifies :restart, 'service[node_exporter]'
       end
     end
 
   when /debian/
-    systemd_service 'node_exporter' do
-      unit do
-        description 'Systemd unit for Prometheus Node Exporter'
-        after %w(network.target remote-fs.target apiserver.service)
-      end
-      install do
-        wanted_by 'multi-user.target'
-      end
-      service do
-        type 'simple'
-        user 'root'
-        exec_start "/usr/local/sbin/node_exporter #{options}"
-        working_directory '/'
-        restart 'on-failure'
-        restart_sec '30s'
-      end
+      systemd_unit 'node_exporter.service' do
+        content <<-EOF
+        [Unit]
+        Description=Systemd unit for Prometheus Node Exporter
+        After=network.target remote-fs.target apiserver.service
+        
+        [Install]
+        WantedBy=multi-user.target
 
+        [Service]
+        Type=simple
+        User=root
+        ExecStart=/usr/local/sbin/node_exporter #{options}
+        WorkingDirectory=/
+        Restart=on-failure
+        RestartSec=30s
+        EOF
       only_if { node['platform_version'].to_i >= 16 }
 
       notifies :restart, 'service[node_exporter]'
