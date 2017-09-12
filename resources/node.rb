@@ -51,7 +51,7 @@ action :install do
   options += " -collector.diskstats.ignored-devices '#{new_resource.collector_diskstats_ignored_devices}'" if new_resource.collector_diskstats_ignored_devices
   options += " -collector.filesystem.ignored-fs-types '#{new_resource.collector_filesystem_ignored_fs_types}'" if new_resource.collector_filesystem_ignored_fs_types
   options += " -collector.filesystem.ignored-mount-points '#{new_resource.collector_filesystem_ignored_mount_points}'" if new_resource.collector_filesystem_ignored_mount_points
-  options += " #{custom_options}" if custom_options
+  options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   service 'node_exporter' do
     action :nothing
@@ -149,13 +149,13 @@ EOF
   end
 
   directory 'collector_textfile_directory' do
-    path collector_textfile_directory
+    path new_resource.collector_textfile_directory
     owner 'root'
     group 'root'
     mode '0755'
     action :create
     recursive true
-    only_if { collector_textfile_directory && collector_textfile_directory != '' }
+    only_if { new_resource.collector_textfile_directory && new_resource.collector_textfile_directory != '' }
   end
 end
 
