@@ -88,22 +88,23 @@ action :install do
     else
       systemd_unit 'node_exporter.service' do
         content <<-EOF
-        [Unit]
-        Description=Systemd unit for Prometheus Node Exporter
-        After=network.target remote-fs.target apiserver.service
+[Unit]
+Description=Systemd unit for Prometheus Node Exporter
+After=network.target remote-fs.target apiserver.service
 
-        [Install]
-        WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 
-        [Service]
-        Type=simple
-        User=root
-        ExecStart=/usr/local/sbin/node_exporter #{options}
-        WorkingDirectory=/
-        Restart=on-failure
-        RestartSec=30s
-        EOF
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/sbin/node_exporter #{options}
+WorkingDirectory=/
+Restart=on-failure
+RestartSec=30s
+EOF
         notifies :restart, 'service[node_exporter]'
+        verify false
         action :create
       end
     end
@@ -130,6 +131,7 @@ EOF
 
       notifies :restart, 'service[node_exporter]'
       action :create
+      verify false
     end
 
     template '/etc/init/node_exporter.conf' do
