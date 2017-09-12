@@ -34,10 +34,10 @@ action :install do
     to "/opt/snmp_exporter-#{node['prometheus_exporters']['snmp']['version']}.linux-amd64/snmp_exporter"
   end
 
-  options = "-web.listen-address #{web_listen_address}"
-  options += " -log.level #{log_level}"
-  options += " -log.format #{log_format}"
-  options += " #{custom_options}" if custom_options
+  options = "-web.listen-address #{new_resource.web_listen_address}"
+  options += " -log.level #{new_resource.log_level}"
+  options += " -log.format #{new_resource.log_format}"
+  options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   service 'snmp_exporter' do
     action :nothing
@@ -79,7 +79,6 @@ action :install do
 
     notifies :restart, 'service[snmp_exporter]'
   end
-
 end
 
 action :enable do
