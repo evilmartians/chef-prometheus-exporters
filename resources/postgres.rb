@@ -19,7 +19,7 @@ property :web_telemetry_path, String
 property :user, String, default: 'postgres'
 
 action :install do
-  run_as = user
+  run_as = new_resource.user
 
   remote_file 'postgres_exporter' do
     path '/usr/local/sbin/postgres_exporter'
@@ -30,17 +30,17 @@ action :install do
     checksum node['prometheus_exporters']['postgres']['checksum']
   end
 
-  options = "-web.listen-address '#{web_listen_address}'"
-  options += " -web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
-  options += " -log.level #{log_level}" if log_level
-  options += " -log.format '#{log_format}'"
-  options += " -extend.query-path #{extend_query_path}" if extend_query_path
+  options = "-web.listen-address '#{new_resource.web_listen_address}'"
+  options += " -web.telemetry-path '#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
+  options += " -log.level #{new_resource.log_level}" if new_resource.log_level
+  options += " -log.format '#{new_resource.log_format}'"
+  options += " -extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
 
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :nothing
   end
 
-  systemd_service "postgres_exporter_#{instance_name}" do
+  systemd_service "postgres_exporter_#{new_resource.instance_name}" do
     unit do
       description 'Systemd unit for Prometheus PostgreSQL Exporter'
       after %w(network.target remote-fs.target apiserver.service)
@@ -51,7 +51,7 @@ action :install do
     service do
       type 'simple'
       user run_as
-      environment 'DATA_SOURCE_NAME' => data_source_name
+      environment 'DATA_SOURCE_NAME' => new_resource.data_source_name
       exec_start "/usr/local/sbin/postgres_exporter #{options}"
       working_directory '/'
       restart 'on-failure'
@@ -60,7 +60,7 @@ action :install do
 
     only_if { node['platform_version'].to_i >= 16 }
 
-    notifies :restart, "service[postgres_exporter_#{instance_name}]"
+    notifies :restart, "service[postgres_exporter_#{new_resource.instance_name}]"
   end
 
   template '/etc/init/postgres_exporter.conf' do
@@ -72,38 +72,38 @@ action :install do
       cmd: "/usr/local/sbin/postgres_exporter #{options}",
       service_description: 'Prometheus Node Exporter',
       env: {
-        'DATA_SOURCE_NAME' => data_source_name,
+        'DATA_SOURCE_NAME' => new_resource.data_source_name,
       },
       setuid: run_as
     )
 
     only_if { node['platform_version'].to_i < 16 }
 
-    notifies :restart, "service[postgres_exporter_#{instance_name}]"
+    notifies :restart, "service[postgres_exporter_#{new_resource.instance_name}]"
   end
 end
 
 action :enable do
   action_install
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :enable
   end
 end
 
 action :start do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :start
   end
 end
 
 action :disable do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :disable
   end
 end
 
 action :stop do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :stop
   end
 end

@@ -41,16 +41,16 @@ action :install do
     to "/opt/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64/node_exporter"
   end
 
-  options = "-web.listen-address #{web_listen_address}"
-  options += " -web.telemetry-path #{web_telemetry_path}"
-  options += " -log.level #{log_level}"
-  options += " -log.format #{log_format}"
-  options += " -collectors.enabled #{collectors_enabled.join(',')}" if collectors_enabled
-  options += " -collector.textfile.directory #{collector_textfile_directory}" if collector_textfile_directory
-  options += " -collector.netdev.ignored-devices '#{collector_netdev_ignored_devices}'" if collector_netdev_ignored_devices
-  options += " -collector.diskstats.ignored-devices '#{collector_diskstats_ignored_devices}'" if collector_diskstats_ignored_devices
-  options += " -collector.filesystem.ignored-fs-types '#{collector_filesystem_ignored_fs_types}'" if collector_filesystem_ignored_fs_types
-  options += " -collector.filesystem.ignored-mount-points '#{collector_filesystem_ignored_mount_points}'" if collector_filesystem_ignored_mount_points
+  options = "-web.listen-address #{new_resource.web_listen_address}"
+  options += " -web.telemetry-path #{new_resource.web_telemetry_path}"
+  options += " -log.level #{new_resource.log_level}"
+  options += " -log.format #{new_resource.log_format}"
+  options += " -collectors.enabled #{new_resource.collectors_enabled.join(',')}" if new_resource.collectors_enabled
+  options += " -collector.textfile.directory #{new_resource.collector_textfile_directory}" if new_resource.collector_textfile_directory
+  options += " -collector.netdev.ignored-devices '#{new_resource.collector_netdev_ignored_devices}'" if new_resource.collector_netdev_ignored_devices
+  options += " -collector.diskstats.ignored-devices '#{new_resource.collector_diskstats_ignored_devices}'" if new_resource.collector_diskstats_ignored_devices
+  options += " -collector.filesystem.ignored-fs-types '#{new_resource.collector_filesystem_ignored_fs_types}'" if new_resource.collector_filesystem_ignored_fs_types
+  options += " -collector.filesystem.ignored-mount-points '#{new_resource.collector_filesystem_ignored_mount_points}'" if new_resource.collector_filesystem_ignored_mount_points
   options += " #{custom_options}" if custom_options
 
   service 'node_exporter' do
@@ -91,7 +91,7 @@ action :install do
         [Unit]
         Description=Systemd unit for Prometheus Node Exporter
         After=network.target remote-fs.target apiserver.service
-        
+
         [Install]
         WantedBy=multi-user.target
 
@@ -109,23 +109,23 @@ action :install do
     end
 
   when /debian/
-      systemd_unit 'node_exporter.service' do
-        content <<-EOF
-        [Unit]
-        Description=Systemd unit for Prometheus Node Exporter
-        After=network.target remote-fs.target apiserver.service
-        
-        [Install]
-        WantedBy=multi-user.target
+    systemd_unit 'node_exporter.service' do
+      content <<-EOF
+[Unit]
+Description=Systemd unit for Prometheus Node Exporter
+After=network.target remote-fs.target apiserver.service
 
-        [Service]
-        Type=simple
-        User=root
-        ExecStart=/usr/local/sbin/node_exporter #{options}
-        WorkingDirectory=/
-        Restart=on-failure
-        RestartSec=30s
-        EOF
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/sbin/node_exporter #{options}
+WorkingDirectory=/
+Restart=on-failure
+RestartSec=30s
+EOF
       only_if { node['platform_version'].to_i >= 16 }
 
       notifies :restart, 'service[node_exporter]'
