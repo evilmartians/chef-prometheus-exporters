@@ -34,7 +34,7 @@ action :install do
   bash 'untar node_exporter' do
     code "tar -xzf #{Chef::Config[:file_cache_path]}/node_exporter.tar.gz -C /opt"
     action :nothing
-    subscribes :run, 'remote_file[node_exporter]'
+    subscribes :run, 'remote_file[node_exporter]', :immediately
   end
 
   link '/usr/local/sbin/node_exporter' do
@@ -56,6 +56,24 @@ action :install do
   service 'node_exporter' do
     action :nothing
   end
+
+  systemdcontent = {
+    'Unit' => {
+      'Description' => 'Systemd unit for Prometheus Node Exporter',
+      'After' => 'network.target remote-fs.target apiserver.service',
+    },
+    'Service' => {
+      'Type' => 'simple',
+      'User' => 'root',
+      'ExecStart' => "/usr/local/sbin/node_exporter #{options}",
+      'WorkingDirectory' => '/',
+      'Restart' => 'on-failure',
+      'RestartSec' => '30s',
+    },
+    'Install' => {
+      'WantedBy' => 'multi-user.target',
+    },
+  }
 
   case node['platform_family']
   when /rhel/
@@ -87,51 +105,19 @@ action :install do
       end
     else
       systemd_unit 'node_exporter.service' do
-        content <<-EOF
-[Unit]
-Description=Systemd unit for Prometheus Node Exporter
-After=network.target remote-fs.target apiserver.service
-
-[Install]
-WantedBy=multi-user.target
-
-[Service]
-Type=simple
-User=root
-ExecStart=/usr/local/sbin/node_exporter #{options}
-WorkingDirectory=/
-Restart=on-failure
-RestartSec=30s
-EOF
+        content systemdcontent
         notifies :restart, 'service[node_exporter]'
-        verify false
         action :create
       end
     end
 
   when /debian/
     systemd_unit 'node_exporter.service' do
-      content <<-EOF
-[Unit]
-Description=Systemd unit for Prometheus Node Exporter
-After=network.target remote-fs.target apiserver.service
-
-[Install]
-WantedBy=multi-user.target
-
-[Service]
-Type=simple
-User=root
-ExecStart=/usr/local/sbin/node_exporter #{options}
-WorkingDirectory=/
-Restart=on-failure
-RestartSec=30s
-EOF
+      content systemdcontent
       only_if { node['platform_version'].to_i >= 16 }
 
       notifies :restart, 'service[node_exporter]'
       action :create
-      verify false
     end
 
     template '/etc/init/node_exporter.conf' do

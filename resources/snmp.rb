@@ -27,7 +27,7 @@ action :install do
   bash 'untar snmp_exporter' do
     code "tar -xzf #{Chef::Config[:file_cache_path]}/snmp_exporter.tar.gz -C /opt"
     action :nothing
-    subscribes :run, 'remote_file[snmp_exporter]'
+    subscribes :run, 'remote_file[snmp_exporter]', :immediately
   end
 
   link '/usr/local/sbin/snmp_exporter' do
