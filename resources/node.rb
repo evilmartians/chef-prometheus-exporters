@@ -57,27 +57,33 @@ action :install do
     action :nothing
   end
 
-  systemd_service 'node_exporter' do
-    description 'Systemd unit for Prometheus Node Exporter'
-    after %w(network.target remote-fs.target apiserver.service)
-    install do
-      wanted_by 'multi-user.target'
-    end
-    service do
-      type 'simple'
-      user 'root'
-      exec_start "/usr/local/sbin/node_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
-    end
+  at_compile_time do
+    systemd_service 'node_exporter' do
+      unit do
+        description 'Systemd unit for Prometheus Node Exporter'
+        after %w(network.target remote-fs.target)
+        action :create
+      end
+      action [:create]
+      install do
+        wanted_by 'multi-user.target'
+      end
+      service do
+        type 'simple'
+        exec_start "/usr/local/sbin/node_exporter #{options}"
+        working_directory '/'
+        restart 'on-failure'
+        restart_sec '30s'
+      end
 
-    only_if { node['platform_version'].to_i >= 16 }
+      only_if { node['platform_version'].to_i >= 16 }
 
-    notifies :restart, 'service[node_exporter]'
+      notifies :restart, 'service[node_exporter]'
+    end
   end
 
   template '/etc/init/node_exporter.conf' do
+    cookbook 'prometheus_exporters'
     source 'upstart.conf.erb'
     owner 'root'
     group 'root'
@@ -111,6 +117,7 @@ action :enable do
 end
 
 action :start do
+  action_install
   service 'node_exporter' do
     action :start
   end

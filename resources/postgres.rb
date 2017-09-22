@@ -36,32 +36,41 @@ action :install do
   options += " -log.format '#{log_format}'"
   options += " -extend.query-path #{extend_query_path}" if extend_query_path
 
+  environment_list = "DATA_SOURCE_NAME=#{data_source_name}"
+
   service "postgres_exporter_#{instance_name}" do
     action :nothing
   end
 
-  systemd_service "postgres_exporter_#{instance_name}" do
-    description 'Systemd unit for Prometheus PostgreSQL Exporter'
-    after %w(network.target remote-fs.target apiserver.service)
-    install do
-      wanted_by 'multi-user.target'
-    end
-    service do
-      type 'simple'
-      user run_as
-      environment 'DATA_SOURCE_NAME' => data_source_name
-      exec_start "/usr/local/sbin/postgres_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
-    end
+  at_compile_time do
+    systemd_service "postgres_exporter_#{instance_name}" do
+      action [:create]
+      unit do
+        description 'Systemd unit for Prometheus PostgreSQL Exporter'
+        after %w(network.target remote-fs.target)
+        action :create
+      end
+      install do
+        wanted_by 'multi-user.target'
+      end
+      service do
+        type 'simple'
+        user run_as
+        environment environment_list
+        exec_start "/usr/local/sbin/postgres_exporter #{options}"
+        working_directory '/'
+        restart 'on-failure'
+        restart_sec '30s'
+      end
 
-    only_if { node['platform_version'].to_i >= 16 }
+      only_if { node['platform_version'].to_i >= 16 }
 
-    notifies :restart, "service[postgres_exporter_#{instance_name}]"
+      notifies :restart, "service[postgres_exporter_#{instance_name}]"
+    end
   end
 
-  template '/etc/init/postgres_exporter.conf' do
+  template "/etc/init/postgres_exporter_#{instance_name}.conf" do
+    cookbook 'prometheus_exporters'
     source 'upstart.conf.erb'
     owner 'root'
     group 'root'
