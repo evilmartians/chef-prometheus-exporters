@@ -68,9 +68,7 @@ action :install do
       restart 'on-failure'
       restart_sec '30s'
     end
-
-    only_if { node['platform_version'].to_i >= 16 }
-
+    only_if { node['init_package'] == 'systemd' }
     notifies :restart, 'service[redis_exporter]'
   end
 
@@ -85,7 +83,7 @@ action :install do
       service_description: 'Prometheus Redis Exporter'
     )
 
-    only_if { node['platform_version'].to_i < 16 }
+    only_if { node['init_package'] != 'systemd' }
 
     notifies :restart, 'service[redis_exporter]'
   end

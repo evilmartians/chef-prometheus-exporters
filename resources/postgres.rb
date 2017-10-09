@@ -42,31 +42,27 @@ action :install do
     action :nothing
   end
 
-  at_compile_time do
-    systemd_service "postgres_exporter_#{instance_name}" do
-      action [:create]
-      unit do
-        description 'Systemd unit for Prometheus PostgreSQL Exporter'
-        after %w(network.target remote-fs.target)
-        action :create
-      end
-      install do
-        wanted_by 'multi-user.target'
-      end
-      service do
-        type 'simple'
-        user run_as
-        environment environment_list
-        exec_start "/usr/local/sbin/postgres_exporter #{options}"
-        working_directory '/'
-        restart 'on-failure'
-        restart_sec '30s'
-      end
-
-      only_if { node['platform_version'].to_i >= 16 }
-
-      notifies :restart, "service[postgres_exporter_#{instance_name}]"
+  systemd_service "postgres_exporter_#{instance_name}" do
+    action [:create]
+    unit do
+      description 'Systemd unit for Prometheus PostgreSQL Exporter'
+      after %w(network.target remote-fs.target)
+      action :create
     end
+    install do
+      wanted_by 'multi-user.target'
+    end
+    service do
+      type 'simple'
+      user run_as
+      environment environment_list
+      exec_start "/usr/local/sbin/postgres_exporter #{options}"
+      working_directory '/'
+      restart 'on-failure'
+      restart_sec '30s'
+    end
+    only_if { node['init_package'] == 'systemd' }
+    notifies :restart, "service[postgres_exporter_#{instance_name}]"
   end
 
   template "/etc/init/postgres_exporter_#{instance_name}.conf" do
@@ -84,7 +80,7 @@ action :install do
       setuid: run_as
     )
 
-    only_if { node['platform_version'].to_i < 16 }
+    only_if { node['init_package'] != 'systemd' }
 
     notifies :restart, "service[postgres_exporter_#{instance_name}]"
   end
