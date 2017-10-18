@@ -52,7 +52,7 @@ COLLECTOR_LIST = %w(
   xfs
   zfs
   timex
-)
+).freeze
 
 resource_name :node_exporter
 
@@ -61,14 +61,14 @@ property :web_telemetry_path, String, default: '/metrics'
 property :log_level, String, default: 'info'
 property :log_format, String, default: 'logger:stdout'
 property :collectors_enabled, Array, callbacks: {
-  'should be a collector' => lambda { |collectors|
+  'should be a collector' => lambda do |collectors|
     collectors.all? { |element| COLLECTOR_LIST.include? element }
-  }
+  end,
 }
 property :collectors_disabled, Array, callbacks: {
-  'should be a collector' => lambda { |collectors|
+  'should be a collector' => lambda do |collectors|
     collectors.all? { |element| COLLECTOR_LIST.include? element }
-  }
+  end,
 }
 property :collector_megacli_command, String
 property :collector_ntp_server, String
@@ -100,7 +100,7 @@ action :install do
   bash 'untar node_exporter' do
     code "tar -xzf #{Chef::Config[:file_cache_path]}/node_exporter.tar.gz -C /opt"
     action :nothing
-    subscribes :run, 'remote_file[node_exporter]'
+    subscribes :run, 'remote_file[node_exporter]', :immediately
   end
 
   link '/usr/local/sbin/node_exporter' do
@@ -169,11 +169,12 @@ action :install do
       end
 
       template '/etc/init.d/node_exporter' do
-        source 'node_exporter.erb'
+        source 'initscript.erb'
         owner 'root'
         group 'root'
         mode '0755'
         variables(
+          name: 'node_exporter',
           cmd: "/usr/local/sbin/node_exporter #{options}",
           service_description: 'Prometheus Node Exporter'
         )

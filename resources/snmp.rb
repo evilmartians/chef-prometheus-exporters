@@ -43,41 +43,84 @@ action :install do
     action :nothing
   end
 
-  systemd_service 'snmp_exporter' do
-    unit do
-      description 'Systemd unit for Prometheus SNMP Exporter'
-      after %w(network.target remote-fs.target apiserver.service)
+  systemdcontent = {
+    'Unit' => {
+      'Description' => 'Systemd unit for Prometheus SNMP Exporter',
+      'After' => 'network.target remote-fs.target apiserver.service',
+    },
+    'Service' => {
+      'Type' => 'simple',
+      'User' => 'root',
+      'ExecStart' => "/usr/local/sbin/snmp_exporter #{options}",
+      'WorkingDirectory' => '/',
+      'Restart' => 'on-failure',
+      'RestartSec' => '30s',
+    },
+    'Install' => {
+      'WantedBy' => 'multi-user.target',
+    },
+  }
+
+  case node['platform_family']
+  when /rhel/
+    if node['platform_version'].to_i < 7
+      %w(
+        /var/run/prometheus
+        /var/log/prometheus
+      ).each do |dir|
+        directory dir do
+          owner 'root'
+          group 'root'
+          mode '0755'
+          recursive true
+          action :create
+        end
+      end
+
+      template '/etc/init.d/snmp_exporter' do
+        source 'initscript.erb'
+        owner 'root'
+        group 'root'
+        mode '0755'
+        variables(
+          name: 'snmp_exporter',
+          cmd: "/usr/local/sbin/snmp_exporter #{options}",
+          service_description: 'Prometheus SNMP Exporter'
+        )
+
+        notifies :restart, 'service[snmp_exporter]'
+      end
+    else
+      systemd_unit 'snmp_exporter.service' do
+        content systemdcontent
+        notifies :restart, 'service[snmp_exporter]'
+        action :create
+      end
     end
-    install do
-      wanted_by 'multi-user.target'
-    end
-    service do
-      type 'simple'
-      user 'root'
-      exec_start "/usr/local/sbin/snmp_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
+
+  when /debian/
+    systemd_unit 'snmp_exporter.service' do
+      content systemdcontent
+      only_if { node['platform_version'].to_i >= 16 }
+
+      notifies :restart, 'service[snmp_exporter]'
+      action :create
     end
 
-    only_if { node['platform_version'].to_i >= 16 || (node['platform_family'] == 'rhel' && node['platform_version'].to_i >= 7) }
+    template '/etc/init/snmp_exporter.conf' do
+      source 'upstart.conf.erb'
+      owner 'root'
+      group 'root'
+      mode '0644'
+      variables(
+        cmd: "/usr/local/sbin/snmp_exporter #{options}",
+        service_description: 'Prometheus SNMP Exporter'
+      )
 
-    notifies :restart, 'service[snmp_exporter]'
-  end
+      only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
 
-  template '/etc/init/snmp_exporter.conf' do
-    source 'upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      cmd: "/usr/local/sbin/snmp_exporter #{options}",
-      service_description: 'Prometheus SNMP Exporter'
-    )
-
-    only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
-
-    notifies :restart, 'service[snmp_exporter]'
+      notifies :restart, 'service[snmp_exporter]'
+    end
   end
 end
 

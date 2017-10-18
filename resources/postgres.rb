@@ -73,9 +73,9 @@ action :install do
     mode '0644'
     variables(
       cmd: "/usr/local/sbin/postgres_exporter #{options}",
-      service_description: 'Prometheus Node Exporter',
+      service_description: 'Prometheus PostgreSQL Exporter',
       env: {
-        'DATA_SOURCE_NAME' => data_source_name
+        'DATA_SOURCE_NAME' => data_source_name,
       },
       setuid: run_as
     )

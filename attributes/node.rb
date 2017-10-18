@@ -4,7 +4,7 @@ default['prometheus_exporters']['node']['checksum'] = '9413b3c94dbe9d4341ce85ea7
 
 default['prometheus_exporters']['node']['textfile_directory'] = '/var/lib/node_exporter/textfile_collector'
 
-default['prometheus_exporters']['node']['ignored_net_devs'] = '^(veth.*|docker0|datapath|dummy0)$'
+default['prometheus_exporters']['node']['ignored_net_devs'] = '^(weave|veth.*|docker0|datapath|dummy0)$'
 
 default['prometheus_exporters']['node']['ignored_mount_points'] = '^/(sys|proc|dev|host|etc|var/lib/docker|run|var/lib/lxcfs|var/lib/kubelet)($|/)'
 

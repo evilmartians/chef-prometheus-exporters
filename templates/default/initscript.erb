@@ -1,21 +1,21 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          node-exporter
+# Provides:          <%= @name %>
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Prometheus node exporter
+# Short-Description: <%= @service_description %>
 ### END INIT INFO
 
 
 DESC="<%= @service_description %>"
 SCRIPT="<%= @cmd %>"
-NAME=node-exporter
+NAME="<%= @name %>"
 USER=prometheus
-PIDFILE=/var/run/prometheus/node-exporter.pid
-LOGFILE=/var/log/prometheus/node-exporter.log
+PIDFILE="/var/run/prometheus/<%= @name %>.pid"
+LOGFILE="/var/log/prometheus/<%= @name %>.log"
 
 get_pid() {
     cat "$PIDFILE"
