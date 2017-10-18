@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_interface']]['addresses'].find { |address, data| data['family'] == 'inet' }.first unless node['prometheus_exporters']['disable']
+listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_interface']]['addresses'].find { |_address, data| data['family'] == 'inet' }.first unless node['prometheus_exporters']['disable']
 
 node_exporter 'main' do
   web_listen_address "#{listen_ip}:9100"
@@ -17,7 +17,7 @@ node_exporter 'main' do
   collector_netdev_ignored_devices node['prometheus_exporters']['node']['ignored_net_devs']
   collector_filesystem_ignored_mount_points node['prometheus_exporters']['node']['ignored_mount_points']
 
-  action [:enable, :start]
+  action [:install, :enable, :start]
 
   not_if { node['prometheus_exporters']['disable'] }
 end

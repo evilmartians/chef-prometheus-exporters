@@ -1,5 +1,11 @@
 # prometheus_exporters
 
+# 0.4.0
+
+- [Viktor Radnai] - Merged changes from Matt Mencel's repo (https://github.com/WIU/chef-prometheus-exporters.git)
+- [Matt Mencel] - CentOS Support: updated only_if and not_if in node_exporter service
+- [Matt Mencel] - Chef Warnings: Fixed Chef warnings in upstart template
+
 ## 0.3.0
 
 - [Kirill Kuznetsov] - node_exporter version bump: `0.15.0`

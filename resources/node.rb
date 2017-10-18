@@ -134,41 +134,83 @@ action :install do
     action :nothing
   end
 
-  systemd_service 'node_exporter' do
-    unit do
-      description 'Systemd unit for Prometheus Node Exporter'
-      after %w(network.target remote-fs.target)
+  systemdcontent = {
+    'Unit' => {
+      'Description' => 'Systemd unit for Prometheus Node Exporter',
+      'After' => 'network.target remote-fs.target apiserver.service',
+    },
+    'Service' => {
+      'Type' => 'simple',
+      'User' => 'root',
+      'ExecStart' => "/usr/local/sbin/node_exporter #{options}",
+      'WorkingDirectory' => '/',
+      'Restart' => 'on-failure',
+      'RestartSec' => '30s',
+    },
+    'Install' => {
+      'WantedBy' => 'multi-user.target',
+    },
+  }
+
+  case node['platform_family']
+  when /rhel/
+    if node['platform_version'].to_i < 7
+      %w(
+        /var/run/prometheus
+        /var/log/prometheus
+      ).each do |dir|
+        directory dir do
+          owner 'root'
+          group 'root'
+          mode '0755'
+          recursive true
+          action :create
+        end
+      end
+
+      template '/etc/init.d/node_exporter' do
+        source 'node_exporter.erb'
+        owner 'root'
+        group 'root'
+        mode '0755'
+        variables(
+          cmd: "/usr/local/sbin/node_exporter #{options}",
+          service_description: 'Prometheus Node Exporter'
+        )
+
+        notifies :restart, 'service[node_exporter]'
+      end
+    else
+      systemd_unit 'node_exporter.service' do
+        content systemdcontent
+        notifies :restart, 'service[node_exporter]'
+        action :create
+      end
+    end
+
+  when /debian/
+    systemd_unit 'node_exporter.service' do
+      content systemdcontent
+      only_if { node['platform_version'].to_i >= 16 }
+
+      notifies :restart, 'service[node_exporter]'
       action :create
     end
-    action [:create]
-    install do
-      wanted_by 'multi-user.target'
+
+    template '/etc/init/node_exporter.conf' do
+      source 'upstart.conf.erb'
+      owner 'root'
+      group 'root'
+      mode '0644'
+      variables(
+        cmd: "/usr/local/sbin/node_exporter #{options}",
+        service_description: 'Prometheus Node Exporter'
+      )
+
+      only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
+
+      notifies :restart, 'service[node_exporter]'
     end
-    service do
-      type 'simple'
-      exec_start "/usr/local/sbin/node_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
-    end
-    notifies :restart, 'service[node_exporter]'
-    only_if { node['init_package'] == 'systemd' }
-  end
-
-  template '/etc/init/node_exporter.conf' do
-    cookbook 'prometheus_exporters'
-    source 'upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      cmd: "/usr/local/sbin/node_exporter #{options}",
-      service_description: 'Prometheus Node Exporter'
-    )
-
-    only_if { node['init_package'] != 'systemd' }
-
-    notifies :restart, 'service[node_exporter]'
   end
 
   directory 'collector_textfile_directory' do
@@ -190,7 +232,6 @@ action :enable do
 end
 
 action :start do
-  action_install
   service 'node_exporter' do
     action :start
   end
