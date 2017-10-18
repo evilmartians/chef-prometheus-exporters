@@ -8,5 +8,3 @@ version          '0.4.0'
 
 supports 'ubuntu'
 supports 'centos', '>= 6.9'
-
-depends 'systemd'
