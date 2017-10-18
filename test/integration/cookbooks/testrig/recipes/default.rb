@@ -1,6 +1,6 @@
 user 'prometheus' do
-    comment 'Prometheus user'
-    system true
+  comment 'Prometheus user'
+  system true
 end
 
 node_exporter 'main' do
