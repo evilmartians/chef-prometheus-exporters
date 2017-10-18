@@ -15,13 +15,18 @@ property :log_format, String, default: 'logger:stdout'
 property :custom_options, String
 
 action :install do
+  options = "-web.listen-address #{new_resource.web_listen_address}"
+  options += " -log.level #{new_resource.log_level}"
+  options += " -log.format #{new_resource.log_format}"
+  options += " #{new_resource.custom_options}" if new_resource.custom_options
+
   remote_file 'snmp_exporter' do
     path "#{Chef::Config[:file_cache_path]}/snmp_exporter.tar.gz"
     owner 'root'
     group 'root'
     mode '0644'
     source node['prometheus_exporters']['snmp']['url']
-    # checksum node['prometheus_exporters']['node']['checksum']
+    checksum node['prometheus_exporters']['node']['checksum']
   end
 
   bash 'untar snmp_exporter' do
@@ -34,50 +39,78 @@ action :install do
     to "/opt/snmp_exporter-#{node['prometheus_exporters']['snmp']['version']}.linux-amd64/snmp_exporter"
   end
 
-  options = "-web.listen-address #{new_resource.web_listen_address}"
-  options += " -log.level #{new_resource.log_level}"
-  options += " -log.format #{new_resource.log_format}"
-  options += " #{new_resource.custom_options}" if new_resource.custom_options
-
   service 'snmp_exporter' do
     action :nothing
   end
 
-  systemd_service 'snmp_exporter' do
-    unit do
-      description 'Systemd unit for Prometheus SNMP Exporter'
-      after %w(network.target remote-fs.target apiserver.service)
-    end
-    install do
-      wanted_by 'multi-user.target'
-    end
-    service do
-      type 'simple'
-      user 'root'
-      exec_start "/usr/local/sbin/snmp_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
+  case node['init_package']
+  when /init/
+    %w(
+      /var/run/prometheus
+      /var/log/prometheus
+    ).each do |dir|
+      directory dir do
+        owner 'root'
+        group 'root'
+        mode '0755'
+        recursive true
+        action :create
+      end
     end
 
-    only_if { node['platform_version'].to_i >= 16 || (node['platform_family'] == 'rhel' && node['platform_version'].to_i >= 7) }
+    template '/etc/init.d/snmp_exporter' do
+      cookbook 'prometheus_exporters'
+      source 'initscript.erb'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      variables(
+        name: 'snmp_exporter',
+        cmd: "/usr/local/sbin/snmp_exporter #{options}",
+        service_description: 'Prometheus SNMP Exporter'
+      )
+      notifies :restart, 'service[snmp_exporter]'
+    end
 
-    notifies :restart, 'service[snmp_exporter]'
-  end
+  when /systemd/
+    systemd_unit 'snmp_exporter.service' do
+      content(
+        'Unit' => {
+          'Description' => 'Systemd unit for Prometheus SNMP Exporter',
+          'After' => 'network.target remote-fs.target apiserver.service',
+        },
+        'Service' => {
+          'Type' => 'simple',
+          'User' => 'root',
+          'ExecStart' => "/usr/local/sbin/snmp_exporter #{options}",
+          'WorkingDirectory' => '/',
+          'Restart' => 'on-failure',
+          'RestartSec' => '30s',
+        },
+        'Install' => {
+          'WantedBy' => 'multi-user.target',
+        }
+      )
+      notifies :restart, 'service[snmp_exporter]'
+      action :create
+    end
 
-  template '/etc/init/snmp_exporter.conf' do
-    source 'upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      cmd: "/usr/local/sbin/snmp_exporter #{options}",
-      service_description: 'Prometheus SNMP Exporter'
-    )
+  when /upstart/
+    template '/etc/init/snmp_exporter.conf' do
+      cookbook 'prometheus_exporters'
+      source 'upstart.conf.erb'
+      owner 'root'
+      group 'root'
+      mode '0644'
+      variables(
+        cmd: "/usr/local/sbin/snmp_exporter #{options}",
+        service_description: 'Prometheus SNMP Exporter'
+      )
+      notifies :restart, 'service[snmp_exporter]'
+    end
 
-    only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
-
-    notifies :restart, 'service[snmp_exporter]'
+  else
+    raise "Init system '#{node['init_package']}' is not supported by the 'prometheus_exporters' cookbook"
   end
 end
 

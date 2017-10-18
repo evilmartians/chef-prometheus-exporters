@@ -70,3 +70,8 @@ postgres_exporter '9.5_main' do
   user 'postgres'
 end
 ```
+
+# Known Issues
+
+* The snmp_exporter requires a configuration file that is usually created by a config generator. Currently this functionality must be provided by a wrapper cookbook.
+* If any of the exporters are ran as a non-root user on a system with Sys V init, then it will not be able to write to its logfile

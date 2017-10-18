@@ -14,96 +14,133 @@ property :data_source_name, String, required: true
 property :extend_query_path, String
 property :log_format, String, default: 'logger:stdout?json=false'
 property :log_level, String
-property :web_listen_address, String, default: '127.0.0.1:9187'
+property :web_listen_address, String, default: '0.0.0.0:9187'
 property :web_telemetry_path, String
 property :user, String, default: 'postgres'
 
 action :install do
-  run_as = new_resource.user
+  service_name = "postgres_exporter_#{instance_name}"
+
+  options = "-web.listen-address '#{web_listen_address}'"
+  options += " -web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
+  options += " -log.level #{log_level}" if log_level
+  options += " -log.format '#{log_format}'"
+  options += " -extend.query-path #{extend_query_path}" if extend_query_path
+
+  env = {
+    'DATA_SOURCE_NAME' => data_source_name,
+  }
 
   remote_file 'postgres_exporter' do
     path '/usr/local/sbin/postgres_exporter'
     owner 'root'
     group 'root'
-    mode '0644'
+    mode '0755'
     source node['prometheus_exporters']['postgres']['url']
     checksum node['prometheus_exporters']['postgres']['checksum']
   end
 
-  options = "-web.listen-address '#{new_resource.web_listen_address}'"
-  options += " -web.telemetry-path '#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
-  options += " -log.level #{new_resource.log_level}" if new_resource.log_level
-  options += " -log.format '#{new_resource.log_format}'"
-  options += " -extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
-
-  service "postgres_exporter_#{new_resource.instance_name}" do
+  service service_name do
     action :nothing
   end
 
-  systemd_service "postgres_exporter_#{new_resource.instance_name}" do
-    unit do
-      description 'Systemd unit for Prometheus PostgreSQL Exporter'
-      after %w(network.target remote-fs.target apiserver.service)
-    end
-    install do
-      wanted_by 'multi-user.target'
-    end
-    service do
-      type 'simple'
-      user run_as
-      environment 'DATA_SOURCE_NAME' => new_resource.data_source_name
-      exec_start "/usr/local/sbin/postgres_exporter #{options}"
-      working_directory '/'
-      restart 'on-failure'
-      restart_sec '30s'
+  case node['init_package']
+  when /init/
+    %w(
+      /var/run/prometheus
+      /var/log/prometheus
+    ).each do |dir|
+      directory dir do
+        owner 'root'
+        group 'root'
+        mode '0755'
+        recursive true
+        action :create
+      end
     end
 
-    only_if { node['platform_version'].to_i >= 16 }
+    template "/etc/init.d/#{service_name}" do
+      cookbook 'prometheus_exporters'
+      source 'initscript.erb'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      variables(
+        env: env,
+        user: new_resource.user,
+        name: service_name,
+        cmd: "/usr/local/sbin/postgres_exporter #{options}",
+        service_description: 'Prometheus PostgreSQL Exporter'
+      )
+      notifies :restart, "service[#{service_name}]"
+    end
 
-    notifies :restart, "service[postgres_exporter_#{new_resource.instance_name}]"
-  end
+  when /systemd/
+    systemd_unit "#{service_name}.service" do
+      content(
+        'Unit' => {
+          'Description' => 'Systemd unit for Prometheus PostgreSQL Exporter',
+          'After' => 'network.target remote-fs.target apiserver.service',
+        },
+        'Service' => {
+          'Type' => 'simple',
+          'User' => new_resource.user,
+          'ExecStart' => "/usr/local/sbin/postgres_exporter #{options}",
+          'Environment' => env.map { |k, v| "'#{k}=#{v}'" }.join(' '),
+          'WorkingDirectory' => '/',
+          'Restart' => 'on-failure',
+          'RestartSec' => '30s',
+        },
+        'Install' => {
+          'WantedBy' => 'multi-user.target',
+        }
+      )
+      notifies :restart, "service[#{service_name}]"
+      action :create
+    end
 
-  template '/etc/init/postgres_exporter.conf' do
-    source 'upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      cmd: "/usr/local/sbin/postgres_exporter #{options}",
-      service_description: 'Prometheus Node Exporter',
-      env: {
-        'DATA_SOURCE_NAME' => new_resource.data_source_name,
-      },
-      setuid: run_as
-    )
+  when /upstart/
+    template "/etc/init/#{service_name}.conf" do
+      cookbook 'prometheus_exporters'
+      source 'upstart.conf.erb'
+      owner 'root'
+      group 'root'
+      mode '0644'
+      variables(
+        env: env,
+        setuid: new_resource.user,
+        cmd: "/usr/local/sbin/postgres_exporter #{options}",
+        service_description: 'Prometheus PostgreSQL Exporter'
+      )
+      notifies :restart, "service[#{service_name}]"
+    end
 
-    only_if { node['platform_version'].to_i < 16 }
-
-    notifies :restart, "service[postgres_exporter_#{new_resource.instance_name}]"
+  else
+    raise "Init system '#{node['init_package']}' is not supported by the 'prometheus_exporters' cookbook"
   end
 end
 
 action :enable do
   action_install
-  service "postgres_exporter_#{new_resource.instance_name}" do
+  service "postgres_exporter_#{instance_name}" do
     action :enable
   end
 end
 
 action :start do
-  service "postgres_exporter_#{new_resource.instance_name}" do
+  service "postgres_exporter_#{instance_name}" do
     action :start
   end
 end
 
 action :disable do
-  service "postgres_exporter_#{new_resource.instance_name}" do
+  service "postgres_exporter_#{instance_name}" do
     action :disable
   end
 end
 
 action :stop do
-  service "postgres_exporter_#{new_resource.instance_name}" do
+  service "postgres_exporter_#{instance_name}" do
     action :stop
   end
 end

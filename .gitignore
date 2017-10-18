@@ -1,0 +1,6 @@
+Berksfile.lock
+.kitchen/
+.kitchen.local.yml
+
+# Vim swap files
+.*.sw?
