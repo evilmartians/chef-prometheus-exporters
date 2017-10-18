@@ -87,26 +87,6 @@ property :collector_filesystem_ignored_mount_points, String
 property :custom_options, String
 
 action :install do
-  remote_file 'node_exporter' do
-    path "#{Chef::Config[:file_cache_path]}/node_exporter.tar.gz"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    source node['prometheus_exporters']['node']['url']
-    checksum node['prometheus_exporters']['node']['checksum']
-    notifies :restart, 'service[node_exporter]'
-  end
-
-  bash 'untar node_exporter' do
-    code "tar -xzf #{Chef::Config[:file_cache_path]}/node_exporter.tar.gz -C /opt"
-    action :nothing
-    subscribes :run, 'remote_file[node_exporter]', :immediately
-  end
-
-  link '/usr/local/sbin/node_exporter' do
-    to "/opt/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64/node_exporter"
-  end
-
   options = "--web.listen-address=#{web_listen_address}"
   options += " --web.telemetry-path=#{web_telemetry_path}"
   options += " --log.level=#{log_level}"
@@ -130,75 +110,87 @@ action :install do
   options += collectors_enabled.map { |c| " --collector.#{c}" }.join
   options += collectors_disabled.map { |c| " --no-collector.#{c}" }.join
 
+  # Download binary
+  remote_file 'node_exporter' do
+    path "#{Chef::Config[:file_cache_path]}/node_exporter.tar.gz"
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source node['prometheus_exporters']['node']['url']
+    checksum node['prometheus_exporters']['node']['checksum']
+    notifies :restart, 'service[node_exporter]'
+  end
+
+  bash 'untar node_exporter' do
+    code "tar -xzf #{Chef::Config[:file_cache_path]}/node_exporter.tar.gz -C /opt"
+    action :nothing
+    subscribes :run, 'remote_file[node_exporter]', :immediately
+  end
+
+  link '/usr/local/sbin/node_exporter' do
+    to "/opt/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64/node_exporter"
+  end
+
+  # Configure to run as a service
   service 'node_exporter' do
     action :nothing
   end
 
-  systemdcontent = {
-    'Unit' => {
-      'Description' => 'Systemd unit for Prometheus Node Exporter',
-      'After' => 'network.target remote-fs.target apiserver.service',
-    },
-    'Service' => {
-      'Type' => 'simple',
-      'User' => 'root',
-      'ExecStart' => "/usr/local/sbin/node_exporter #{options}",
-      'WorkingDirectory' => '/',
-      'Restart' => 'on-failure',
-      'RestartSec' => '30s',
-    },
-    'Install' => {
-      'WantedBy' => 'multi-user.target',
-    },
-  }
-
-  case node['platform_family']
-  when /rhel/
-    if node['platform_version'].to_i < 7
-      %w(
-        /var/run/prometheus
-        /var/log/prometheus
-      ).each do |dir|
-        directory dir do
-          owner 'root'
-          group 'root'
-          mode '0755'
-          recursive true
-          action :create
-        end
-      end
-
-      template '/etc/init.d/node_exporter' do
-        source 'initscript.erb'
+  case node['init_package']
+  when /init/
+    %w(
+      /var/run/prometheus
+      /var/log/prometheus
+    ).each do |dir|
+      directory dir do
         owner 'root'
         group 'root'
         mode '0755'
-        variables(
-          name: 'node_exporter',
-          cmd: "/usr/local/sbin/node_exporter #{options}",
-          service_description: 'Prometheus Node Exporter'
-        )
-
-        notifies :restart, 'service[node_exporter]'
-      end
-    else
-      systemd_unit 'node_exporter.service' do
-        content systemdcontent
-        notifies :restart, 'service[node_exporter]'
+        recursive true
         action :create
       end
     end
 
-  when /debian/
-    systemd_unit 'node_exporter.service' do
-      content systemdcontent
-      only_if { node['platform_version'].to_i >= 16 }
+    template '/etc/init.d/node_exporter' do
+      cookbook 'prometheus_exporters'
+      source 'initscript.erb'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      variables(
+        name: 'node_exporter',
+        cmd: "/usr/local/sbin/node_exporter #{options}",
+        service_description: 'Prometheus Node Exporter'
+      )
+      notifies :restart, 'service[node_exporter]'
+    end
 
+  when /systemd/
+    systemd_unit 'node_exporter.service' do
+      content(
+        'Unit' => {
+          'Description' => 'Systemd unit for Prometheus Node Exporter',
+          'After' => 'network.target remote-fs.target apiserver.service',
+        },
+        'Service' => {
+          'Type' => 'simple',
+          'User' => 'root',
+          'ExecStart' => "/usr/local/sbin/node_exporter #{options}",
+          'WorkingDirectory' => '/',
+          'Restart' => 'on-failure',
+          'RestartSec' => '30s',
+        },
+        'Install' => {
+          'WantedBy' => 'multi-user.target',
+        }
+      )
       notifies :restart, 'service[node_exporter]'
       action :create
     end
 
+  when /upstart/
     template '/etc/init/node_exporter.conf' do
+      cookbook 'prometheus_exporters'
       source 'upstart.conf.erb'
       owner 'root'
       group 'root'
@@ -207,11 +199,11 @@ action :install do
         cmd: "/usr/local/sbin/node_exporter #{options}",
         service_description: 'Prometheus Node Exporter'
       )
-
-      only_if { node['platform_version'].to_i < 16 && node['platform_family'] == 'debian' }
-
       notifies :restart, 'service[node_exporter]'
     end
+
+  else
+    raise "Init system '#{node['init_package']}' is not supported by the 'prometheus_exporters' cookbook"
   end
 
   directory 'collector_textfile_directory' do
