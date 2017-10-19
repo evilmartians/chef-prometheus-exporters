@@ -26,7 +26,7 @@ action :install do
     group 'root'
     mode '0644'
     source node['prometheus_exporters']['snmp']['url']
-    checksum node['prometheus_exporters']['node']['checksum']
+    checksum node['prometheus_exporters']['snmp']['checksum']
   end
 
   bash 'untar snmp_exporter' do
