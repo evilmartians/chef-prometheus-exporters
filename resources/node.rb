@@ -140,7 +140,7 @@ action :install do
   when /init/
     %w(
       /var/run/prometheus
-      /var/log/prometheus
+      /var/log/prometheus/node_exporter
     ).each do |dir|
       directory dir do
         owner 'root'

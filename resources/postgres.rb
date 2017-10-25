@@ -59,6 +59,13 @@ action :install do
       end
     end
 
+    directory "/var/log/prometheus/#{service_name}" do
+      owner new_resource.user
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
     template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'

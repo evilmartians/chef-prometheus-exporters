@@ -47,7 +47,7 @@ action :install do
   when /init/
     %w(
       /var/run/prometheus
-      /var/log/prometheus
+      /var/log/prometheus/snmp_exporter
     ).each do |dir|
       directory dir do
         owner 'root'

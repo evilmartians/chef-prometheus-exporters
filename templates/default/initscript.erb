@@ -13,7 +13,7 @@ DESC="<%= @service_description %>"
 SCRIPT="<%= @cmd %>"
 NAME="<%= @name %>"
 PIDFILE="/var/run/prometheus/<%= @name %>.pid"
-LOGFILE="/var/log/prometheus/<%= @name %>.log"
+LOGFILE="/var/log/prometheus/<%= @name %>/<%= @name %>.log"
 
 <% if @user -%>
 USER=<%= @user %>
