@@ -14,7 +14,7 @@ property :data_source_name, String, required: true
 property :extend_query_path, String
 property :log_format, String, default: 'logger:stdout?json=false'
 property :log_level, String
-property :web_listen_address, String, default: '127.0.0.1:9187'
+property :web_listen_address, String, default: '0.0.0.0:9187'
 property :web_telemetry_path, String
 property :user, String, default: 'postgres'
 
@@ -67,7 +67,7 @@ action :install do
       mode '0755'
       variables(
         env: env,
-        user: user,
+        user: new_resource.user,
         name: service_name,
         cmd: "/usr/local/sbin/postgres_exporter #{options}",
         service_description: 'Prometheus PostgreSQL Exporter'
@@ -84,9 +84,9 @@ action :install do
         },
         'Service' => {
           'Type' => 'simple',
-          'User' => 'root',
+          'User' => new_resource.user,
           'ExecStart' => "/usr/local/sbin/postgres_exporter #{options}",
-          'Environment' => env,
+          'Environment' => env.map { |k, v| "'#{k}=#{v}'" }.join(' '),
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
           'RestartSec' => '30s',
@@ -108,7 +108,7 @@ action :install do
       mode '0644'
       variables(
         env: env,
-        setuid: user,
+        setuid: new_resource.user,
         cmd: "/usr/local/sbin/postgres_exporter #{options}",
         service_description: 'Prometheus PostgreSQL Exporter'
       )
