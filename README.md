@@ -1,6 +1,6 @@
 # prometheus_exporters
 
-Pretty straightforward cookbook to install and configure some node exporters for Prometheus installation.
+Pretty straightforward cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
 I've decided I want them to be available via chef custom resources (who knows where I would like to invoke them from) and all in one place.
 
@@ -74,4 +74,3 @@ end
 # Known Issues
 
 * The snmp_exporter requires a configuration file that is usually created by a config generator. Currently this functionality must be provided by a wrapper cookbook.
-* If any of the exporters are ran as a non-root user on a system with Sys V init, then it will not be able to write to its logfile

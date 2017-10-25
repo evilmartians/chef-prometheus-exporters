@@ -1,16 +1,7 @@
+# Node exporter
 describe port(9100) do
   it { should be_listening }
   its('processes') { should cmp 'node_exporter' }
-end
-
-describe port(9121) do
-  it { should be_listening }
-  its('processes') { should cmp(/^redis_expo/) }
-end
-
-describe port(9187) do
-  it { should be_listening }
-  its('processes') { should cmp(/^postgres_expo/) }
 end
 
 describe service('node_exporter') do
@@ -18,12 +9,44 @@ describe service('node_exporter') do
   it { should be_running }
 end
 
-describe service('postgres_exporter_main') do
-  it { should be_enabled }
-  it { should be_running }
+# Redis exporter
+describe port(9121) do
+  it { should be_listening }
+  its('processes') { should cmp(/^redis_expo/) }
 end
 
 describe service('redis_exporter') do
   it { should be_enabled }
   it { should be_running }
+end
+
+# Postgres exporter
+describe port(9187) do
+  it { should be_listening }
+  its('processes') { should cmp(/^postgres_expo/) }
+end
+
+describe service('postgres_exporter_main') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe port(9188) do
+  it { should be_listening }
+  its('processes') { should cmp(/^postgres_expo/) }
+end
+
+describe service('postgres_exporter_chef') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe processes('postgres_exporter') do
+  its('users') { should eq ['postgres', 'opscode-pgsql'] }
+end
+
+# SNMP exporter
+
+describe service('postgres_exporter_chef') do
+  it { should be_enabled }
 end

@@ -19,6 +19,7 @@ property :redis_password, String
 property :redis_alias, String
 property :redis_file, String
 property :namespace, String, default: 'redis'
+property :user, String, default: 'root'
 
 action :install do
   options = "-web.listen-address #{web_listen_address}"
@@ -66,6 +67,13 @@ action :install do
       end
     end
 
+    directory '/var/log/prometheus/redis_exporter' do
+      owner new_resource.user
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
     template '/etc/init.d/redis_exporter' do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
@@ -90,7 +98,7 @@ action :install do
         },
         'Service' => {
           'Type' => 'simple',
-          'User' => 'root',
+          'User' => new_resource.user,
           'ExecStart' => "/usr/local/sbin/redis_exporter #{options}",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
@@ -113,6 +121,7 @@ action :install do
       mode '0644'
       variables(
         env: environment_list,
+        user: new_resource.user,
         cmd: "/usr/local/sbin/redis_exporter #{options}",
         service_description: 'Prometheus Redis Exporter'
       )
