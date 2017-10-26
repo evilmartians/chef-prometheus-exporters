@@ -1,5 +1,15 @@
 # prometheus_exporters
 
+## 0.4.2
+- [Viktor Radnai] - Bugfix for starting redis process as the specified user
+
+## 0.4.1
+
+- [Viktor Radnai] - Split log directories to fix logfile permission issue when exporters aren't running as root
+- [Viktor Radnai] - Bugfixes for postgres_exporter
+- [Viktor Radnai] - Improvements for tests
+- [Viktor Radnai] - Added checksum for SNMP exporter
+
 ## 0.4.0
 
 - [Viktor Radnai] - Added tests

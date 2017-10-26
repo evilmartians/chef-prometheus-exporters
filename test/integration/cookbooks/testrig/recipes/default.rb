@@ -34,6 +34,8 @@ postgres_exporter 'main' do
   action [:install, :enable, :start]
 end
 
+# Second PostgreSQL exporter instance with the settings needed to
+# monitor the PostgreSQL server bundled with Chef server
 postgres_exporter 'chef' do
   web_listen_address '0.0.0.0:9188'
   data_source_name 'user=opscode-pgsql host=/tmp/ sslmode=disable'
