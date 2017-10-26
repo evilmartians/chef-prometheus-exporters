@@ -46,7 +46,6 @@ describe processes('postgres_exporter') do
 end
 
 # SNMP exporter
-
 describe service('postgres_exporter_chef') do
   it { should be_enabled }
 end

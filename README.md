@@ -1,19 +1,16 @@
 # prometheus_exporters
 
-Pretty straightforward cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
+Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
-I've decided I want them to be available via chef custom resources (who knows where I would like to invoke them from) and all in one place.
+Currently supported exporters are node, postgres, redis and snmp. More may be added in the future. Please contact the author if you have specific requests.
 
-Yes, It's a bit messy, but works fine.
+All of the exporters are available as chef custom resources that can be instantiated from other cookbooks.
 
-Help us to clean up a bit if you have some spare time.
-
-P.S. It's an early release so do not expect much for at least a few weeks. :)
 
 # Supports
 
-Ubuntu 14 & 16
-CentOS 7 (probably any RHEL 7+ based)
+Ubuntu 14 & 16 (and probably other Debian based distributions)
+CentOS 6 and 7 (and probably other RHEL based distributions)
 
 # Resources
 
@@ -53,6 +50,9 @@ or just set
 and add `recipe['prometheus_exporters::node]` to your run_list.
 
 ## postgres_exporter
+
+The postgres_exporter resource supports running multiple copies of PostgreSQL exporter the same system. This is useful if you have multiple copies of PostgreSQL running on the same system
+(eg. different versions) or you are connecting to multiple remote PostgreSQL servers across the network.
 
 * `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
 * `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
