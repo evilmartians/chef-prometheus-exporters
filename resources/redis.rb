@@ -82,6 +82,7 @@ action :install do
       mode '0755'
       variables(
         name: 'redis_exporter',
+        user: new_resource.user,
         cmd: "/usr/local/sbin/redis_exporter #{options}",
         service_description: 'Prometheus Redis Exporter'
       )
