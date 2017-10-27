@@ -1,0 +1,85 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          <%= @name %>
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: <%= @service_description %>
+### END INIT INFO
+
+DESC="<%= @service_description %>"
+SCRIPT="<%= @cmd %>"
+NAME="<%= @name %>"
+PIDFILE="/var/run/prometheus/<%= @name %>.pid"
+LOGFILE="/var/log/prometheus/<%= @name %>/<%= @name %>.log"
+
+<% if @user -%>
+USER=<%= @user %>
+<% else -%>
+USER=root
+<% end -%>
+<% if @env && @env.kind_of?(Hash) -%>
+  <% @env.each do |k, v| -%>
+    export <%= k %>=<%= v %>
+  <% end -%>
+<% end -%>
+
+get_pid() {
+    cat "$PIDFILE"
+}
+
+is_running() {
+    [ -f "$PIDFILE" ] && ps -p `get_pid` > /dev/null 2>&1
+}
+
+start() {
+  if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
+    echo 'Service already running' >&2
+    return 0
+  fi
+  echo 'Starting service…' >&2
+  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
+  su -c "$CMD" $USER > "$PIDFILE"
+  echo 'Service started' >&2
+}
+
+stop() {
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
+    echo 'Service not running' >&2
+    return 0
+  fi
+  echo 'Stopping service…' >&2
+  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
+  echo 'Service stopped' >&2
+}
+
+status() {
+  if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
+    echo 'Running' >&2
+    return 0
+  else
+    echo 'Stopped' >&2
+    return 0
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    if is_running; then
+      echo "Running"
+    else
+      echo "Stopped"
+      exit 1
+    fi
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status}"
+esac
