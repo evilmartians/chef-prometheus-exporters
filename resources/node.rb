@@ -87,6 +87,9 @@ property :collector_filesystem_ignored_mount_points, String
 property :custom_options, String
 
 action :install do
+  # Set property that can be queried with Chef search
+  node.default['prometheus_exporters']['node']['enabled'] = true
+
   options = "--web.listen-address=#{new_resource.web_listen_address}"
   options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
   options += " --log.level=#{new_resource.log_level}"
