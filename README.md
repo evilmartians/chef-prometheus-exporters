@@ -128,6 +128,25 @@ snmp_exporter 'main' do
 end
 ```
 
+## wmi_exporter
+
+Depends on the Chocolatey package manager.
+
+* `version`, String, default: '0.2.7'
+* `enabled_collectors`, String, default: 'cpu,cs,logical_disk,net,os,service,system'
+* `listen_address`, String, default: '0.0.0.0'
+* `listen_port`, String, default: '9182'
+* `metrics_path`, Strin, default: '/metrics'
+
+Use the given defaults or set the attributes...
+
+* `node['prometheus_exporters']['wmi']['version']['listen_interface']`
+* `node['prometheus_exporters']['wmi']['listen_address']`
+* `node['prometheus_exporters']['wmi']['listen_port']`
+* `node['prometheus_exporters']['wmi']['metrics_path']`
+
+and add `recipe['prometheus_exporters::wmi]` to your run_list.
+
 # Known Issues
 
 * The snmp_exporter requires a configuration file that is usually created by a config generator. Currently this functionality must be provided by a wrapper cookbook.
