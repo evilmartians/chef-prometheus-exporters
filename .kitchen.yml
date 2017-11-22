@@ -1,0 +1,40 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-14.04
+  - name: ubuntu-16.04
+  - name: centos-7.3
+  - name: centos-6.9
+  - name: ubuntu-14.04-chef-12
+    driver:
+      box: bento/ubuntu-14.04
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: ubuntu-16.04-chef-12
+    driver:
+      box: bento/ubuntu-16.04
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: centos-7.3-chef-12
+    driver:
+      box: bento/centos-7.3
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: centos-6.9-chef-12
+    driver:
+      box: bento/centos-6.9
+    provisioner:
+      require_chef_omnibus: 12.21.14
+
+suites:
+  - name: default
+    run_list:
+      - recipe[testrig]

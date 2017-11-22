@@ -12,12 +12,14 @@ resource_name :snmp_exporter
 property :web_listen_address, String, default: ':9116'
 property :log_level, String, default: 'info'
 property :log_format, String, default: 'logger:stdout'
+property :config_file, String, default: '/etc/snmp_exporter/snmp.yaml'
 property :custom_options, String
 
 action :install do
-  options = "-web.listen-address #{new_resource.web_listen_address}"
-  options += " -log.level #{new_resource.log_level}"
-  options += " -log.format #{new_resource.log_format}"
+  options = "--web.listen-address=#{new_resource.web_listen_address}"
+  options += " --log.level=#{new_resource.log_level}"
+  options += " --log.format=#{new_resource.log_format}"
+  options += " --config.file=#{new_resource.config_file}"
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   remote_file 'snmp_exporter' do

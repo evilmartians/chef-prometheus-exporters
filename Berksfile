@@ -3,4 +3,7 @@
 source 'https://supermarket.getchef.com'
 
 metadata
-cookbook 'testrig', path: './test/integration/cookbooks/testrig', group: :integration
+
+group :integration do
+  cookbook 'testrig', path: './test/cookbooks/testrig', group: :integration
+end

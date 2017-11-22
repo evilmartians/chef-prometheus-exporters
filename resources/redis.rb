@@ -45,7 +45,7 @@ action :install do
   bash 'untar redis_exporter' do
     code "tar -xzf #{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz -C /usr/local/sbin/"
     action :nothing
-    subscribes :run, 'remote_file[redis_exporter]'
+    subscribes :run, 'remote_file[redis_exporter]', :immediately
   end
 
   service 'redis_exporter' do

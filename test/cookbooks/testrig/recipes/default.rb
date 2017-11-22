@@ -2,10 +2,12 @@ user 'prometheus' do
   comment 'Prometheus user'
   system true
 end
+
 user 'postgres' do
   comment 'Mock PostgreSQL user'
   system true
 end
+
 user 'opscode-pgsql' do
   comment 'Mock Chef PostgreSQL user'
   system true
@@ -26,7 +28,8 @@ redis_exporter 'main' do
 end
 
 snmp_exporter 'main' do
-  action [:install, :enable] # Will not start without a valid snmp.yml config file
+  config_file "/opt/snmp_exporter-#{node['prometheus_exporters']['snmp']['version']}.linux-amd64/snmp.yml"
+  action [:install, :enable, :start]
 end
 
 postgres_exporter 'main' do

@@ -1,7 +1,7 @@
 # Node exporter
 describe port(9100) do
   it { should be_listening }
-  its('processes') { should cmp 'node_exporter' }
+  its('processes') { should cmp(/^node_expo/) }
 end
 
 describe service('node_exporter') do
@@ -46,6 +46,12 @@ describe processes('postgres_exporter') do
 end
 
 # SNMP exporter
-describe service('postgres_exporter_chef') do
+
+describe port(9116) do
+  it { should be_listening }
+  its('processes') { should cmp(/^snmp_expo/) }
+end
+describe service('snmp_exporter') do
   it { should be_enabled }
+  it { should be_running }
 end
