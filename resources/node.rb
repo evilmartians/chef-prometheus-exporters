@@ -151,6 +151,7 @@ action :install do
       restart 'on-failure'
       restart_sec '30s'
     end
+    verify false
     notifies :restart, 'service[node_exporter]'
     only_if { node['init_package'] == 'systemd' }
   end
