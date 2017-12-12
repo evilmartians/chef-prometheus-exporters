@@ -107,28 +107,28 @@ action :install do
     to "/opt/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64/node_exporter"
   end
 
-  options = "--web.listen-address=#{web_listen_address}"
-  options += " --web.telemetry-path=#{web_telemetry_path}"
-  options += " --log.level=#{log_level}"
-  options += " --log.format=#{log_format}"
-  options += " --collector.megacli.command=#{collector_megacli_command}" if collector_megacli_command
-  options += " --collector.ntp.server=#{collector_ntp_server}" if collector_ntp_server
-  options += " --collector.ntp.protocol-version=#{collector_ntp_protocol_version}" if collector_ntp_protocol_version
-  options += ' --collector.ntp.server-is-local' if collector_ntp_server_is_local
-  options += " --collector.ntp.ip-ttl=#{collector_ntp_ip_ttl}" if collector_ntp_ip_ttl
-  options += " --collector.ntp.max-distance=#{collector_ntp_max_distance}" if collector_ntp_max_distance
-  options += " --collector.ntp.local-offset-tolerance=#{collector_ntp_local_offset_tolerance}" if collector_ntp_local_offset_tolerance
-  options += " --path.procfs=#{path_procfs}" if path_procfs
-  options += " --path.sysfs=#{path_sysfs}" if path_sysfs
-  options += " --collector.textfile.directory=#{collector_textfile_directory}" if collector_textfile_directory
-  options += " --collector.netdev.ignored-devices='#{collector_netdev_ignored_devices}'" if collector_netdev_ignored_devices
-  options += " --collector.diskstats.ignored-devices='#{collector_diskstats_ignored_devices}'" if collector_diskstats_ignored_devices
-  options += " --collector.filesystem.ignored-fs-types='#{collector_filesystem_ignored_fs_types}'" if collector_filesystem_ignored_fs_types
-  options += " --collector.filesystem.ignored-mount-points='#{collector_filesystem_ignored_mount_points}'" if collector_filesystem_ignored_mount_points
-  options += " #{custom_options}" if custom_options
+  options = "--web.listen-address=#{new_resource.web_listen_address}"
+  options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
+  options += " --log.level=#{new_resource.log_level}"
+  options += " --log.format=#{new_resource.log_format}"
+  options += " --collector.megacli.command=#{new_resource.collector_megacli_command}" if new_resource.collector_megacli_command
+  options += " --collector.ntp.server=#{new_resource.collector_ntp_server}" if new_resource.collector_ntp_server
+  options += " --collector.ntp.protocol-version=#{new_resource.collector_ntp_protocol_version}" if new_resource.collector_ntp_protocol_version
+  options += ' --collector.ntp.server-is-local' if new_resource.collector_ntp_server_is_local
+  options += " --collector.ntp.ip-ttl=#{collector_ntp_ip_ttl}" if new_resource.collector_ntp_ip_ttl
+  options += " --collector.ntp.max-distance=#{new_resource.collector_ntp_max_distance}" if new_resource.collector_ntp_max_distance
+  options += " --collector.ntp.local-offset-tolerance=#{new_resource.collector_ntp_local_offset_tolerance}" if new_resource.collector_ntp_local_offset_tolerance
+  options += " --path.procfs=#{new_resource.path_procfs}" if new_resource.path_procfs
+  options += " --path.sysfs=#{new_resource.path_sysfs}" if new_resource.path_sysfs
+  options += " --collector.textfile.directory=#{new_resource.collector_textfile_directory}" if new_resource.collector_textfile_directory
+  options += " --collector.netdev.ignored-devices='#{new_resource.collector_netdev_ignored_devices}'" if new_resource.collector_netdev_ignored_devices
+  options += " --collector.diskstats.ignored-devices='#{new_resource.collector_diskstats_ignored_devices}'" if new_resource.collector_diskstats_ignored_devices
+  options += " --collector.filesystem.ignored-fs-types='#{new_resource.collector_filesystem_ignored_fs_types}'" if new_resource.collector_filesystem_ignored_fs_types
+  options += " --collector.filesystem.ignored-mount-points='#{new_resource.collector_filesystem_ignored_mount_points}'" if new_resource.collector_filesystem_ignored_mount_points
+  options += " #{new_resource.custom_options}" if new_resource.custom_options
 
-  options += collectors_enabled.map { |c| " --collector.#{c}" }.join
-  options += collectors_disabled.map { |c| " --no-collector.#{c}" }.join
+  options += new_resource.collectors_enabled.map { |c| " --collector.#{c}" }.join
+  options += new_resource.collectors_disabled.map { |c| " --no-collector.#{c}" }.join
 
   service 'node_exporter' do
     action :nothing
@@ -151,6 +151,7 @@ action :install do
       restart 'on-failure'
       restart_sec '30s'
     end
+    verify false
     notifies :restart, 'service[node_exporter]'
     only_if { node['init_package'] == 'systemd' }
   end
@@ -172,13 +173,13 @@ action :install do
   end
 
   directory 'collector_textfile_directory' do
-    path collector_textfile_directory
+    path new_resource.collector_textfile_directory
     owner 'root'
     group 'root'
     mode '0755'
     action :create
     recursive true
-    only_if { collector_textfile_directory && collector_textfile_directory != '' }
+    only_if { new_resource.collector_textfile_directory && new_resource.collector_textfile_directory != '' }
   end
 end
 
