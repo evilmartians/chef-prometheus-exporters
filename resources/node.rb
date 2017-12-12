@@ -160,7 +160,7 @@ action :install do
       variables(
         name: 'node_exporter',
         cmd: "/usr/local/sbin/node_exporter #{options}",
-        service_description: 'Prometheus Node Exporter'
+        service_description: 'Prometheus Node Exporter',
       )
       notifies :restart, 'service[node_exporter]'
     end
@@ -182,7 +182,7 @@ action :install do
         },
         'Install' => {
           'WantedBy' => 'multi-user.target',
-        }
+        },
       )
       notifies :restart, 'service[node_exporter]'
       action :create
@@ -197,7 +197,7 @@ action :install do
       mode '0644'
       variables(
         cmd: "/usr/local/sbin/node_exporter #{options}",
-        service_description: 'Prometheus Node Exporter'
+        service_description: 'Prometheus Node Exporter',
       )
       notifies :restart, 'service[node_exporter]'
     end
@@ -213,7 +213,10 @@ action :install do
     mode '0755'
     action :create
     recursive true
-    only_if { new_resource.collector_textfile_directory && new_resource.collector_textfile_directory != '' }
+    only_if do
+      new_resource.collector_textfile_directory and
+        new_resource.collector_textfile_directory != ''
+    end
   end
 end
 

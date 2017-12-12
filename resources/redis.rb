@@ -84,7 +84,7 @@ action :install do
         name: 'redis_exporter',
         user: new_resource.user,
         cmd: "/usr/local/sbin/redis_exporter #{options}",
-        service_description: 'Prometheus Redis Exporter'
+        service_description: 'Prometheus Redis Exporter',
       )
       notifies :restart, 'service[redis_exporter]'
     end
@@ -106,7 +106,7 @@ action :install do
         },
         'Install' => {
           'WantedBy' => 'multi-user.target',
-        }
+        },
       )
       notifies :restart, 'service[redis_exporter]'
       action :create
@@ -123,7 +123,7 @@ action :install do
         env: environment_list,
         user: new_resource.user,
         cmd: "/usr/local/sbin/redis_exporter #{options}",
-        service_description: 'Prometheus Redis Exporter'
+        service_description: 'Prometheus Redis Exporter',
       )
       notifies :restart, 'service[redis_exporter]'
     end

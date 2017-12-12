@@ -77,7 +77,7 @@ action :install do
         user: new_resource.user,
         name: service_name,
         cmd: "/usr/local/sbin/postgres_exporter #{options}",
-        service_description: 'Prometheus PostgreSQL Exporter'
+        service_description: 'Prometheus PostgreSQL Exporter',
       )
       notifies :restart, "service[#{service_name}]"
     end
@@ -100,7 +100,7 @@ action :install do
         },
         'Install' => {
           'WantedBy' => 'multi-user.target',
-        }
+        },
       )
       notifies :restart, "service[#{service_name}]"
       action :create
@@ -117,7 +117,7 @@ action :install do
         env: env,
         setuid: new_resource.user,
         cmd: "/usr/local/sbin/postgres_exporter #{options}",
-        service_description: 'Prometheus PostgreSQL Exporter'
+        service_description: 'Prometheus PostgreSQL Exporter',
       )
       notifies :restart, "service[#{service_name}]"
     end

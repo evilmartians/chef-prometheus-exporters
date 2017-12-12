@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.4.6
+
+- [Kirill Kuznetsov] - node_exporter version upgrade: 0.15.2
+- [Kirill Kuznetsov] - Forcing more RuboCop style fixes
+
 ## 0.4.5
 
 - [Kirill Kuznetsov] - Bugfix redis_exporter systemd unit creation: untar should be done before systemd unit creation
