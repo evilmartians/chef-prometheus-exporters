@@ -1,6 +1,17 @@
 os_name = os.name
 os_release = os.release.to_f
 
+# Mysqld exporter
+describe port(9104) do
+  it { should be_listening }
+  its('processes') { should cmp(/^mysqld_expo/) }
+end
+
+describe service('mysqld_exporter_main') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
 # Node exporter
 [9100, 9110].each do |node_exporter_port|
   describe port(node_exporter_port) do

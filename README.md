@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/evilmartians/chef-prometheus-exporters.svg?branch=master)](https://travis-ci.org/evilmartians/chef-prometheus-exporters)
-
 # prometheus_exporters
 
 Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
-Currently supported exporters are node, postgres, redis and snmp. More may be added in the future. Please contact the author if you have specific requests.
+Currently supported exporters are node, postgres, redis, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
 
 All of the exporters are available as chef custom resources that can be instantiated from other cookbooks.
 
@@ -20,6 +18,8 @@ All of the exporters are available as chef custom resources that can be instanti
 * CentOS 7
 
 And probably other RHEL or Debian based distributions.
+
+* Windows Server 2012 & 2016 (wmi_exporter recipe only)
 
 Tests are made using last available Chef 14 along with latest Chef 13.
 
@@ -90,6 +90,46 @@ postgres_exporter '9.5_main' do
 end
 ```
 
+## mysqld_exporter
+
+The mysqld_exporter resource supports running multiple copies of the MySQL exporter on the same system.
+
+* `instance_name` name of MySQL exporter instance. (**name attribute**)
+* `data_source_name` MySQL connection string
+* `config_my_cnf` Path to .my.cnf file to read MySQL credentials from. (default: ~/.my.cnf)
+* `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
+* `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9104")
+* `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
+* `user` System user to run exporter as. (default "mysql")
+* `collector_flags` Specify which collector flags you wish to use.
+
+(default)
+```
+'\
+-collect.global_status \
+-collect.engine_innodb_status \
+-collect.global_variables \
+-collect.info_schema.clientstats \
+-collect.info_schema.innodb_metrics \
+-collect.info_schema.processlist \
+-collect.info_schema.tables.databases \
+-collect.info_schema.tablestats \
+-collect.slave_status \
+-collect.binlog_size \
+-collect.perf_schema.tableiowaits \
+-collect.perf_schema.indexiowaits \
+-collect.perf_schema.tablelocks'
+```
+
+```ruby
+mysqld_exporter 'main' do
+  data_source_name '/'
+  config_my_cnf '~/.my/cnf'
+  user 'mysql'
+end
+```
+
 ## redis_exporter
 
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9121")
@@ -130,7 +170,7 @@ end
 
 ## wmi_exporter
 
-Depends on the Chocolatey package manager.
+Expects the Chocolatey package manager to already be installed.  This is up to individuals to provide by including the [Chocolatey cookbook](https://github.com/chocolatey/chocolatey-cookbook) in their own wrapper cookbooks.
 
 * `version`, String, default: '0.2.7'
 * `enabled_collectors`, String, default: 'cpu,cs,logical_disk,net,os,service,system'
@@ -146,6 +186,15 @@ Use the given defaults or set the attributes...
 * `node['prometheus_exporters']['wmi']['metrics_path']`
 
 and add `recipe['prometheus_exporters::wmi]` to your run_list.
+
+# Discovery
+
+Each exporter will set an attribute when it's enabled, in the form of `node['prometheus_exporters'][exporter_name]['enabled']`. This makes it possible to search for
+exporters within your environment using knife search or from within other cookbooks using a query such as:
+
+```knife search node 'prometheus_exporters_node_enabled:true'```
+
+This query will return all nodes with configured node exporters which can be used for automatically configuring Prometheus servers.
 
 # Known Issues
 
