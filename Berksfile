@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
-#^syntax detection
 
 source 'https://supermarket.getchef.com'
 
-cookbook 'systemd', github: 'nathwill/chef-systemd'
+metadata
+
+group :integration do
+  cookbook 'testrig', path: './test/cookbooks/testrig', group: :integration
+end
