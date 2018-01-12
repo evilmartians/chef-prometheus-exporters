@@ -21,23 +21,35 @@ property :user, String, default: 'postgres'
 action :install do
   service_name = "postgres_exporter_#{instance_name}"
 
-  options = "-web.listen-address '#{web_listen_address}'"
-  options += " -web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
-  options += " -log.level #{log_level}" if log_level
-  options += " -log.format '#{log_format}'"
-  options += " -extend.query-path #{extend_query_path}" if extend_query_path
+  options = "--web.listen-address '#{web_listen_address}'"
+  options += " --web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
+  options += " --log.level #{log_level}" if log_level
+  options += " --log.format '#{log_format}'"
+  options += " --extend.query-path #{extend_query_path}" if extend_query_path
 
   env = {
     'DATA_SOURCE_NAME' => data_source_name,
   }
 
+  # Download binary
   remote_file 'postgres_exporter' do
-    path '/usr/local/sbin/postgres_exporter'
+    path "#{Chef::Config[:file_cache_path]}/postgres_exporter.tar.gz"
     owner 'root'
     group 'root'
-    mode '0755'
+    mode '0644'
     source node['prometheus_exporters']['postgres']['url']
     checksum node['prometheus_exporters']['postgres']['checksum']
+  end
+
+  bash 'untar postgres_exporter' do
+    code "tar -xzf #{Chef::Config[:file_cache_path]}/postgres_exporter.tar.gz -C /opt"
+    action :nothing
+    subscribes :run, 'remote_file[postgres_exporter]', :immediately
+    notifies :restart, "service[#{service_name}]", :delayed
+  end
+
+  link '/usr/local/sbin/postgres_exporter' do
+    to "/opt/postgres_exporter_v#{node['prometheus_exporters']['postgres']['version']}_linux-amd64/postgres_exporter"
   end
 
   service service_name do

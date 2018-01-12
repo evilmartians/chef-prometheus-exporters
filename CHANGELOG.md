@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.4.7
+
+- [Kirill Kuznetsov] - postgres_exporter version upgrade: 0.4.1
+- [Kirill Kuznetsov] - redis_exporter version upgrade: 0.14
+
 ## 0.4.6
 
 - [Kirill Kuznetsov] - node_exporter version upgrade: 0.15.2
