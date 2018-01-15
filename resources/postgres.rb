@@ -46,10 +46,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w(
+    %w[
       /var/run/prometheus
       /var/log/prometheus
-    ).each do |dir|
+    ].each do |dir|
       directory dir do
         owner 'root'
         group 'root'

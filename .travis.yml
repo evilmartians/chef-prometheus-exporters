@@ -1,0 +1,23 @@
+language: ruby
+cache: bundler
+sudo: false
+rvm:
+- 2.4.3
+bundler_args: "--without kitchen_vagrant"
+before_install:
+- openssl aes-256-cbc -K $encrypted_9678390814ba_key -iv $encrypted_9678390814ba_iv
+  -in .travis/secrets.tar.gz.enc -out .travis/secrets.tar.gz -d
+- tar xzf .travis/secrets.tar.gz -C .travis
+- mv .travis/id_rsa ~/.ssh/id_rsa
+script:
+- bundle exec rubocop
+- bundle exec foodcritic -f any .
+- bundle exec rspec
+- eval "$(ssh-agent -s)"
+- ssh-add ~/.ssh/id_rsa
+- bundle exec kitchen test -c 10 -d always
+env:
+  global:
+  - KITCHEN_YAML=.kitchen.cloud.yml
+  - DIGITALOCEAN_SSH_KEY_IDS=03:c8:3f:fb:ed:7a:64:2b:b7:9a:13:f6:3d:3f:58:63
+  - secure: M8KVGOe0APX4ofHXz5Uu7ulba6eWwGRL7v7BUgbgJTEPRfOWuGuB7TTy550FT4UVaFr37oxVVrpg7MOANROHdlJ2ebtqYrxnTgwUM+xjnHpAjsCcrFvYnHM8ip2+UFP37WejMMRYRb6grml+dnKj55M5YuJ3CvLOZMTz61ZBNQkjzVK6N0H2/GLX6XeZrDOGcGJzCP/m1Cco14CCAL+pJn3h0jIEHlumWLkJ5RpzkIqagF+nezZv7EXilnfl7jNUNk1oET30G6a6UX5KWGCxd+PfhP2JqxKmhWc2sbxPhXDsgIbY0sit1ati+uV2ei1HOJNMny39C6s2/IpQi7HgP9JfZog7UzXGk2Xr294GRPaOhzEJiiy8a1GUEesJ3wPyj2ceulCcCggUu9U0yyHpF7PRsvYVgi4jyRjJ0FGlNDIjgQh+RpQ7meLWO979e0JgMC+k6sExEDk3YSydYVsxkkiBA+R0QlLDRkAl3mrE3bWEmImbGX/zVjqcir2DBccrOooosy3s0N8u7zzN8qQmX13U2mKnaT3J7ons8tztZxnhXsjdmhJpvlaB1vXuJtKZQEAxbMOzl/347QJ3+WN81z2Z8Lz9SRPHQUz4c32MjZTPrEUdOXclChHagr5ww4XAtoCUmYf4eeo6Tg2wjdvdb3510J9YfVmkaOSd0YwRD9A=

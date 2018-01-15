@@ -1,0 +1,44 @@
+---
+driver:
+  name: digitalocean
+
+driver_config:
+  private_networking: false
+  region: nyc3
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-14-04-x64
+  - name: ubuntu-16-04-x64
+  - name: centos-6-x64
+  - name: centos-7-x64
+  - name: ubuntu-14-04-chef-12
+    driver:
+      image: ubuntu-14-04-x64
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: ubuntu-16-04-chef-12
+    driver:
+      image: ubuntu-16-04-x64
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: centos-7-chef-12
+    driver:
+      image: centos-7-x64
+    provisioner:
+      require_chef_omnibus: 12.21.14
+  - name: centos-6-chef-12
+    driver:
+      image: centos-6-x64
+    provisioner:
+      require_chef_omnibus: 12.21.14
+
+suites:
+  - name: default
+    run_list:
+      - recipe[testrig]

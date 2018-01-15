@@ -12,7 +12,7 @@ listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_i
 snmp_exporter 'main' do
   web_listen_address "#{listen_ip}:9116"
 
-  action [:install, :enable, :start]
+  action %i[install enable start]
 
   not_if { node['prometheus_exporters']['disable'] }
 end

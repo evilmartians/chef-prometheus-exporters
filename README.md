@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/evilmartians/chef-prometheus-exporters.svg?branch=master)](https://travis-ci.org/evilmartians/chef-prometheus-exporters)
+
 # prometheus_exporters
 
 Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.

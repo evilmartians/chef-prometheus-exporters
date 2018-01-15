@@ -8,7 +8,7 @@ default['prometheus_exporters']['node']['ignored_net_devs'] = '^(weave|veth.*|do
 
 default['prometheus_exporters']['node']['ignored_mount_points'] = '^/(sys|proc|dev|host|etc|var/lib/docker|run|var/lib/lxcfs|var/lib/kubelet)($|/)'
 
-default['prometheus_exporters']['node']['collectors_enabled'] = %w(
+default['prometheus_exporters']['node']['collectors_enabled'] = %w[
   diskstats
   filefd
   filesystem
@@ -25,6 +25,6 @@ default['prometheus_exporters']['node']['collectors_enabled'] = %w(
   time
   uname
   vmstat
-)
+]
 
-default['prometheus_exporters']['node']['collectors_disabled'] = %w()
+default['prometheus_exporters']['node']['collectors_disabled'] = %w[]

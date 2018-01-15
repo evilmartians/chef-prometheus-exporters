@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-COLLECTOR_LIST = %w(
+COLLECTOR_LIST = %w[
   arp
   bcache
   bonding
@@ -52,7 +52,7 @@ COLLECTOR_LIST = %w(
   xfs
   zfs
   timex
-).freeze
+].freeze
 
 resource_name :node_exporter
 
@@ -138,10 +138,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w(
+    %w[
       /var/run/prometheus
       /var/log/prometheus/node_exporter
-    ).each do |dir|
+    ].each do |dir|
       directory dir do
         owner 'root'
         group 'root'

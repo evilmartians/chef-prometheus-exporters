@@ -22,6 +22,6 @@ unless node['prometheus_exporters']['disable']
     collector_netdev_ignored_devices node['prometheus_exporters']['node']['ignored_net_devs']
     collector_filesystem_ignored_mount_points node['prometheus_exporters']['node']['ignored_mount_points']
 
-    action [:install, :enable, :start]
+    action %i[install enable start]
   end
 end
