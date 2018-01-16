@@ -8,7 +8,7 @@ UnusedBlockArgument:
   Enabled: false
 LineLength:
   Enabled: false
-Style/FileName:
+Naming/FileName:
   Enabled: false
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
