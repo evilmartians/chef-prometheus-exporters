@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.4.8
+
+- [Kirill Kuznetsov] - postgres_exporter update: 0.4.2
+- [Kirill Kuznetsov] - redis_exporter update: 0.15.0
+
 ## 0.4.7
 
 - [Kirill Kuznetsov] - Travis CI integration for automated tests.

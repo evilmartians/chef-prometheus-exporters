@@ -4,7 +4,7 @@ maintainer_email 'surrender@evilmartians.com'
 license          'Apache-2.0'
 description      'Installs / configures Prometheus exporters'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.4.7'
+version          '0.4.8'
 
 chef_version '>= 12.14', '< 14.0'
 
