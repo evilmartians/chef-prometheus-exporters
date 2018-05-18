@@ -12,5 +12,7 @@ Naming/FileName:
   Enabled: false
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

@@ -1,5 +1,17 @@
 # prometheus_exporters
 
+## 0.6.0
+
+- [Kirill Kuznetsov] - Chef 14 support was tested
+- [Kirill Kuznetsov] - Ubuntu 18.04 support was tested
+- [Kirill Kuznetsov] - Some Ubuntu 14 test were dropped because Chef 14 breakes the support of service creation on Ubuntu 14
+- [Kirill Kuznetsov] - node_exporter version upgrade: 0.16.0
+- [Kirill Kuznetsov] - postgres_exporter version upgrade: 0.4.6
+- [Kirill Kuznetsov] - redis_exporter version upgrade: 0.18.0
+- [Kirill Kuznetsov] - snmp_exporter version upgrade: 0.10.0
+- [Kirill Kuznetsov] - New docker-based Kitchen & Travis CI configurations
+- [Kirill Kuznetsov] - Conventional test configuration for Test Kitchen was updated
+
 ## 0.4.8
 
 - [Kirill Kuznetsov] - postgres_exporter update: 0.4.2

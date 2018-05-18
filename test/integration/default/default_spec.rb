@@ -1,3 +1,6 @@
+os_name = os.name
+os_release = os.release.to_f
+
 # Node exporter
 describe port(9100) do
   it { should be_listening }
@@ -5,7 +8,8 @@ describe port(9100) do
 end
 
 describe service('node_exporter') do
-  it { should be_enabled }
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
 
@@ -16,7 +20,8 @@ describe port(9121) do
 end
 
 describe service('redis_exporter') do
-  it { should be_enabled }
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
 
@@ -27,7 +32,8 @@ describe port(9187) do
 end
 
 describe service('postgres_exporter_main') do
-  it { should be_enabled }
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
 
@@ -37,7 +43,8 @@ describe port(9188) do
 end
 
 describe service('postgres_exporter_chef') do
-  it { should be_enabled }
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
 
@@ -51,7 +58,9 @@ describe port(9116) do
   it { should be_listening }
   its('processes') { should cmp(/^snmp_expo/) }
 end
+
 describe service('snmp_exporter') do
-  it { should be_enabled }
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end

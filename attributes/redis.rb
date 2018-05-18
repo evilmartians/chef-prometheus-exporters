@@ -1,2 +1,2 @@
-default['prometheus_exporters']['redis']['url'] = 'https://github.com/oliver006/redis_exporter/releases/download/v0.15.0/redis_exporter-v0.15.0.linux-amd64.tar.gz'
-default['prometheus_exporters']['redis']['checksum'] = '170458f8c9e1588861b1584451cfc636b1339b4cf495f82396f03e474d6e626f'
+default['prometheus_exporters']['redis']['url'] = 'https://github.com/oliver006/redis_exporter/releases/download/v0.18.0/redis_exporter-v0.18.0.linux-amd64.tar.gz'
+default['prometheus_exporters']['redis']['checksum'] = '394aea00be7dc84682edc6d06128db68db43ab79ca1f5feacd8c42ed79d83246'

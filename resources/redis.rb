@@ -22,16 +22,16 @@ property :namespace, String, default: 'redis'
 property :user, String, default: 'root'
 
 action :install do
-  options = "-web.listen-address #{web_listen_address}"
-  options += " -web.telemetry-path #{web_telemetry_path}"
-  options += " -log-format #{log_format}"
-  options += ' -debug' if debug
-  options += " -check-keys #{check_keys}" if check_keys
-  options += " -redis.addr #{redis_addr}" if redis_addr
-  options += " -redis.password #{redis_password}" if redis_password
-  options += " -redis.alias #{redis_alias}" if redis_alias
-  options += " -redis.file #{redis_file}" if redis_file
-  options += " -namespace #{namespace}"
+  options = "-web.listen-address #{new_resource.web_listen_address}"
+  options += " -web.telemetry-path #{new_resource.web_telemetry_path}"
+  options += " -log-format #{new_resource.log_format}"
+  options += ' -debug' if new_resource.debug
+  options += " -check-keys #{new_resource.check_keys}" if new_resource.check_keys
+  options += " -redis.addr #{new_resource.redis_addr}" if new_resource.redis_addr
+  options += " -redis.password #{new_resource.redis_password}" if new_resource.redis_password
+  options += " -redis.alias #{new_resource.redis_alias}" if new_resource.redis_alias
+  options += " -redis.file #{new_resource.redis_file}" if new_resource.redis_file
+  options += " -namespace #{new_resource.namespace}"
 
   remote_file 'redis_exporter' do
     path "#{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz"

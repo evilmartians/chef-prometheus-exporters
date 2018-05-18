@@ -11,6 +11,7 @@ resource_name :postgres_exporter
 
 property :instance_name, String, name_property: true
 property :data_source_name, String, required: true
+property :disable_default_metrics, [TrueClass, FalseClass], default: false
 property :extend_query_path, String
 property :log_format, String, default: 'logger:stdout?json=false'
 property :log_level, String
@@ -19,16 +20,17 @@ property :web_telemetry_path, String
 property :user, String, default: 'postgres'
 
 action :install do
-  service_name = "postgres_exporter_#{instance_name}"
+  service_name = "postgres_exporter_#{new_resource.instance_name}"
 
-  options = "--web.listen-address '#{web_listen_address}'"
-  options += " --web.telemetry-path '#{web_telemetry_path}'" if web_telemetry_path
-  options += " --log.level #{log_level}" if log_level
-  options += " --log.format '#{log_format}'"
-  options += " --extend.query-path #{extend_query_path}" if extend_query_path
+  options = "--web.listen-address '#{new_resource.web_listen_address}'"
+  options += " --web.telemetry-path '#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
+  options += " --log.level #{new_resource.log_level}" if new_resource.log_level
+  options += " --log.format '#{new_resource.log_format}'"
+  options += " --extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
+  options += ' --disable-default-metrics' if new_resource.disable_default_metrics
 
   env = {
-    'DATA_SOURCE_NAME' => data_source_name,
+    'DATA_SOURCE_NAME' => new_resource.data_source_name,
   }
 
   # Download binary
@@ -142,25 +144,25 @@ end
 
 action :enable do
   action_install
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :enable
   end
 end
 
 action :start do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :start
   end
 end
 
 action :disable do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :disable
   end
 end
 
 action :stop do
-  service "postgres_exporter_#{instance_name}" do
+  service "postgres_exporter_#{new_resource.instance_name}" do
     action :stop
   end
 end
