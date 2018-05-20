@@ -33,6 +33,8 @@ action :install do
   options += " -redis.file #{new_resource.redis_file}" if new_resource.redis_file
   options += " -namespace #{new_resource.namespace}"
 
+  service_name = "redis_exporter_#{new_resource.name}"
+
   remote_file 'redis_exporter' do
     path "#{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz"
     owner 'root'
@@ -48,7 +50,7 @@ action :install do
     subscribes :run, 'remote_file[redis_exporter]', :immediately
   end
 
-  service 'redis_exporter' do
+  service service_name do
     action :nothing
   end
 
@@ -67,30 +69,30 @@ action :install do
       end
     end
 
-    directory '/var/log/prometheus/redis_exporter' do
+    directory "/var/log/prometheus/#{service_name}" do
       owner new_resource.user
       group 'root'
       mode '0755'
       action :create
     end
 
-    template '/etc/init.d/redis_exporter' do
+    template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
       owner 'root'
       group 'root'
       mode '0755'
       variables(
-        name: 'redis_exporter',
+        name: service_name,
         user: new_resource.user,
         cmd: "/usr/local/sbin/redis_exporter #{options}",
         service_description: 'Prometheus Redis Exporter',
       )
-      notifies :restart, 'service[redis_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   when /systemd/
-    systemd_unit 'redis_exporter.service' do
+    systemd_unit "#{service_name}.service" do
       content(
         'Unit' => {
           'Description' => 'Systemd unit for Prometheus Redis Exporter',
@@ -108,12 +110,12 @@ action :install do
           'WantedBy' => 'multi-user.target',
         },
       )
-      notifies :restart, 'service[redis_exporter]'
+      notifies :restart, "service[#{service_name}]"
       action :create
     end
 
   when /upstart/
-    template '/etc/init/redis_exporter.conf' do
+    template "/etc/init/#{service_name}.conf" do
       cookbook 'prometheus_exporters'
       source 'upstart.conf.erb'
       owner 'root'
@@ -125,7 +127,7 @@ action :install do
         cmd: "/usr/local/sbin/redis_exporter #{options}",
         service_description: 'Prometheus Redis Exporter',
       )
-      notifies :restart, 'service[redis_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   else
@@ -135,26 +137,26 @@ end
 
 action :enable do
   action_install
-  service 'redis_exporter' do
+  service "redis_exporter_#{new_resource.name}" do
     action :enable
   end
 end
 
 action :start do
   action_install
-  service 'redis_exporter' do
+  service "redis_exporter_#{new_resource.name}" do
     action :start
   end
 end
 
 action :disable do
-  service 'redis_exporter' do
+  service "redis_exporter_#{new_resource.name}" do
     action :disable
   end
 end
 
 action :stop do
-  service 'redis_exporter' do
+  service "redis_exporter_#{new_resource.name}" do
     action :stop
   end
 end

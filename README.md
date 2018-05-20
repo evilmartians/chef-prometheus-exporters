@@ -13,12 +13,15 @@ All of the exporters are available as chef custom resources that can be instanti
 
 * Ubuntu 14.04
 * Ubuntu 16.04
+* Ubuntu 18.04
+* Debian 8
+* Debian 9
 * CentOS 6
 * CentOS 7
 
 And probably other RHEL or Debian based distributions.
 
-Tests are made using last available Chef 12 (12.21.14) along with latest Chef 13.
+Tests are made using last available Chef 14 along with latest Chef 13.
 
 # Resources
 

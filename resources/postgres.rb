@@ -20,14 +20,14 @@ property :web_telemetry_path, String
 property :user, String, default: 'postgres'
 
 action :install do
-  service_name = "postgres_exporter_#{new_resource.instance_name}"
-
   options = "--web.listen-address '#{new_resource.web_listen_address}'"
   options += " --web.telemetry-path '#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
   options += " --log.level #{new_resource.log_level}" if new_resource.log_level
   options += " --log.format '#{new_resource.log_format}'"
   options += " --extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
   options += ' --disable-default-metrics' if new_resource.disable_default_metrics
+
+  service_name = "postgres_exporter_#{new_resource.instance_name}"
 
   env = {
     'DATA_SOURCE_NAME' => new_resource.data_source_name,

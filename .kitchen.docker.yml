@@ -86,6 +86,14 @@ suites:
     provisioner:
       product_name: chef
       product_version: 13
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]
   - name: chef-14
     run_list:
       - recipe[testrig]
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]

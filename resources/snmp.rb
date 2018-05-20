@@ -22,6 +22,8 @@ action :install do
   options += " --config.file=#{new_resource.config_file}"
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
+  service_name = "snmp_exporter_#{new_resource.name}"
+
   remote_file 'snmp_exporter' do
     path "#{Chef::Config[:file_cache_path]}/snmp_exporter.tar.gz"
     owner 'root'
@@ -41,15 +43,15 @@ action :install do
     to "/opt/snmp_exporter-#{node['prometheus_exporters']['snmp']['version']}.linux-amd64/snmp_exporter"
   end
 
-  service 'snmp_exporter' do
+  service service_name do
     action :nothing
   end
 
   case node['init_package']
   when /init/
-    %w[
+    %W[
       /var/run/prometheus
-      /var/log/prometheus/snmp_exporter
+      /var/log/prometheus/#{service_name}
     ].each do |dir|
       directory dir do
         owner 'root'
@@ -60,22 +62,22 @@ action :install do
       end
     end
 
-    template '/etc/init.d/snmp_exporter' do
+    template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
       owner 'root'
       group 'root'
       mode '0755'
       variables(
-        name: 'snmp_exporter',
+        name: service_name,
         cmd: "/usr/local/sbin/snmp_exporter #{options}",
         service_description: 'Prometheus SNMP Exporter',
       )
-      notifies :restart, 'service[snmp_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   when /systemd/
-    systemd_unit 'snmp_exporter.service' do
+    systemd_unit "#{service_name}.service" do
       content(
         'Unit' => {
           'Description' => 'Systemd unit for Prometheus SNMP Exporter',
@@ -93,12 +95,12 @@ action :install do
           'WantedBy' => 'multi-user.target',
         },
       )
-      notifies :restart, 'service[snmp_exporter]'
+      notifies :restart, "service[#{service_name}]"
       action :create
     end
 
   when /upstart/
-    template '/etc/init/snmp_exporter.conf' do
+    template "/etc/init/#{service_name}.conf" do
       cookbook 'prometheus_exporters'
       source 'upstart.conf.erb'
       owner 'root'
@@ -108,7 +110,7 @@ action :install do
         cmd: "/usr/local/sbin/snmp_exporter #{options}",
         service_description: 'Prometheus SNMP Exporter',
       )
-      notifies :restart, 'service[snmp_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   else
@@ -118,25 +120,25 @@ end
 
 action :enable do
   action_install
-  service 'snmp_exporter' do
+  service "snmp_exporter_#{new_resource.name}" do
     action :enable
   end
 end
 
 action :start do
-  service 'snmp_exporter' do
+  service "snmp_exporter_#{new_resource.name}" do
     action :start
   end
 end
 
 action :disable do
-  service 'snmp_exporter' do
+  service "snmp_exporter_#{new_resource.name}" do
     action :disable
   end
 end
 
 action :stop do
-  service 'snmp_exporter' do
+  service "snmp_exporter_#{new_resource.name}" do
     action :stop
   end
 end

@@ -2,15 +2,22 @@ os_name = os.name
 os_release = os.release.to_f
 
 # Node exporter
-describe port(9100) do
-  it { should be_listening }
-  its('processes') { should cmp(/^node_expo/) }
+[9100, 9110].each do |node_exporter_port|
+  describe port(node_exporter_port) do
+    it { should be_listening }
+    its('processes') { should cmp(/^node_expo/) }
+  end
 end
 
-describe service('node_exporter') do
-  # Chef 14 resource service is broken on a first run on Ubuntu 14.
-  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
-  it { should be_running }
+%w[
+  first
+  second
+].each do |node_exporter_name|
+  describe service("node_exporter_#{node_exporter_name}") do
+    # Chef 14 resource service is broken on a first run on Ubuntu 14.
+    it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+    it { should be_running }
+  end
 end
 
 # Redis exporter
@@ -19,7 +26,7 @@ describe port(9121) do
   its('processes') { should cmp(/^redis_expo/) }
 end
 
-describe service('redis_exporter') do
+describe service('redis_exporter_main') do
   # Chef 14 resource service is broken on a first run on Ubuntu 14.
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
@@ -59,7 +66,7 @@ describe port(9116) do
   its('processes') { should cmp(/^snmp_expo/) }
 end
 
-describe service('snmp_exporter') do
+describe service('snmp_exporter_main') do
   # Chef 14 resource service is broken on a first run on Ubuntu 14.
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }

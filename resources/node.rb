@@ -64,12 +64,12 @@ property :collectors_enabled, Array, callbacks: {
   'should be a collector' => lambda do |collectors|
     collectors.all? { |element| COLLECTOR_LIST.include? element }
   end,
-}
+}, default: node['prometheus_exporters']['node']['collectors_enabled'].dup
 property :collectors_disabled, Array, callbacks: {
   'should be a collector' => lambda do |collectors|
     collectors.all? { |element| COLLECTOR_LIST.include? element }
   end,
-}
+}, default: []
 property :collector_megacli_command, String
 property :collector_ntp_server, String
 property :collector_ntp_protocol_version, [String, Integer]
@@ -110,6 +110,8 @@ action :install do
   options += new_resource.collectors_enabled.map { |c| " --collector.#{c}" }.join
   options += new_resource.collectors_disabled.map { |c| " --no-collector.#{c}" }.join unless new_resource.collectors_disabled.empty?
 
+  service_name = "node_exporter_#{new_resource.name}"
+
   # Download binary
   remote_file 'node_exporter' do
     path "#{Chef::Config[:file_cache_path]}/node_exporter.tar.gz"
@@ -118,7 +120,7 @@ action :install do
     mode '0644'
     source node['prometheus_exporters']['node']['url']
     checksum node['prometheus_exporters']['node']['checksum']
-    notifies :restart, 'service[node_exporter]'
+    notifies :restart, "service[#{service_name}]"
   end
 
   bash 'untar node_exporter' do
@@ -132,15 +134,15 @@ action :install do
   end
 
   # Configure to run as a service
-  service 'node_exporter' do
+  service service_name do
     action :nothing
   end
 
   case node['init_package']
   when /init/
-    %w[
+    %W[
       /var/run/prometheus
-      /var/log/prometheus/node_exporter
+      /var/log/prometheus/#{service_name}
     ].each do |dir|
       directory dir do
         owner 'root'
@@ -151,22 +153,22 @@ action :install do
       end
     end
 
-    template '/etc/init.d/node_exporter' do
+    template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
       owner 'root'
       group 'root'
       mode '0755'
       variables(
-        name: 'node_exporter',
+        name: service_name,
         cmd: "/usr/local/sbin/node_exporter #{options}",
         service_description: 'Prometheus Node Exporter',
       )
-      notifies :restart, 'service[node_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   when /systemd/
-    systemd_unit 'node_exporter.service' do
+    systemd_unit "#{service_name}.service" do
       content(
         'Unit' => {
           'Description' => 'Systemd unit for Prometheus Node Exporter',
@@ -184,12 +186,12 @@ action :install do
           'WantedBy' => 'multi-user.target',
         },
       )
-      notifies :restart, 'service[node_exporter]'
+      notifies :restart, "service[#{service_name}]"
       action :create
     end
 
   when /upstart/
-    template '/etc/init/node_exporter.conf' do
+    template "/etc/init/#{service_name}.conf" do
       cookbook 'prometheus_exporters'
       source 'upstart.conf.erb'
       owner 'root'
@@ -199,48 +201,47 @@ action :install do
         cmd: "/usr/local/sbin/node_exporter #{options}",
         service_description: 'Prometheus Node Exporter',
       )
-      notifies :restart, 'service[node_exporter]'
+      notifies :restart, "service[#{service_name}]"
     end
 
   else
     raise "Init system '#{node['init_package']}' is not supported by the 'prometheus_exporters' cookbook"
   end
 
-  directory 'collector_textfile_directory' do
-    path new_resource.collector_textfile_directory
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-    recursive true
-    only_if do
-      new_resource.collector_textfile_directory and
-        new_resource.collector_textfile_directory != ''
+  if new_resource.collector_textfile_directory and
+     new_resource.collector_textfile_directory != ''
+    directory 'collector_textfile_directory' do
+      path new_resource.collector_textfile_directory
+      owner 'root'
+      group 'root'
+      mode '0755'
+      action :create
+      recursive true
     end
   end
 end
 
 action :enable do
   action_install
-  service 'node_exporter' do
+  service "node_exporter_#{new_resource.name}" do
     action :enable
   end
 end
 
 action :start do
-  service 'node_exporter' do
+  service "node_exporter_#{new_resource.name}" do
     action :start
   end
 end
 
 action :disable do
-  service 'node_exporter' do
+  service "node_exporter_#{new_resource.name}" do
     action :disable
   end
 end
 
 action :stop do
-  service 'node_exporter' do
+  service "node_exporter_#{new_resource.name}" do
     action :stop
   end
 end

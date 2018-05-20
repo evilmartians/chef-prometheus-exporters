@@ -1,5 +1,11 @@
 # prometheus_exporters
 
+## 0.6.1
+
+- [Kirill Kuznetsov] - fixed #7
+- [Kirill Kuznetsov] - fixed exporter services naming; it's possible to install more than one copy of an exporter with a different service name
+- [Denis C.] - node_exporter port attribute for `recipe[prometheus_exporters::node]`
+
 ## 0.6.0
 
 - [Kirill Kuznetsov] - Chef 14 support was tested

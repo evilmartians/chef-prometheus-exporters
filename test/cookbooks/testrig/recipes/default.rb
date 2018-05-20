@@ -13,7 +13,12 @@ user 'opscode-pgsql' do
   system true
 end
 
-node_exporter 'main' do
+node_exporter 'first' do
+  action %i[install enable start]
+end
+
+node_exporter 'second' do
+  web_listen_address ':9110'
   collectors_enabled node['prometheus_exporters']['node']['collectors_enabled']
   collectors_disabled node['prometheus_exporters']['node']['collectors_disabled']
   collector_textfile_directory node['prometheus_exporters']['node']['textfile_directory']
