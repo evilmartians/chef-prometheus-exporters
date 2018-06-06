@@ -43,6 +43,6 @@ end
 
 action :uninstall do
   chocolatey_package 'prometheus-wmi-exporter.install' do
-    action :uninstall
+    action :remove
   end
 end
