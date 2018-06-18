@@ -53,9 +53,7 @@ action :install do
   end
 
   link '/usr/local/sbin/postgres_exporter' do
-    to "/opt/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64/node_exporter"
     to "/opt/postgres_exporter_#{node['prometheus_exporters']['postgres']['version']}_linux-amd64/postgres_exporter"
-    notifies :restart, "service[#{service_name}]"
   end
 
   service service_name do
