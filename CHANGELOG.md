@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.8.0
+
+- [Yousef Alam] - Add blackbox_exporter
+- [Viktor Radnai] - Small fix to postgres_exporter binary's symlinkw
+
 ## 0.7.0
 
 - [Kieren Scott] - Add mysqld_exporter
