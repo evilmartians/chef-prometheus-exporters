@@ -14,6 +14,7 @@ action :install do
   options += " --timeout-offset #{new_resource.timeout_offset}"
   options += " --log.level #{new_resource.log_level}"
 
+  prometheus_user = new_resource.respond_to?(:user) ? new_resource.user : 'root'
 
   # Download binary
   remote_file 'blackbox_exporter' do
@@ -56,7 +57,7 @@ action :install do
     end
 
     directory "/var/log/prometheus/#{service_name}" do
-      owner new_resource.user
+      owner prometheus_user
       group 'root'
       mode '0755'
       action :create
@@ -70,7 +71,7 @@ action :install do
       mode '0755'
       variables(
         name: service_name,
-        user: new_resource.user,
+        user: prometheus_user,
         cmd: "/usr/local/sbin/blackbox_exporter #{options}",
         service_description: 'Prometheus Blackbox Exporter',
       )
@@ -107,7 +108,7 @@ action :install do
       mode '0644'
       variables(
         env: environment_list,
-        user: new_resource.user,
+        user: prometheus_user,
         cmd: "/usr/local/sbin/blackbox_exporter #{options}",
         service_description: 'Prometheus Blackbox Exporter',
       )
