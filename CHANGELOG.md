@@ -9,6 +9,8 @@
 ## 0.8.0
 
 - [Yousef Alam] - Add blackbox_exporter
+- [Viktor Radnai] - Small fix to postgres_exporter binary's symlink
+
 
 ## 0.7.0
 
