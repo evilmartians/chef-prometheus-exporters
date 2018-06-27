@@ -1,9 +1,10 @@
 resource_name :blackbox_exporter
 
 property :web_listen_address, String, default: '0.0.0.0:9115'
-property :config_file, String, required: true
+property :config_file, String, default: "/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml"
 property :timeout_offset, String, default: '0.5'
 property :log_level, String, default: 'info'
+property :user, String, default: 'root'
 
 action :install do
   service_name = "blackbox_exporter_#{new_resource.name}"
