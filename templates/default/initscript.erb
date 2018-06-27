@@ -22,7 +22,7 @@ USER=root
 <% end -%>
 <% if @env && @env.kind_of?(Hash) -%>
   <% @env.each do |k, v| -%>
-    export <%= k %>=<%= v %>
+    export <%= k %>='<%= v %>'
   <% end -%>
 <% end -%>
 

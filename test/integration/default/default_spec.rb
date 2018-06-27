@@ -1,6 +1,17 @@
 os_name = os.name
 os_release = os.release.to_f
 
+# Mysqld exporter
+describe port(9104) do
+  it { should be_listening }
+  its('processes') { should cmp(/^mysqld_expo/) }
+end
+
+describe service('mysqld_exporter_main') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
 # Node exporter
 [9100, 9110].each do |node_exporter_port|
   describe port(node_exporter_port) do
@@ -67,6 +78,19 @@ describe port(9116) do
 end
 
 describe service('snmp_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
+
+# Blackbox exporter
+
+describe port(9115) do
+  it { should be_listening }
+  its('processes') { should cmp(/^blackbox_expo/) }
+end
+
+describe service('blackbox_exporter_main') do
   # Chef 14 resource service is broken on a first run on Ubuntu 14.
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }

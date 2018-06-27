@@ -1,3 +1,21 @@
+directory '/etc/mysqld' do
+  action :create
+end
+
+file '/etc/mysqld/my.cnf' do
+  content 'user		= mysql
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+port		= 3306
+basedir		= /usr
+datadir		= /var/lib/mysql
+'
+  action :create
+end
+user 'mysql' do
+  comment 'Mock Mysql user'
+  system true
+end
 user 'prometheus' do
   comment 'Prometheus user'
   system true
@@ -11,6 +29,14 @@ end
 user 'opscode-pgsql' do
   comment 'Mock Chef PostgreSQL user'
   system true
+end
+
+mysqld_exporter 'main' do
+  data_source_name '/'
+  config_my_cnf '/etc/mysqld/my.cnf'
+  user 'mysql'
+
+  action %i[install enable start]
 end
 
 node_exporter 'first' do
@@ -48,6 +74,15 @@ postgres_exporter 'chef' do
   web_listen_address '0.0.0.0:9188'
   data_source_name 'user=opscode-pgsql host=/tmp/ sslmode=disable'
   user 'opscode-pgsql'
+
+  action %i[install enable start]
+end
+
+blackbox_exporter 'main' do
+  web_listen_address '0.0.0.0:9115'
+  config_file "/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml"
+  timeout_offset '0.5'
+  log_level 'info'
 
   action %i[install enable start]
 end

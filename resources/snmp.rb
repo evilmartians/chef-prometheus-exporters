@@ -16,6 +16,9 @@ property :config_file, String, default: '/etc/snmp_exporter/snmp.yaml'
 property :custom_options, String
 
 action :install do
+  # Set property that can be queried with Chef search
+  node.default['prometheus_exporters']['snmp']['enabled'] = true
+
   options = "--web.listen-address=#{new_resource.web_listen_address}"
   options += " --log.level=#{new_resource.log_level}"
   options += " --log.format=#{new_resource.log_format}"
