@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.8.2
+
+- [Viktor Radnai] - blackbox_exporter readme.
+
 ## 0.8.1
 
 - [Kirill Kuznetsov] CHANGELOG update
