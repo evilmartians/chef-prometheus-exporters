@@ -16,6 +16,9 @@ property :listen_port, String, default: '9128'
 property :metrics_path, String, default: '/metrics'
 
 action :install do
+  # Set property that can be queried with Chef search
+  node.default['prometheus_exporters']['wmi']['enabled'] = true
+
   params = "/Enabled_Collectors:#{new_resource.enabled_collectors}"
   params += " /ListenAddress:#{new_resource.listen_address}"
   params += " /ListenPort:#{new_resource.listen_port}"

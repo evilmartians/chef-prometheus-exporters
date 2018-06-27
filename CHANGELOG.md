@@ -1,5 +1,15 @@
 # prometheus_exporters
 
+## 0.8.1
+
+- [Kirill Kuznetsov] CHANGELOG update
+- [Kirill Kuznetsov] RuboCop offences fix
+- [Kirill Kuznetsov] Add 'enabled' attribute for wmi_exporter
+
+## 0.8.0
+
+- [Yousef Alam] - Add blackbox_exporter
+
 ## 0.7.0
 
 - [Kieren Scott] - Add mysqld_exporter
@@ -7,11 +17,6 @@
 - [Viktor Radnai] - Add 'enabled' attribute for using with Chef search
 - [Viktor Radnai] - Fix: Remove unnecessary install step from redis exporter start action
 - [Viktor Radnai] - Fix: quote environment variable values in init script
-
-
-commit ae7991ca2aec19e7cbaadbef40728d5c28bcc23e
-Author: Viktor Radnai <viktor.radnai@ticketmaster.co.uk>
-Date:   Wed Nov 15 17:58:09 2017 +0000
 
 ## 0.6.1
 
