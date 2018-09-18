@@ -35,6 +35,7 @@ is_running() {
 }
 
 start() {
+  mkdir -p $(dirname $PIDFILE)
   if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
     echo 'Service already running' >&2
     return 0
