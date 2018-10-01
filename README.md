@@ -156,7 +156,7 @@ end
 
 This exporter needs a custom generated config file. Read more [here](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md). For basic usage the default `blackbox.yml` should be sufficient.
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9116")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9115")
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
 * `config_file` default: `/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml`
 * `timeout_offset` default: 0.5 Offset to subtract from timeout in seconds.
