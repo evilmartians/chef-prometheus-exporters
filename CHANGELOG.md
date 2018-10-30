@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.9.0
+
+- [Viktor Radnai] - Add process_exporter
+
 ## 0.8.2
 
 - [Viktor Radnai] - blackbox_exporter readme.
