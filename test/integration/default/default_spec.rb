@@ -95,3 +95,16 @@ describe service('blackbox_exporter_main') do
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
+
+# Process exporter
+
+describe port(9256) do
+  it { should be_listening }
+  its('processes') { should cmp(/^process_expo/) }
+end
+
+describe service('process_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
