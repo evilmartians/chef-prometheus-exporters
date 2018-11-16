@@ -25,6 +25,19 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 
 # Resources
 
+## blackbox_exporter
+
+This exporter requires a config file. Read more [here](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md). For basic usage the default `blackbox.yml` should be sufficient.
+
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9115")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
+* `config_file` default: `/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml`
+* `timeout_offset` default: 0.5 Offset to subtract from timeout in seconds.
+
+```ruby
+blackbox_exporter 'main'
+```
+
 ## node_exporter
 
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
@@ -68,28 +81,6 @@ or just set
 
 and add `recipe['prometheus_exporters::node]` to your run_list.
 
-## postgres_exporter
-
-The postgres_exporter resource supports running multiple copies of PostgreSQL exporter the same system. This is useful if you have multiple copies of PostgreSQL running on the same system
-(eg. different versions) or you are connecting to multiple remote PostgreSQL servers across the network.
-
-* `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
-* `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
-* `extend_query_path` Path to custom queries to run
-* `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
-* `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9187")
-* `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
-* `user` System user to run exporter as. (default "postgres")
-
-```ruby
-
-postgres_exporter '9.5_main' do
-  data_source_name 'postgresql://localhost:5432/example'
-  user 'postgres'
-end
-```
-
 ## mysqld_exporter
 
 The mysqld_exporter resource supports running multiple copies of the MySQL exporter on the same system.
@@ -130,6 +121,61 @@ mysqld_exporter 'main' do
 end
 ```
 
+## postgres_exporter
+
+The postgres_exporter resource supports running multiple copies of PostgreSQL exporter the same system. This is useful if you have multiple copies of PostgreSQL running on the same system
+(eg. different versions) or you are connecting to multiple remote PostgreSQL servers across the network.
+
+* `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
+* `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
+* `extend_query_path` Path to custom queries to run
+* `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
+* `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9187")
+* `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
+* `user` System user to run exporter as. (default "postgres")
+
+```ruby
+
+postgres_exporter '9.5_main' do
+  data_source_name 'postgresql://localhost:5432/example'
+  user 'postgres'
+end
+```
+
+## process_exporter
+
+Monitor resource usage of processes or process groups. Read more [here](https://github.com/prometheus/blackbox_exporter).
+
+* `web_listen_address` Address to listen on for web interface and telemetry. Default: ":9256"
+* `web_telemetry_path` Path for the metrics endpoint. Default: '/metrics'
+* `config_file` Optional config file for configuring which processes to monitor. The example below monitors all processes on the system. Alternately specific process names and groups may be specified using the `proc_names` and `name_mapping` properties
+* `proc_names` Comma separated list of process names to monitor
+* `name_mapping` Comma-separated list of alternating `name,regexp` values. It allows assigning a name to a process based on a combination of the process name and command line
+* `path_procfs` procfs mountpoint. Default: "/proc"
+* `children` If set, any process that otherwise isn't part of its own group becomes part of the first group found (if any) when walking the process tree upwards. In other words, resource usage of subprocesses is added to their parent's usage unless the subprocess identifies as a different group name. Default: true
+* `recheck` On each scrape the process names are re-evaluated. This is disabled by default as an optimization, but since processes can choose to change their names, this may result in a process falling into the wrong group if we happen to see it for the first time before it's assumed its proper name. Default: false
+* `debug` Print debug information to the log. default: false
+* `custom_options` Use for your configuration if defined proterties are not satisfying your needs.
+
+```ruby
+process_exporter 'main' do
+  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+
+  action %i[install enable]
+end
+
+file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml" do
+  content <<HERE
+    process_names:
+    - name: "{{.Comm}}"
+      cmdline:
+      - '.+'
+HERE
+  notifies :start, 'process_exporter[main]'
+end
+```
+
 ## redis_exporter
 
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9121")
@@ -150,20 +196,6 @@ redis_exporter 'main' do
   redis_password 'password_one,password_two'
   redis_alias 'example_production,example_staging'
 end
-```
-
-## blackbox_exporter
-
-This exporter needs a custom generated config file. Read more [here](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md). For basic usage the default `blackbox.yml` should be sufficient.
-
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9116")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
-* `config_file` default: `/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml`
-* `timeout_offset` default: 0.5 Offset to subtract from timeout in seconds.
-* `user` User under whom to start blackbox exporter. (default: "root")
-
-```ruby
-blackbox_exporter 'main'
 ```
 
 ## snmp_exporter

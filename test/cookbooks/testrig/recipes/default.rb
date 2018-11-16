@@ -86,3 +86,19 @@ blackbox_exporter 'main' do
 
   action %i[install enable start]
 end
+
+process_exporter 'main' do
+  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+
+  action %i[install enable]
+end
+
+file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml" do
+  content <<HERE
+    process_names:
+    - name: "{{.Comm}}"
+      cmdline:
+      - '.+'
+HERE
+  notifies :start, 'process_exporter[main]'
+end
