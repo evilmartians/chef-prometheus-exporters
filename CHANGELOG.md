@@ -4,6 +4,10 @@
 
 - [Viktor Radnai] - Add process_exporter
 
+## 0.8.3
+
+- [Edwin Mourant] - Smaill fix to initscript template
+
 ## 0.8.2
 
 - [Viktor Radnai] - blackbox_exporter readme.
