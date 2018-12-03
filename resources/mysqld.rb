@@ -18,19 +18,19 @@ property :web_telemetry_path, String
 property :config_my_cnf, String, default: '~/.my.cnf'
 property :user, String, default: 'mysql'
 property :collector_flags, String, default: '\
--collect.global_status \
--collect.engine_innodb_status \
--collect.global_variables \
--collect.info_schema.clientstats \
--collect.info_schema.innodb_metrics \
--collect.info_schema.processlist \
--collect.info_schema.tables.databases \
--collect.info_schema.tablestats \
--collect.slave_status \
--collect.binlog_size \
--collect.perf_schema.tableiowaits \
--collect.perf_schema.indexiowaits \
--collect.perf_schema.tablelocks'
+--collect.global_status \
+--collect.engine_innodb_status \
+--collect.global_variables \
+--collect.info_schema.clientstats \
+--collect.info_schema.innodb_metrics \
+--collect.info_schema.processlist \
+--collect.info_schema.tables.databases="*" \
+--collect.info_schema.tablestats \
+--collect.slave_status \
+--collect.binlog_size \
+--collect.perf_schema.tableiowaits \
+--collect.perf_schema.indexiowaits \
+--collect.perf_schema.tablelocks'
 
 action :install do
   # Set property that can be queried with Chef search
@@ -38,11 +38,11 @@ action :install do
 
   service_name = "mysqld_exporter_#{new_resource.instance_name}"
 
-  options = "-web.listen-address '#{new_resource.web_listen_address}'"
-  options += " -web.telemetry-path '#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
-  options += " -config.my-cnf '#{new_resource.config_my_cnf}'" if new_resource.config_my_cnf
-  options += " -log.level #{new_resource.log_level}" if new_resource.log_level
-  options += " -log.format '#{new_resource.log_format}'"
+  options = "--web.listen-address='#{new_resource.web_listen_address}'"
+  options += " --web.telemetry-path='#{new_resource.web_telemetry_path}'" if new_resource.web_telemetry_path
+  options += " --config.my-cnf='#{new_resource.config_my_cnf}'" if new_resource.config_my_cnf
+  options += " --log.level=#{new_resource.log_level}" if new_resource.log_level
+  options += " --log.format='#{new_resource.log_format}'"
   options += " #{new_resource.collector_flags}" if new_resource.collector_flags
 
   env = {

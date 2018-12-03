@@ -10,6 +10,7 @@
 resource_name :postgres_exporter
 
 property :instance_name, String, name_property: true
+property :constant_labels, String
 property :data_source_name, String, required: true
 property :disable_default_metrics, [TrueClass, FalseClass], default: false
 property :extend_query_path, String
@@ -29,6 +30,7 @@ action :install do
   options += " --log.format '#{new_resource.log_format}'"
   options += " --extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
   options += ' --disable-default-metrics' if new_resource.disable_default_metrics
+  options += " --constantLabels='#{new_resource.constant_labels}'" if new_resource.constant_labels
 
   service_name = "postgres_exporter_#{new_resource.instance_name}"
 

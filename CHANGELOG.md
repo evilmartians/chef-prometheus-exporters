@@ -1,5 +1,15 @@
 # prometheus_exporters
 
+## 0.10.0
+
+- [Kirill Kuznetsov] - exporters update:
+  - mysqld_exporter: `0.11.0`
+  - node_exporter: `0.17.0`
+  - postgres_exporter: `0.4.7`
+  - redis_exporter: `0.22.1`
+  - snmp_exporter: `0.13.0`
+  - wmi_exporter: `0.5.0`
+
 ## 0.9.0
 
 - [Viktor Radnai] - Add process_exporter
