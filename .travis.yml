@@ -41,6 +41,7 @@ jobs:
     - bundle exec rubocop
     - bundle exec foodcritic --version
     - bundle exec foodcritic --contex --epic-fail any .
+    - bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.rb
   - stage: deploy
     if: tag =~ ^[0-9]\.[0-9]\.[0-9]$
     script:

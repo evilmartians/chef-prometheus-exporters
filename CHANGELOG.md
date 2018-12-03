@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.10.1
+
+- [Kirill Kuznetsov] - fix mysqld_exporter cmd for older systemd versions.
+- [Kirill Kuznetsov] - add chefspec tests for `cookbook[testrig]`
+
 ## 0.10.0
 
 - [Kirill Kuznetsov] - exporters update:
