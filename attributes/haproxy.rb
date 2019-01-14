@@ -3,6 +3,6 @@ default['prometheus_exporters']['haproxy']['url'] = "https://github.com/promethe
 default['prometheus_exporters']['haproxy']['checksum'] = 'b0d1caaaf245d3d16432de9504575b3af1fec14b2206a468372a80843be001a0'
 
 default['prometheus_exporters']['haproxy']['port'] = 9101
-default['prometheus_exporters']['haproxy']['scrape_uri'] = "http://localhost/;csv"
+default['prometheus_exporters']['haproxy']['scrape_uri'] = 'http://localhost/;csv'
 default['prometheus_exporters']['haproxy']['ssl_verify'] = false
 default['prometheus_exporters']['haproxy']['user'] = 'root'

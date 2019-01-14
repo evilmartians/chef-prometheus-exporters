@@ -29,7 +29,7 @@ action :install do
   options += " --log.level=#{new_resource.log_level}"
   options += " --log.format=#{new_resource.log_format}"
   options += " --haproxy.scrape-uri=#{new_resource.haproxy_scrape_uri}" if new_resource.haproxy_scrape_uri
-  options += " --haproxy.ssl-verify" if new_resource.haproxy_ssl_verify
+  options += ' --haproxy.ssl-verify' if new_resource.haproxy_ssl_verify
   options += " --haproxy.server-metric-fields=#{new_resource.haproxy_server_metric_fields}" if new_resource.haproxy_server_metric_fields
   options += " --haproxy.timeout=#{new_resource.haproxy_timeout}" if new_resource.haproxy_timeout
   options += " --haproxy.pid-file=#{new_resource.haproxy_pid_file}" if new_resource.haproxy_pid_file

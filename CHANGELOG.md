@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.11.0
+
+- [Charles Rowe] - Add haproxy_exporter
+
 ## 0.10.1
 
 - [Kirill Kuznetsov] - fix mysqld_exporter cmd for older systemd versions.
