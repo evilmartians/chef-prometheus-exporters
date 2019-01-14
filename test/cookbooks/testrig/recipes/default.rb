@@ -102,3 +102,7 @@ file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']
 HERE
   notifies :start, 'process_exporter[main]'
 end
+
+haproxy_exporter 'main' do
+  action %i[install enable start]
+end
