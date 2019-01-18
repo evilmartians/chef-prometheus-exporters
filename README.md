@@ -145,7 +145,7 @@ end
 
 ## process_exporter
 
-Monitor resource usage of processes or process groups. Read more [here](https://github.com/prometheus/blackbox_exporter).
+Monitor resource usage of processes or process groups. Read more [here](https://github.com/ncabatoff/process-exporter).
 
 * `web_listen_address` Address to listen on for web interface and telemetry. Default: ":9256"
 * `web_telemetry_path` Path for the metrics endpoint. Default: '/metrics'
@@ -156,7 +156,7 @@ Monitor resource usage of processes or process groups. Read more [here](https://
 * `children` If set, any process that otherwise isn't part of its own group becomes part of the first group found (if any) when walking the process tree upwards. In other words, resource usage of subprocesses is added to their parent's usage unless the subprocess identifies as a different group name. Default: true
 * `recheck` On each scrape the process names are re-evaluated. This is disabled by default as an optimization, but since processes can choose to change their names, this may result in a process falling into the wrong group if we happen to see it for the first time before it's assumed its proper name. Default: false
 * `debug` Print debug information to the log. default: false
-* `custom_options` Use for your configuration if defined proterties are not satisfying your needs.
+* `custom_options` Use for your configuration if defined properties are not satisfying your needs.
 
 ```ruby
 process_exporter 'main' do
