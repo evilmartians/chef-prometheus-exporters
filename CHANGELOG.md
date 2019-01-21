@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.11.1
+
+- [Charles Rowe] - fix publication to supermarket.
+
 ## 0.11.0
 
 - [Charles Rowe] - Add haproxy_exporter
