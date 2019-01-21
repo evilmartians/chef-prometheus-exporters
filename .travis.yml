@@ -43,7 +43,7 @@ jobs:
     - bundle exec foodcritic --contex --epic-fail any .
     - bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.rb
   - stage: deploy
-    if: tag =~ ^[0-9]\.[0-9]\.[0-9]$
+    if: tag =~ ^[0-9]+\.[0-9]+\.[0-9]+$
     script:
     - openssl aes-256-cbc -K $encrypted_e35c8607da72_key -iv $encrypted_e35c8607da72_iv -in .travis/client.pem.enc -out .travis/client.pem -d
     - bundle exec stove login --username dr_agon --key .travis/client.pem
