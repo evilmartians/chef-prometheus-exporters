@@ -96,4 +96,10 @@ describe 'testrig::default' do
     expect(chef_run).to install_process_exporter('main')
     expect(chef_run).to enable_process_exporter('main')
   end
+
+  it 'installs, enables and starts haproxy_exporter' do
+    expect(chef_run).to install_haproxy_exporter('main')
+    expect(chef_run).to enable_haproxy_exporter('main')
+    expect(chef_run).to start_haproxy_exporter('main')
+  end
 end

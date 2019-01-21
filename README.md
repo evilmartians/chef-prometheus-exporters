@@ -2,7 +2,7 @@
 
 Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
-Currently supported exporters are node, postgres, redis, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
+Currently supported exporters are node, postgres, redis, mysqld, haproxy, process, blackbox, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
 
 All of the exporters are available as chef custom resources that can be instantiated from other cookbooks.
 
@@ -232,6 +232,42 @@ Use the given defaults or set the attributes...
 * `node['prometheus_exporters']['wmi']['metrics_path']`
 
 and add `recipe['prometheus_exporters::wmi]` to your run_list.
+
+## haproxy_exporter
+
+Monitor HAProxy metrics and stats. Read more [here](https://github.com/prometheus/haproxy_exporter).
+
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9116")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `haproxy_scrape_uri` URI on which to scrape HAProxy.
+* `haproxy_ssl_verify` Flag that enables SSL certificate verification for the scrape URI.
+* `haproxy_server_metric_fields` Comma-separated list of exported server metrics.
+* `haproxy_timeout` Timeout for trying to get stats from HAProxy.
+* `haproxy_pid_file` Path to HAProxy pid file.
+* `user` User under whom to start redis exporter. (default: "root")
+
+```ruby
+haproxy_exporter 'main' do
+  haproxy_scrape_uri 'http://user:pass@haproxy.example.com/haproxy?stats;csv'
+end
+
+haproxy_exporter 'main' do
+  haproxy_scrape_uri 'unix:/run/haproxy/admin.sock'
+  user 'haproxy'
+end
+```
+
+Use the given defaults or set the attributes...
+
+* `node['prometheus_exporters']['listen_interface']`
+* `node['prometheus_exporters']['haproxy']['port']`
+* `node['prometheus_exporters']['haproxy']['scrape_uri']`
+* `node['prometheus_exporters']['haproxy']['ssl_verify']`
+* `node['prometheus_exporters']['haproxy']['user']`
+
+and add `recipe['prometheus_exporters::haproxy]` to your run_list.
 
 # Discovery
 
