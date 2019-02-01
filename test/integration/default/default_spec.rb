@@ -71,7 +71,6 @@ describe processes('postgres_exporter') do
 end
 
 # SNMP exporter
-
 describe port(9116) do
   it { should be_listening }
   its('processes') { should cmp(/^snmp_expo/) }
@@ -84,7 +83,6 @@ describe service('snmp_exporter_main') do
 end
 
 # Blackbox exporter
-
 describe port(9115) do
   it { should be_listening }
   its('processes') { should cmp(/^blackbox_expo/) }
@@ -97,7 +95,6 @@ describe service('blackbox_exporter_main') do
 end
 
 # Process exporter
-
 describe port(9256) do
   it { should be_listening }
   its('processes') { should cmp(/^process_expo/) }
@@ -110,13 +107,24 @@ describe service('process_exporter_main') do
 end
 
 # HAProxy exporter
-
 describe port(9101) do
   it { should be_listening }
   its('processes') { should cmp(/^haproxy_expo/) }
 end
 
 describe service('haproxy_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
+
+# Apache exporter
+describe port(9117) do
+  it { should be_listening }
+  its('processes') { should cmp(/^apache_expo/) }
+end
+
+describe service('apache_exporter_main') do
   # Chef 14 resource service is broken on a first run on Ubuntu 14.
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
