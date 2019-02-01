@@ -2,7 +2,7 @@
 
 Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
-Currently supported exporters are node, postgres, redis, mysqld, haproxy, process, blackbox, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
+Currently supported exporters are node, postgres, redis, mysqld, haproxy, process, apache, blackbox, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
 
 All of the exporters are available as chef custom resources that can be instantiated from other cookbooks.
 
@@ -268,6 +268,24 @@ Use the given defaults or set the attributes...
 * `node['prometheus_exporters']['haproxy']['user']`
 
 and add `recipe['prometheus_exporters::haproxy]` to your run_list.
+
+
+## apache_exporter
+
+* `insecure` Ignore server certificate if using https. (default false)
+* `scrape_uri` URI to apache stub status page. (default "http://localhost/server-status/?auto")
+* `telemetry_address` Address on which to expose metrics. (default ":9117")
+* `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
+* `user` User under whom to start apache exporter. (default: "root")
+
+```ruby
+apache_exporter 'main' do
+  scrape_uri "http://localhost:8090/server-status/?auto"
+  telemetry_address ":9118"
+  telemetry_endpoint "/_metrics"
+end
+```
+
 
 # Discovery
 
