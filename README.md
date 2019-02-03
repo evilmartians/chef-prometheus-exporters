@@ -23,6 +23,19 @@ And probably other RHEL or Debian based distributions.
 
 Tests are made using last available Chef 14 along with latest Chef 13.
 
+# Resource List
+
+- [blackbox_exporter](https://github.com/evilmartians/chef-prometheus-exporters#blackbox_exporter)
+- [node_exporter](https://github.com/evilmartians/chef-prometheus-exporters#node_exporter)
+- [mysqld_exporter](https://github.com/evilmartians/chef-prometheus-exporters#mysqld_exporter)
+- [postgres_exporter](https://github.com/evilmartians/chef-prometheus-exporters#postgres_exporter)
+- [process_exporter](https://github.com/evilmartians/chef-prometheus-exporters#process_exporter)
+- [redis_exporter](https://github.com/evilmartians/chef-prometheus-exporters#redis_exporter)
+- [snmp_exporter](https://github.com/evilmartians/chef-prometheus-exporters#snmp_exporter)
+- [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
+- [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
+
+
 # Resources
 
 ## blackbox_exporter
