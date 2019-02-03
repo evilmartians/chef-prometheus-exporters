@@ -172,10 +172,8 @@ Monitor resource usage of processes or process groups. Read more [here](https://
 * `custom_options` Use for your configuration if defined properties are not satisfying your needs.
 
 ```ruby
-process_exporter 'main' do
-  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
-
-  action %i[install enable]
+directory "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64" do
+  action :create
 end
 
 file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml" do
@@ -185,7 +183,13 @@ file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']
       cmdline:
       - '.+'
 HERE
-  notifies :start, 'process_exporter[main]'
+  notifies :restart, 'process_exporter[main]'
+end
+
+process_exporter 'main' do
+  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+
+  action %i[install enable start]
 end
 ```
 
