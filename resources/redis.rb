@@ -57,84 +57,20 @@ action :install do
     action :nothing
   end
 
-  case node['init_package']
-  when /init/
-    %w[
-      /var/run/prometheus
-      /var/log/prometheus
-    ].each do |dir|
-      directory dir do
-        owner 'root'
-        group 'root'
-        mode '0755'
-        recursive true
-        action :create
-      end
-    end
+  provider = case node['init_package']
+             when /init/
+               :sysvinit
+             when /systemd/
+               :systemd
+             when /upstart/
+               :upstart
+             end
 
-    directory "/var/log/prometheus/#{service_name}" do
-      owner new_resource.user
-      group 'root'
-      mode '0755'
-      action :create
-    end
-
-    template "/etc/init.d/#{service_name}" do
-      cookbook 'prometheus_exporters'
-      source 'initscript.erb'
-      owner 'root'
-      group 'root'
-      mode '0755'
-      variables(
-        name: service_name,
-        user: new_resource.user,
-        cmd: "/usr/local/sbin/redis_exporter #{options}",
-        service_description: 'Prometheus Redis Exporter',
-      )
-      notifies :restart, "service[#{service_name}]"
-    end
-
-  when /systemd/
-    systemd_unit "#{service_name}.service" do
-      content(
-        'Unit' => {
-          'Description' => 'Systemd unit for Prometheus Redis Exporter',
-          'After' => 'network.target remote-fs.target apiserver.service',
-        },
-        'Service' => {
-          'Type' => 'simple',
-          'User' => new_resource.user,
-          'ExecStart' => "/usr/local/sbin/redis_exporter #{options}",
-          'WorkingDirectory' => '/',
-          'Restart' => 'on-failure',
-          'RestartSec' => '30s',
-        },
-        'Install' => {
-          'WantedBy' => 'multi-user.target',
-        },
-      )
-      notifies :restart, "service[#{service_name}]"
-      action :create
-    end
-
-  when /upstart/
-    template "/etc/init/#{service_name}.conf" do
-      cookbook 'prometheus_exporters'
-      source 'upstart.conf.erb'
-      owner 'root'
-      group 'root'
-      mode '0644'
-      variables(
-        env: environment_list,
-        user: new_resource.user,
-        cmd: "/usr/local/sbin/redis_exporter #{options}",
-        service_description: 'Prometheus Redis Exporter',
-      )
-      notifies :restart, "service[#{service_name}]"
-    end
-
-  else
-    raise "Init system '#{node['init_package']}' is not supported by the 'prometheus_exporters' cookbook"
+  poise_service service_name do
+    provider provider
+    command "/usr/local/sbin/redis_exporter #{options}"
+    user new_resource.user
+    notifies :restart, "service[#{service_name}]"
   end
 end
 

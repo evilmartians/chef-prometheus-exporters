@@ -16,3 +16,5 @@ supports 'windows'
 
 issues_url 'https://github.com/evilmartians/chef-prometheus-exporters/issues'
 source_url 'https://github.com/evilmartians/chef-prometheus-exporters/'
+
+depends 'poise-service', '~> 1.5.2'
