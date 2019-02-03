@@ -34,7 +34,7 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 - [snmp_exporter](https://github.com/evilmartians/chef-prometheus-exporters#snmp_exporter)
 - [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
 - [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
-
+- [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 
 # Resources
 
