@@ -1,5 +1,10 @@
 # prometheus_exporters
 
+## 0.12.0
+
+- [Fatih Sarhan] - resource list for README
+- [Fatih Sarhan] - Apache exporter resource
+
 ## 0.11.1
 
 - [Charles Rowe] - fix publication to supermarket.
