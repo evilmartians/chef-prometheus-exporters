@@ -102,4 +102,10 @@ describe 'testrig::default' do
     expect(chef_run).to enable_haproxy_exporter('main')
     expect(chef_run).to start_haproxy_exporter('main')
   end
+
+  it 'installs, enables and starts apache_exporter' do
+    expect(chef_run).to install_apache_exporter('main')
+    expect(chef_run).to enable_apache_exporter('main')
+    expect(chef_run).to start_apache_exporter('main')
+  end
 end
