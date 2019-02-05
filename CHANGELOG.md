@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.12.1
+
+- [Fatih Sarhan] - add Apache exporter to resource list in README
+
 ## 0.12.0
 
 - [Fatih Sarhan] - resource list for README
