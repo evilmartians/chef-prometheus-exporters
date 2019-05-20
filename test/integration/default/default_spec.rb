@@ -129,3 +129,15 @@ describe service('apache_exporter_main') do
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
+
+# statsd exporter
+describe port(9102) do
+  it { should be_listening }
+  its('processes') { should cmp(/^statsd_expo/) }
+end
+
+describe service('statsd_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end

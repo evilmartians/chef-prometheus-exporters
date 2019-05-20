@@ -108,4 +108,10 @@ describe 'testrig::default' do
     expect(chef_run).to enable_apache_exporter('main')
     expect(chef_run).to start_apache_exporter('main')
   end
+
+  it 'installs, enables and starts statsd_exporter' do
+    expect(chef_run).to install_statsd_exporter('main')
+    expect(chef_run).to enable_statsd_exporter('main')
+    expect(chef_run).to start_statsd_exporter('main')
+  end
 end
