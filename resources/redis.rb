@@ -9,32 +9,44 @@
 
 resource_name :redis_exporter
 
-property :web_listen_address, String, default: '0.0.0.0:9121'
-property :web_telemetry_path, String, default: '/metrics'
-property :log_format, String, default: 'txt'
-property :debug, [TrueClass, FalseClass], default: false
 property :check_keys, String
+property :check_single_keys, String
+property :debug, [TrueClass, FalseClass], default: false
+property :log_format, String, default: 'txt'
+property :namespace, String, default: 'redis'
 property :redis_addr, String, default: 'redis://localhost:6379'
-property :redis_password, String
 property :redis_alias, String
 property :redis_file, String
-property :namespace, String, default: 'redis'
+property :redis_only_metrics, [TrueClass, FalseClass], default: false
+property :redis_password, String
+property :redis_password_file, String
+property :script, String
+property :separator, String
+property :use_cf_bindings, [TrueClass, FalseClass], default: false
 property :user, String, default: 'root'
+property :web_listen_address, String, default: '0.0.0.0:9121'
+property :web_telemetry_path, String, default: '/metrics'
 
 action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['redis']['enabled'] = true
 
-  options = "-web.listen-address #{new_resource.web_listen_address}"
-  options += " -web.telemetry-path #{new_resource.web_telemetry_path}"
-  options += " -log-format #{new_resource.log_format}"
+  options = "-web.listen-address '#{new_resource.web_listen_address}'"
+  options += " -web.telemetry-path '#{new_resource.web_telemetry_path}'"
+  options += " -log-format '#{new_resource.log_format}'"
+  options += " -namespace '#{new_resource.namespace}'"
+  options += " -check-keys '#{new_resource.check_keys}'" if new_resource.check_keys
+  options += " -check-single-keys '#{new_resource.check_single_keys}'" if new_resource.check_single_keys
   options += ' -debug' if new_resource.debug
-  options += " -check-keys #{new_resource.check_keys}" if new_resource.check_keys
-  options += " -redis.addr #{new_resource.redis_addr}" if new_resource.redis_addr
-  options += " -redis.password #{new_resource.redis_password}" if new_resource.redis_password
-  options += " -redis.alias #{new_resource.redis_alias}" if new_resource.redis_alias
-  options += " -redis.file #{new_resource.redis_file}" if new_resource.redis_file
-  options += " -namespace #{new_resource.namespace}"
+  options += " -redis.addr '#{new_resource.redis_addr}'" if new_resource.redis_addr
+  options += " -redis.alias '#{new_resource.redis_alias}'" if new_resource.redis_alias
+  options += " -redis.file '#{new_resource.redis_file}'" if new_resource.redis_file
+  options += ' -redis-only-metrics' if new_resource.redis_only_metrics
+  options += " -redis.password '#{new_resource.redis_password}'" if new_resource.redis_password
+  options += " -redis.password-file '#{new_resource.redis_password_file}'" if new_resource.redis_password_file
+  options += " -script '#{new_resource.script}'" if new_resource.script
+  options += " -separator '#{new_resource.separator}'" if new_resource.separator
+  options += ' -use-cf-bindings' if new_resource.use_cf_bindings
 
   service_name = "redis_exporter_#{new_resource.name}"
 

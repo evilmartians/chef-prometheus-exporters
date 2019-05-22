@@ -9,16 +9,16 @@
 
 resource_name :haproxy_exporter
 
+property :haproxy_pid_file, String
+property :haproxy_scrape_uri, String
+property :haproxy_server_metric_fields, String
+property :haproxy_ssl_verify, [TrueClass, FalseClass], default: false
+property :haproxy_timeout, String
+property :log_format, String, default: 'logger:stdout'
+property :log_level, String, default: 'info'
+property :user, String, default: 'root'
 property :web_listen_address, String, default: '0.0.0.0:9101'
 property :web_telemetry_path, String, default: '/metrics'
-property :log_level, String, default: 'info'
-property :log_format, String, default: 'logger:stdout'
-property :haproxy_scrape_uri, String
-property :haproxy_ssl_verify, String
-property :haproxy_server_metric_fields, String
-property :haproxy_timeout, String
-property :haproxy_pid_file, String
-property :user, String, default: 'root'
 
 action :install do
   # Set property that can be queried with Chef search

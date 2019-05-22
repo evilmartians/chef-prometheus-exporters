@@ -1,4 +1,4 @@
-default['prometheus_exporters']['wmi']['version'] = '0.5.0'
+default['prometheus_exporters']['wmi']['version'] = '0.7.0'
 
 default['prometheus_exporters']['wmi']['enabled_collectors'] = %w[
   cpu

@@ -9,11 +9,13 @@
 
 resource_name :snmp_exporter
 
-property :web_listen_address, String, default: ':9116'
-property :log_level, String, default: 'info'
-property :log_format, String, default: 'logger:stdout'
 property :config_file, String, default: '/etc/snmp_exporter/snmp.yaml'
 property :custom_options, String
+property :log_format, String, default: 'logger:stdout'
+property :log_level, String, default: 'info'
+property :snmp_wrap_large_counters, [TrueClass, FalseClass], default: false
+property :user, String, default: 'root'
+property :web_listen_address, String, default: ':9116'
 
 action :install do
   # Set property that can be queried with Chef search
@@ -23,6 +25,7 @@ action :install do
   options += " --log.level=#{new_resource.log_level}"
   options += " --log.format=#{new_resource.log_format}"
   options += " --config.file=#{new_resource.config_file}"
+  options += ' --snmp.wrap-large-counters' if new_resource.snmp_wrap_large_counters
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   service_name = "snmp_exporter_#{new_resource.name}"
@@ -52,9 +55,9 @@ action :install do
 
   case node['init_package']
   when /init/
-    %W[
+    %w[
       /var/run/prometheus
-      /var/log/prometheus/#{service_name}
+      /var/log/prometheus
     ].each do |dir|
       directory dir do
         owner 'root'
@@ -65,6 +68,13 @@ action :install do
       end
     end
 
+    directory "/var/log/prometheus/#{service_name}" do
+      owner new_resource.user
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
     template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
@@ -73,6 +83,7 @@ action :install do
       mode '0755'
       variables(
         name: service_name,
+        user: new_resource.user,
         cmd: "/usr/local/sbin/snmp_exporter #{options}",
         service_description: 'Prometheus SNMP Exporter',
       )
@@ -88,7 +99,7 @@ action :install do
         },
         'Service' => {
           'Type' => 'simple',
-          'User' => 'root',
+          'User' => new_resource.user,
           'ExecStart' => "/usr/local/sbin/snmp_exporter #{options}",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
@@ -111,6 +122,7 @@ action :install do
       mode '0644'
       variables(
         cmd: "/usr/local/sbin/snmp_exporter #{options}",
+        user: new_resource.user,
         service_description: 'Prometheus SNMP Exporter',
       )
       notifies :restart, "service[#{service_name}]"

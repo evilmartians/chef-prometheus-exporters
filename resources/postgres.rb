@@ -9,16 +9,21 @@
 
 resource_name :postgres_exporter
 
-property :instance_name, String, name_property: true
 property :constant_labels, String
-property :data_source_name, String, required: true
+property :data_source_name, String
+property :data_source_pass, String
+property :data_source_pass_file, String
+property :data_source_uri, String
+property :data_source_user, String
+property :data_source_user_file, String
 property :disable_default_metrics, [TrueClass, FalseClass], default: false
 property :extend_query_path, String
+property :instance_name, String, name_property: true
 property :log_format, String, default: 'logger:stdout?json=false'
 property :log_level, String
+property :user, String, default: 'postgres'
 property :web_listen_address, String, default: '0.0.0.0:9187'
 property :web_telemetry_path, String
-property :user, String, default: 'postgres'
 
 action :install do
   # Set property that can be queried with Chef search
@@ -34,9 +39,14 @@ action :install do
 
   service_name = "postgres_exporter_#{new_resource.instance_name}"
 
-  env = {
-    'DATA_SOURCE_NAME' => new_resource.data_source_name,
-  }
+  env = {}
+
+  env['DATA_SOURCE_NAME'] = new_resource.data_source_name if new_resource.data_source_name
+  env['DATA_SOURCE_URI'] = new_resource.data_source_uri if new_resource.data_source_uri
+  env['DATA_SOURCE_USER'] = new_resource.data_source_user if new_resource.data_source_user
+  env['DATA_SOURCE_USER_FILE'] = new_resource.data_source_user_file if new_resource.data_source_user_file
+  env['DATA_SOURCE_PASS'] = new_resource.data_source_pass if new_resource.data_source_pass
+  env['DATA_SOURCE_PASS_FILE'] = new_resource.data_source_pass_file if new_resource.data_source_pass_file
 
   # Download binary
   remote_file 'postgres_exporter' do

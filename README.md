@@ -46,6 +46,7 @@ This exporter requires a config file. Read more [here](https://github.com/promet
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
 * `config_file` default: `/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml`
 * `timeout_offset` default: 0.5 Offset to subtract from timeout in seconds.
+* `user` User under whom to start apache exporter. (default: "root")
 
 ```ruby
 blackbox_exporter 'main'
@@ -53,26 +54,40 @@ blackbox_exporter 'main'
 
 ## node_exporter
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
-* `log_format` Where to send log files. (default: "logger:stdout")
-* `collectors_enabled` An array of explicitly enabled collectors.
 * `collectors_disabled` An array of explicitly disabled collectors.
-* `collector_megacli_command` Command to run megacli. (default: "megacli")
-* `collector_ntp_server` NTP server to use for ntp collector. (default: "127.0.0.1")
-* `collector_ntp_protocol_version` NTP protocol version. (default: "4")
-* `collector_ntp_server_is_local` Certify that collector.ntp.server address is the same local host as this collector.
-* `collector_ntp_ip_ttl` IP TTL to use while sending NTP query. (default: "1")
-* `collector_ntp_max_distance` Max accumulated distance to the root. (default: "3.46608s")
-* `collector_ntp_local_offset_tolerance` Offset between local clock and local ntpd time to tolerate. (default: "1ms")
-* `path_procfs` procfs mountpoint. (default: "/proc")
-* `path_sysfs` sysfs mountpoint. (default: "/sys")
-* `collector_textfile_directory` Directory to read text files with metrics from. (default: "")
-* `collector_netdev_ignored_devices` Regexp of net devices to ignore for netdev collector. (default: "")
+* `collectors_enabled` An array of explicitly enabled collectors.
 * `collector_diskstats_ignored_devices` Regexp of devices to ignore for diskstats. (default: "^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$")
 * `collector_filesystem_ignored_fs_types` Regexp of filesystem types to ignore for filesystem collector. (default: "^(sys|proc|auto)fs$")
 * `collector_filesystem_ignored_mount_points` Regexp of mount points to ignore for filesystem collector. (default: "^/(sys|proc|dev)($|/)")
+* `collector_netclass_ignored_devices` Regexp of net devices to ignore for netclass collector. (default: "^$")
+* `collector_netdev_ignored_devices` Regexp of net devices to ignore for netdev collector. (default: "^$")
+* `collector_ntp_ip_ttl` IP TTL to use while sending NTP query. (default: "1")
+* `collector_ntp_local_offset_tolerance` Offset between local clock and local ntpd time to tolerate. (default: "1ms")
+* `collector_ntp_max_distance` Max accumulated distance to the root. (default: "3.46608s")
+* `collector_ntp_protocol_version` NTP protocol version. (default: "4")
+* `collector_ntp_server_is_local` Certify that collector.ntp.server address is the same local host as this collector.
+* `collector_ntp_server` NTP server to use for ntp collector. (default: "127.0.0.1")
+* `collector_qdisc_fixtures` Test fixtures to use for qdisc collector end-to-end testing.
+* `collector_runit_servicedir` Path to runit service directory.
+* `collector_supervisord_url` XML RPC endpoint. (default: "http://localhost:9001/RPC2")
+* `collector_systemd_enable_restarts_metrics` Enables service unit metric service\_restart\_total
+* `collector_systemd_enable_start_time_metrics` Enables service unit metric unit\_start\_time\_seconds
+* `collector_systemd_enable_task_metrics` Enables service unit tasks metrics unit\_tasks\_current and unit\_tasks\_max
+* `collector_systemd_private` Establish a private, direct connection to systemd without dbus.
+* `collector_systemd_unit_blacklist` Regexp of systemd units to blacklist. Units must both match whitelist and not match blacklist to be included. (default: ".+\\.(automount|device|mount|scope|slice)")
+* `collector_systemd_unit_whitelist` Regexp of systemd units to whitelist. Units must both match whitelist and not match blacklist to be included. (defaut: ".+")
+* `collector_textfile_directory` Directory to read text files with metrics from. (default: "")
+* `collector_vmstat_fields` Regexp of fields to return for vmstat collector. (default: "^(oom\_kill|pgpg|pswp|pg.*fault).*")
+* `collector_wifi_fixtures` Test fixtures to use for wifi collector metrics.
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+* `path_procfs` procfs mountpoint. (default: "/proc")
+* `path_rootfs` rootfs mountpoint. (default: "/")
+* `path_sysfs` sysfs mountpoint. (default: "/sys")
+* `web_disable_exporter_metrics` Exclude metrics about the exporter itself. (promhttp_*, process_*, go_*) 
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
+* `web_max_requests` Maximum number of parallel scrape requests. Use 0 to disable. (default: "40")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
 * `custom_options` Use for your configuration if defined proterties are not satisfying your needs.
 
 ```ruby
@@ -139,14 +154,21 @@ end
 The postgres_exporter resource supports running multiple copies of PostgreSQL exporter the same system. This is useful if you have multiple copies of PostgreSQL running on the same system
 (eg. different versions) or you are connecting to multiple remote PostgreSQL servers across the network.
 
-* `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
+* `constant_labels` A list of label=value separated by comma(,).
 * `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
-* `extend_query_path` Path to custom queries to run
+* `data_source_pass` When using `data_source_uri`, this option is used to specify the password to connect with.
+* `data_source_pass_file` The same as above but reads the password from a file.
+* `data_source_uri` An alternative to `data_source_name` which exclusively accepts the raw URI without a username and password component.
+* `data_source_user` When using `data_source_uri`, this option is used to specify the username.
+* `data_source_user_file` The same, but reads the username from a file.
+* `disable_default_metrics` Use only metrics supplied from `queries.yaml` via `--extend.query-path`.
+* `extend_query_path` Path to a YAML file containing custom queries to run.
+* `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
 * `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
+* `user` System user to run exporter as. (default "postgres")
 * `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9187")
 * `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
-* `user` System user to run exporter as. (default "postgres")
 
 ```ruby
 
@@ -160,20 +182,22 @@ end
 
 Monitor resource usage of processes or process groups. Read more [here](https://github.com/ncabatoff/process-exporter).
 
+* `children` If a proc is tracked, track with it any children that aren't part of their own group (default: true)
+* `config_path` Optional config file for configuring which processes to monitor. The example below monitors all processes on the system. Alternately specific process names and groups may be specified using the `proc_names` and `name_mapping` properties
+* `custom_options` Use for your configuration if defined properties are not satisfying your needs.
+* `debug` Print debug information to the log. default: false
+* `namemapping` Comma-separated list of alternating `name,regexp` values. It allows assigning a name to a process based on a combination of the process name and command line
+* `procfs` procfs mountpoint. Default: "/proc"
+* `procnames` Comma separated list of process names to monitor
+* `recheck` On each scrape the process names are re-evaluated. This is disabled by default as an optimization, but since processes can choose to change their names, this may result in a process falling into the wrong group if we happen to see it for the first time before it's assumed its proper name. Default: false
+* `threads` report on per-threadname metrics as well
+* `user` User under whom to start redis exporter. (default: "root")
 * `web_listen_address` Address to listen on for web interface and telemetry. Default: ":9256"
 * `web_telemetry_path` Path for the metrics endpoint. Default: '/metrics'
-* `config_file` Optional config file for configuring which processes to monitor. The example below monitors all processes on the system. Alternately specific process names and groups may be specified using the `proc_names` and `name_mapping` properties
-* `proc_names` Comma separated list of process names to monitor
-* `name_mapping` Comma-separated list of alternating `name,regexp` values. It allows assigning a name to a process based on a combination of the process name and command line
-* `path_procfs` procfs mountpoint. Default: "/proc"
-* `children` If set, any process that otherwise isn't part of its own group becomes part of the first group found (if any) when walking the process tree upwards. In other words, resource usage of subprocesses is added to their parent's usage unless the subprocess identifies as a different group name. Default: true
-* `recheck` On each scrape the process names are re-evaluated. This is disabled by default as an optimization, but since processes can choose to change their names, this may result in a process falling into the wrong group if we happen to see it for the first time before it's assumed its proper name. Default: false
-* `debug` Print debug information to the log. default: false
-* `custom_options` Use for your configuration if defined properties are not satisfying your needs.
 
 ```ruby
 process_exporter 'main' do
-  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+  config_path "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
 
   action %i[install enable]
 end
@@ -181,27 +205,33 @@ end
 file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml" do
   content <<HERE
     process_names:
-    - name: "{{.Comm}}"
+    - name: "{{.comm}}"
       cmdline:
       - '.+'
-HERE
+here
   notifies :start, 'process_exporter[main]'
 end
 ```
 
 ## redis_exporter
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9121")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `log_format` In what format should logs be shown. (default: "txt")
-* `debug` Enable or disable debug output. (default: false)
 * `check_keys` Comma separated list of keys to export value and length/size, eg: `db3=user_count` will export key `user_count` from db `3`. db defaults to `0` if omitted. (default: "")
+* `check_single_keys` Comma separated list of single keys to export value and length/size.
+* `debug` Enable or disable debug output. (default: false)
+* `log_format` In what format should logs be shown. (default: "txt")
+* `namespace` Namespace for the metrics. (defaults "redis")
 * `redis_addr` Address of one or more redis nodes, comma separated. (default: "redis://localhost:6379")
-* `redis_password` Password to use when authenticating to Redis. (default: "")
 * `redis_alias` Alias for redis node addr, comma separated. (default: "")
 * `redis_file`  Path to file containing one or more redis nodes, separated by newline. This option is mutually exclusive with redis.addr. Each line can optionally be comma-separated with the fields.
-* `namespace` Namespace for the metrics. (defaults "redis")
+* `redis_only_metrics` Whether to export go runtime metrics also.
+* `redis_password` Password to use when authenticating to Redis. (default: "")
+* `redis_password_file` File containing the password for one or more redis nodes, separated by separator. (NOTE: mutually exclusive with `redis_password`)
+* `script` Path to Lua Redis script for collecting extra metrics.
+* `separator` Separator used to split `redis_addr`, `redis_password` and `redis_alias` into several elements. (default ",")
 * `user` User under whom to start redis exporter. (default: "root")
+* `use_cf_bindings` Use Cloud Foundry service bindings.
+* `web_listen_address` address to listen on for web interface and telemetry. (default: "0.0.0.0:9121")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
 
 ```ruby
 redis_exporter 'main' do
@@ -215,11 +245,13 @@ end
 
 This exporter needs a custom generated config file. Read more [here](https://github.com/prometheus/snmp_exporter#configuration) and [here](https://github.com/prometheus/snmp_exporter/tree/master/generator). For test purposes and the most basic usage you can grab a default `snmp.yml` which is located here: `/opt/snmp_exporter-PASTE_CURRENT_VERSION.linux-amd64/snmp.yml`
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9116")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
-* `log_format` Where to send log files. (default: "logger:stdout")
 * `config_file` default: '/etc/snmp_exporter/snmp.yaml'
 * `custom_options` Any other raw options for your configuration if defined proterties are not satisfying your needs.
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+* `snmp_wrap_large_counters` Wrap 64-bit counters to avoid floating point rounding.
+* `user` User under whom to start redis exporter. (default: "root")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9116")
 
 ```ruby
 snmp_exporter 'main' do

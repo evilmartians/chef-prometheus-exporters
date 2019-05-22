@@ -88,7 +88,7 @@ blackbox_exporter 'main' do
 end
 
 process_exporter 'main' do
-  config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+  config_path "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
 
   action %i[install enable]
 end

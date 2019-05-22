@@ -14,13 +14,13 @@ COLLECTOR_LIST = %w[
   buddyinfo
   conntrack
   cpu
+  cpufreq
   diskstats
   drbd
   edac
   entropy
   filefd
   filesystem
-  gmond
   hwmon
   infiniband
   interrupts
@@ -29,14 +29,18 @@ COLLECTOR_LIST = %w[
   loadavg
   logind
   mdadm
-  megacli
   meminfo
   meminfo_numa
   mountstats
+  netclass
   netdev
   netstat
   nfs
+  nfsd
   ntp
+  perf
+  pressure
+  processes
   qdisc
   runit
   sockstat
@@ -46,20 +50,16 @@ COLLECTOR_LIST = %w[
   tcpstat
   textfile
   time
+  timex
   uname
   vmstat
   wifi
   xfs
   zfs
-  timex
 ].freeze
 
 resource_name :node_exporter
 
-property :web_listen_address, String, default: ':9100'
-property :web_telemetry_path, String, default: '/metrics'
-property :log_level, String, default: 'info'
-property :log_format, String, default: 'logger:stdout'
 property :collectors_enabled, Array, callbacks: {
   'should be a collector' => lambda do |collectors|
     collectors.all? { |element| COLLECTOR_LIST.include? element }
@@ -70,20 +70,41 @@ property :collectors_disabled, Array, callbacks: {
     collectors.all? { |element| COLLECTOR_LIST.include? element }
   end,
 }, default: []
-property :collector_megacli_command, String
-property :collector_ntp_server, String
-property :collector_ntp_protocol_version, [String, Integer]
-property :collector_ntp_server_is_local, [TrueClass, FalseClass]
-property :collector_ntp_ip_ttl, [String, Integer]
-property :collector_ntp_max_distance, String
-property :collector_ntp_local_offset_tolerance, String
-property :path_procfs, String
-property :path_sysfs, String
-property :collector_textfile_directory, String
-property :collector_netdev_ignored_devices, String
 property :collector_diskstats_ignored_devices, String
 property :collector_filesystem_ignored_fs_types, String
 property :collector_filesystem_ignored_mount_points, String
+property :collector_netclass_ignored_devices, String
+property :collector_netdev_ignored_devices, String
+property :collector_netstat_fields, String
+property :collector_ntp_ip_ttl, [String, Integer]
+property :collector_ntp_local_offset_tolerance, String
+property :collector_ntp_max_distance, String
+property :collector_ntp_protocol_version, [String, Integer]
+property :collector_ntp_server, String
+property :collector_ntp_server_is_local, [TrueClass, FalseClass]
+property :collector_qdisc_fixtures, String
+property :collector_runit_servicedir, String
+property :collector_supervisord_url, String
+property :collector_systemd_enable_restarts_metrics, [TrueClass, FalseClass], default: false
+property :collector_systemd_enable_start_time_metrics, [TrueClass, FalseClass], default: false
+property :collector_systemd_enable_task_metrics, [TrueClass, FalseClass], default: false
+property :collector_systemd_private, [TrueClass, FalseClass], default: false
+property :collector_systemd_unit_blacklist, String
+property :collector_systemd_unit_whitelist, String
+property :collector_textfile_directory, String
+property :collector_vmstat_fields, String
+property :collector_wifi_fixtures, String
+property :log_format, String, default: 'logger:stdout'
+property :log_level, String, default: 'info'
+property :path_procfs, String
+property :path_rootfs, String
+property :path_sysfs, String
+property :user, String, default: 'root'
+property :web_disable_exporter_metrics, [TrueClass, FalseClass], default: false
+property :web_listen_address, String, default: ':9100'
+property :web_max_requests, [String, Integer], default: 40
+property :web_telemetry_path, String, default: '/metrics'
+
 property :custom_options, String
 
 action :install do
@@ -92,9 +113,16 @@ action :install do
 
   options = "--web.listen-address=#{new_resource.web_listen_address}"
   options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
+  options += ' --web.disable-exporter-metrics' if new_resource.web_disable_exporter_metrics
+  options += " --web.max-requests=#{new_resource.web_max_requests}"
   options += " --log.level=#{new_resource.log_level}"
   options += " --log.format=#{new_resource.log_format}"
-  options += " --collector.megacli.command=#{new_resource.collector_megacli_command}" if new_resource.collector_megacli_command
+  options += " --collector.diskstats.ignored-devices='#{new_resource.collector_diskstats_ignored_devices}'" if new_resource.collector_diskstats_ignored_devices
+  options += " --collector.filesystem.ignored-mount-points='#{new_resource.collector_filesystem_ignored_mount_points}'" if new_resource.collector_filesystem_ignored_mount_points
+  options += " --collector.filesystem.ignored-fs-types='#{new_resource.collector_filesystem_ignored_fs_types}'" if new_resource.collector_filesystem_ignored_fs_types
+  options += " --collector.netclass.ignored-devices='#{new_resource.collector_netclass_ignored_devices}'" if new_resource.collector_netclass_ignored_devices
+  options += " --collector.netdev.ignored-devices='#{new_resource.collector_netdev_ignored_devices}'" if new_resource.collector_netdev_ignored_devices
+  options += " --collector.netstat.fields='#{new_resource.collector_netstat_fields}'" if new_resource.collector_netstat_fields
   options += " --collector.ntp.server=#{new_resource.collector_ntp_server}" if new_resource.collector_ntp_server
   options += " --collector.ntp.protocol-version=#{new_resource.collector_ntp_protocol_version}" if new_resource.collector_ntp_protocol_version
   options += ' --collector.ntp.server-is-local' if new_resource.collector_ntp_server_is_local
@@ -103,11 +131,20 @@ action :install do
   options += " --collector.ntp.local-offset-tolerance=#{new_resource.collector_ntp_local_offset_tolerance}" if new_resource.collector_ntp_local_offset_tolerance
   options += " --path.procfs=#{new_resource.path_procfs}" if new_resource.path_procfs
   options += " --path.sysfs=#{new_resource.path_sysfs}" if new_resource.path_sysfs
+  options += " --path.rootfs=#{new_resource.path_rootfs}" if new_resource.path_rootfs
+  options += " --collector.qdisc.fixtures='#{new_resource.collector_qdisc_fixtures}'" if new_resource.collector_qdisc_fixtures
+  options += " --collector.runit.servicedir='#{new_resource.collector_runit_servicedir}'" if new_resource.collector_runit_servicedir
+  options += " --collector.supervisord.url='#{new_resource.collector_supervisord_url}'" if new_resource.collector_supervisord_url
+  options += " --collector.systemd.unit-whitelist='#{new_resource.collector_systemd_unit_whitelist}'" if new_resource.collector_systemd_unit_whitelist
+  options += " --collector.systemd.unit-blacklist='#{new_resource.collector_systemd_unit_blacklist}'" if new_resource.collector_systemd_unit_blacklist
+  options += ' --collector.systemd.private' if new_resource.collector_systemd_private
+  options += ' --collector.systemd.enable-task-metrics' if new_resource.collector_systemd_enable_task_metrics
+  options += ' --collector.systemd.enable-restarts-metrics' if new_resource.collector_systemd_enable_restarts_metrics
+  options += ' --collector.systemd.enable-start-time-metrics' if new_resource.collector_systemd_enable_start_time_metrics
   options += " --collector.textfile.directory=#{new_resource.collector_textfile_directory}" if new_resource.collector_textfile_directory
-  options += " --collector.netdev.ignored-devices='#{new_resource.collector_netdev_ignored_devices}'" if new_resource.collector_netdev_ignored_devices
-  options += " --collector.diskstats.ignored-devices='#{new_resource.collector_diskstats_ignored_devices}'" if new_resource.collector_diskstats_ignored_devices
-  options += " --collector.filesystem.ignored-fs-types='#{new_resource.collector_filesystem_ignored_fs_types}'" if new_resource.collector_filesystem_ignored_fs_types
-  options += " --collector.filesystem.ignored-mount-points='#{new_resource.collector_filesystem_ignored_mount_points}'" if new_resource.collector_filesystem_ignored_mount_points
+  options += " --collector.vmstat.fields='#{new_resource.collector_vmstat_fields}'" if new_resource.collector_vmstat_fields
+  options += " --collector.wifi.fixtures='#{new_resource.collector_wifi_fixtures}'" if new_resource.collector_wifi_fixtures
+
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   options += new_resource.collectors_enabled.map { |c| " --collector.#{c}" }.join
@@ -143,9 +180,9 @@ action :install do
 
   case node['init_package']
   when /init/
-    %W[
+    %w[
       /var/run/prometheus
-      /var/log/prometheus/#{service_name}
+      /var/log/prometheus
     ].each do |dir|
       directory dir do
         owner 'root'
@@ -156,6 +193,13 @@ action :install do
       end
     end
 
+    directory "/var/log/prometheus/#{service_name}" do
+      owner new_resource.user
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
     template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
@@ -164,6 +208,7 @@ action :install do
       mode '0755'
       variables(
         name: service_name,
+        user: new_resource.user,
         cmd: "/usr/local/sbin/node_exporter #{options}",
         service_description: 'Prometheus Node Exporter',
       )
@@ -179,7 +224,7 @@ action :install do
         },
         'Service' => {
           'Type' => 'simple',
-          'User' => 'root',
+          'User' => new_resource.user,
           'ExecStart' => "/usr/local/sbin/node_exporter #{options}",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
@@ -202,6 +247,7 @@ action :install do
       mode '0644'
       variables(
         cmd: "/usr/local/sbin/node_exporter #{options}",
+        user: new_resource.user,
         service_description: 'Prometheus Node Exporter',
       )
       notifies :restart, "service[#{service_name}]"

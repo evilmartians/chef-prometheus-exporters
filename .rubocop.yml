@@ -1,14 +1,14 @@
+LineLength:
+  Enabled: false
 Metrics/BlockLength:
   Enabled: false
-Style/AndOr:
+Naming/FileName:
   Enabled: false
 SpaceBeforeFirstArg:
   Enabled: false
-UnusedBlockArgument:
+Style/AndOr:
   Enabled: false
-LineLength:
-  Enabled: false
-Naming/FileName:
+Style/FrozenStringLiteralComment:
   Enabled: false
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
@@ -16,3 +16,5 @@ Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
+UnusedBlockArgument:
+  Enabled: false

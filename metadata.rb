@@ -5,9 +5,9 @@ license          'Apache-2.0'
 description      'Installs / configures Prometheus exporters'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-version          '0.12.1'
+version          '0.13.0'
 
-chef_version '>= 12.14', '< 15.0'
+chef_version '>= 12.14', '< 16.0'
 
 supports 'centos', '>= 6.9'
 supports 'debian', '>= 8.0'

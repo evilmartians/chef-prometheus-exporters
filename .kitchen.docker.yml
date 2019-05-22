@@ -6,6 +6,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  chef_license: accept
 
 verifier:
   name: inspec
@@ -93,6 +94,19 @@ suites:
   - name: chef-14
     run_list:
       - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 14
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]
+  - name: chef-15
+    run_list:
+      - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 15
     attributes:
       prometheus_exporters:
         node:

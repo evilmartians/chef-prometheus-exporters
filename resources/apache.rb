@@ -9,10 +9,10 @@
 
 resource_name :apache_exporter
 
+property :insecure, [TrueClass, FalseClass], default: false
+property :scrape_uri, String, default: 'http://localhost/server-status/?auto'
 property :telemetry_address, String, default: ':9117'
 property :telemetry_endpoint, String, default: '/metrics'
-property :scrape_uri, String, default: 'http://localhost/server-status/?auto'
-property :insecure, [TrueClass, FalseClass], default: false
 property :user, String, default: 'root'
 
 action :install do

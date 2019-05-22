@@ -1,29 +1,32 @@
 resource_name :process_exporter
 
+property :children, [TrueClass, FalseClass], default: true
+property :config_path, String
+property :custom_options, String
+property :debug, [TrueClass, FalseClass], default: false
+property :namemapping, String
+property :procfs, String
+property :procnames, String
+property :recheck, [TrueClass, FalseClass], default: false
+property :threads, [TrueClass, FalseClass], default: true
+property :user, String, default: 'root'
 property :web_listen_address, String, default: ':9256'
 property :web_telemetry_path, String, default: '/metrics'
-property :config_file, String
-property :proc_names, String
-property :name_mapping, String
-property :path_procfs, String
-property :children, [TrueClass, FalseClass], default: true
-property :recheck, [TrueClass, FalseClass], default: false
-property :debug, [TrueClass, FalseClass], default: false
-property :custom_options, String
 
 action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['process']['enabled'] = true
 
-  options = "--web.listen-address=#{new_resource.web_listen_address}"
-  options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
-  options += " --config.path=#{new_resource.config_file}"
-  options += " --procnames=#{new_resource.proc_names}" if new_resource.proc_names
-  options += " --name_mapping=#{new_resource.name_mapping}" if new_resource.name_mapping
-  options += " --procfs=#{new_resource.path_procfs}" if new_resource.path_procfs
-  options += ' --children=true' if new_resource.children
-  options += ' --recheck=true' if new_resource.recheck
-  options += ' --debug=true' if new_resource.debug
+  options = "-web.listen-address=#{new_resource.web_listen_address}"
+  options += " -web.telemetry-path=#{new_resource.web_telemetry_path}"
+  options += " -config.path=#{new_resource.config_path}"
+  options += " -threads=#{new_resource.threads}"
+  options += " -children=#{new_resource.children}"
+  options += ' -debug=true' if new_resource.debug
+  options += " -namemapping='#{new_resource.namemapping}'" if new_resource.namemapping
+  options += " -procfs=#{new_resource.procfs}" if new_resource.procfs
+  options += " -procnames='#{new_resource.procnames}'" if new_resource.procnames
+  options += ' -recheck' if new_resource.recheck
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
   service_name = "process_exporter_#{new_resource.name}"
@@ -56,9 +59,9 @@ action :install do
 
   case node['init_package']
   when /init/
-    %W[
+    %w[
       /var/run/prometheus
-      /var/log/prometheus/#{service_name}
+      /var/log/prometheus
     ].each do |dir|
       directory dir do
         owner 'root'
@@ -69,6 +72,13 @@ action :install do
       end
     end
 
+    directory "/var/log/prometheus/#{service_name}" do
+      owner new_resource.user
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
     template "/etc/init.d/#{service_name}" do
       cookbook 'prometheus_exporters'
       source 'initscript.erb'
@@ -77,6 +87,7 @@ action :install do
       mode '0755'
       variables(
         name: service_name,
+        user: new_resource.user,
         cmd: "/usr/local/sbin/process_exporter #{options}",
         service_description: 'Prometheus Process Exporter',
       )
@@ -92,7 +103,7 @@ action :install do
         },
         'Service' => {
           'Type' => 'simple',
-          'User' => 'root',
+          'User' => new_resource.user,
           'ExecStart' => "/usr/local/sbin/process_exporter #{options}",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
