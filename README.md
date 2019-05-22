@@ -2,7 +2,7 @@
 
 Cookbook to install and configure various Prometheus exporters on systems to be monitored by Prometheus.
 
-Currently supported exporters are node, postgres, redis, mysqld, haproxy, process, apache, blackbox, snmp, and wmi. More may be added in the future. Please contact the author if you have specific requests.
+Currently supported exporters are node, postgres, redis, mysqld, haproxy, process, apache, blackbox, snmp, statsd, and wmi. More may be added in the future. Please contact the author if you have specific requests.
 
 All of the exporters are available as chef custom resources that can be instantiated from other cookbooks.
 
@@ -35,6 +35,7 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 - [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
 - [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
 - [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
+- [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
 
 # Resources
 
@@ -330,6 +331,43 @@ apache_exporter 'main' do
   telemetry_endpoint "/_metrics"
 end
 ```
+
+## statsd_exporter
+
+Monitor statsd metrics and stats. Read more [here](https://github.com/prometheus/statsd_exporter).
+
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9102")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `statsd_listen_udp` UDP address on which to receive statsd metric lines
+* `statsd_listen_tcp` TCP address on which to receive statsd metric lines
+* `statsd_listen_unixgram` Unixgram socket path on which to receive statsd metric lines
+* `statsd_listen_unixgram_mode` Unixgram socket permission mode
+* `statsd_listen_mapping_config` Metric mapping configuration file name
+* `statsd_listen_read_buffer` Size (in bytes) of the operating system's transmit read buffer associated with the UDP or Unixgram connection
+* `user` User under whom to start the exporter. (default: "root")
+
+```ruby
+statsd_exporter 'main' do
+  statsd_listen_udp "9125"
+  user 'statsd'
+end
+```
+
+Use the given defaults or set the attributes...
+
+* `node['prometheus_exporters']['listen_interface']`
+* `node['prometheus_exporters']['statsd']['port']`
+* `node['prometheus_exporters']['statsd']['listen_udp']`
+* `node['prometheus_exporters']['statsd']['listen_tcp']`
+* `node['prometheus_exporters']['statsd']['listen_unixgram']`
+* `node['prometheus_exporters']['statsd']['listen_unixgram_mode']`
+* `node['prometheus_exporters']['statsd']['mapping_config']`
+* `node['prometheus_exporters']['statsd']['read_buffer']`
+* `node['prometheus_exporters']['statsd']['user']`
+
+and add `recipe['prometheus_exporters::statsd]` to your run_list.
 
 
 # Discovery
