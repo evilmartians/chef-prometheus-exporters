@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.13.1
+
+- [Wolfgang Schnerring] - statsd_\__exporter resource.
+
 ## 0.13.0
 
 - [Kirill Kuznetsov] - fix #23
