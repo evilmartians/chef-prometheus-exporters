@@ -11,7 +11,11 @@ resource_name :redis_exporter
 
 property :check_keys, String
 property :check_single_keys, String
+property :config_command, String
+property :connection_timeout, String
 property :debug, [TrueClass, FalseClass], default: false
+property :include_system_metrics, [TrueClass, FalseClass], default: false
+property :is_tile38, [TrueClass, FalseClass], default: false
 property :log_format, String, default: 'txt'
 property :namespace, String, default: 'redis'
 property :redis_addr, String, default: 'redis://localhost:6379'
@@ -21,8 +25,7 @@ property :redis_only_metrics, [TrueClass, FalseClass], default: false
 property :redis_password, String
 property :redis_password_file, String
 property :script, String
-property :separator, String
-property :use_cf_bindings, [TrueClass, FalseClass], default: false
+property :skip_tls_verification, [TrueClass, FalseClass], default: false
 property :user, String, default: 'root'
 property :web_listen_address, String, default: '0.0.0.0:9121'
 property :web_telemetry_path, String, default: '/metrics'
@@ -37,16 +40,16 @@ action :install do
   options += " -namespace '#{new_resource.namespace}'"
   options += " -check-keys '#{new_resource.check_keys}'" if new_resource.check_keys
   options += " -check-single-keys '#{new_resource.check_single_keys}'" if new_resource.check_single_keys
+  options += " -config-command '#{new_resource.config_command}'" if new_resource.config_command
+  options += " -connection-timeout '#{new_resource.connection_timeout}'" if new_resource.connection_timeout
   options += ' -debug' if new_resource.debug
+  options += ' -include-system-metrics' if new_resource.include_system_metrics
+  options += ' -is-tile38' if new_resource.is_tile38
   options += " -redis.addr '#{new_resource.redis_addr}'" if new_resource.redis_addr
-  options += " -redis.alias '#{new_resource.redis_alias}'" if new_resource.redis_alias
-  options += " -redis.file '#{new_resource.redis_file}'" if new_resource.redis_file
   options += ' -redis-only-metrics' if new_resource.redis_only_metrics
   options += " -redis.password '#{new_resource.redis_password}'" if new_resource.redis_password
-  options += " -redis.password-file '#{new_resource.redis_password_file}'" if new_resource.redis_password_file
   options += " -script '#{new_resource.script}'" if new_resource.script
-  options += " -separator '#{new_resource.separator}'" if new_resource.separator
-  options += ' -use-cf-bindings' if new_resource.use_cf_bindings
+  options += ' -skip-tls-verification' if new_resource.skip_tls_verification
 
   service_name = "redis_exporter_#{new_resource.name}"
 

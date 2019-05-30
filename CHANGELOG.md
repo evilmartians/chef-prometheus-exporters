@@ -1,8 +1,19 @@
 # prometheus_exporters
 
+## 0.14.0
+
+*Breaking changes*: 
+
+If you want to use Redis exporter < `1.0.0` consider a version of this cookbook lower than `0.14.0`.
+
+- [Brian Baker] - Redis exporter 1.0.0 installation support.
+- [Kirill Kuznetsov] - Redis exporter 1.0.0 full support.
+- [Kirill Kuznetsov] - exporters update:
+  - redis\_exporter - `1.0.0`
+
 ## 0.13.1
 
-- [Wolfgang Schnerring] - statsd_\__exporter resource.
+- [Wolfgang Schnerring] - statsd\_exporter resource.
 
 ## 0.13.0
 

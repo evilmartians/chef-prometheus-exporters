@@ -19,7 +19,7 @@ All of the exporters are available as chef custom resources that can be instanti
 
 And probably other RHEL or Debian based distributions.
 
-* Windows Server 2012 & 2016 (wmi_exporter recipe only)
+* Windows Server 2012 & 2016 (wmi\_exporter recipe only)
 
 Tests are made using last available Chef 14 along with latest Chef 13.
 
@@ -43,11 +43,11 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 
 This exporter requires a config file. Read more [here](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md). For basic usage the default `blackbox.yml` should be sufficient.
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9115")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
 * `config_file` default: `/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml`
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
 * `timeout_offset` default: 0.5 Offset to subtract from timeout in seconds.
-* `user` User under whom to start apache exporter. (default: "root")
+* `user` User under whom to start blackbox exporter. (default: "root")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9115")
 
 ```ruby
 blackbox_exporter 'main'
@@ -192,7 +192,7 @@ Monitor resource usage of processes or process groups. Read more [here](https://
 * `procnames` Comma separated list of process names to monitor
 * `recheck` On each scrape the process names are re-evaluated. This is disabled by default as an optimization, but since processes can choose to change their names, this may result in a process falling into the wrong group if we happen to see it for the first time before it's assumed its proper name. Default: false
 * `threads` report on per-threadname metrics as well
-* `user` User under whom to start redis exporter. (default: "root")
+* `user` User under whom to start process exporter. (default: "root")
 * `web_listen_address` Address to listen on for web interface and telemetry. Default: ":9256"
 * `web_telemetry_path` Path for the metrics endpoint. Default: '/metrics'
 
@@ -218,19 +218,19 @@ end
 
 * `check_keys` Comma separated list of keys to export value and length/size, eg: `db3=user_count` will export key `user_count` from db `3`. db defaults to `0` if omitted. (default: "")
 * `check_single_keys` Comma separated list of single keys to export value and length/size.
+* `config_command` What to use for the CONFIG command (default: "CONFIG")
+* `connection_timeout` Timeout for connection to Redis instance (default: "15s")
 * `debug` Enable or disable debug output. (default: false)
+* `include_system_metrics` Whether to include system metrics like e.g. redis\_total\_system\_memory\_bytes
+* `is_tile38` Whether to scrape Tile38 specific metrics.
 * `log_format` In what format should logs be shown. (default: "txt")
-* `namespace` Namespace for the metrics. (defaults "redis")
+* `namespace` Namespace for the metrics. (default: "redis")
 * `redis_addr` Address of one or more redis nodes, comma separated. (default: "redis://localhost:6379")
-* `redis_alias` Alias for redis node addr, comma separated. (default: "")
-* `redis_file`  Path to file containing one or more redis nodes, separated by newline. This option is mutually exclusive with redis.addr. Each line can optionally be comma-separated with the fields.
 * `redis_only_metrics` Whether to export go runtime metrics also.
 * `redis_password` Password to use when authenticating to Redis. (default: "")
-* `redis_password_file` File containing the password for one or more redis nodes, separated by separator. (NOTE: mutually exclusive with `redis_password`)
 * `script` Path to Lua Redis script for collecting extra metrics.
-* `separator` Separator used to split `redis_addr`, `redis_password` and `redis_alias` into several elements. (default ",")
+* `skip_tls_versification` Whether to to skip TLS verification.
 * `user` User under whom to start redis exporter. (default: "root")
-* `use_cf_bindings` Use Cloud Foundry service bindings.
 * `web_listen_address` address to listen on for web interface and telemetry. (default: "0.0.0.0:9121")
 * `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
 
@@ -251,7 +251,7 @@ This exporter needs a custom generated config file. Read more [here](https://git
 * `log_format` Where to send log files. (default: "logger:stdout")
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
 * `snmp_wrap_large_counters` Wrap 64-bit counters to avoid floating point rounding.
-* `user` User under whom to start redis exporter. (default: "root")
+* `user` User under whom to start snmp exporter. (default: "root")
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9116")
 
 ```ruby
@@ -283,16 +283,16 @@ and add `recipe['prometheus_exporters::wmi]` to your run_list.
 
 Monitor HAProxy metrics and stats. Read more [here](https://github.com/prometheus/haproxy_exporter).
 
+* `haproxy_pid_file` Path to HAProxy pid file.
+* `haproxy_scrape_uri` URI on which to scrape HAProxy.
+* `haproxy_server_metric_fields` Comma-separated list of exported server metrics.
+* `haproxy_ssl_verify` Flag that enables SSL certificate verification for the scrape URI.
+* `haproxy_timeout` Timeout for trying to get stats from HAProxy.
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
+* `user` User under whom to start haproxy exporter. (default: "root")
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9116")
 * `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
-* `log_format` Where to send log files. (default: "logger:stdout")
-* `haproxy_scrape_uri` URI on which to scrape HAProxy.
-* `haproxy_ssl_verify` Flag that enables SSL certificate verification for the scrape URI.
-* `haproxy_server_metric_fields` Comma-separated list of exported server metrics.
-* `haproxy_timeout` Timeout for trying to get stats from HAProxy.
-* `haproxy_pid_file` Path to HAProxy pid file.
-* `user` User under whom to start redis exporter. (default: "root")
 
 ```ruby
 haproxy_exporter 'main' do
