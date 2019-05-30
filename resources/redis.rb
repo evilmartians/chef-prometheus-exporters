@@ -57,12 +57,17 @@ action :install do
     mode '0644'
     source node['prometheus_exporters']['redis']['url']
     checksum node['prometheus_exporters']['redis']['checksum']
+    notifies :restart, "service[#{service_name}]"
   end
 
   bash 'untar redis_exporter' do
-    code "tar -xzf #{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz -C /usr/local/sbin/"
+    code "tar -xzf #{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz -C /opt"
     action :nothing
     subscribes :run, 'remote_file[redis_exporter]', :immediately
+  end
+
+  link '/usr/local/sbin/redis_exporter' do
+    to "/opt/redis_exporter-v#{node['prometheus_exporters']['redis']['version']}.linux-amd64/redis_exporter"
   end
 
   service service_name do
