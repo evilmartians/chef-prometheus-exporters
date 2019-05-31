@@ -216,6 +216,8 @@ end
 
 ## redis_exporter
 
+*Important:* For redis exporter version equal or lower than `0.34.1` use version `0.13.1` of this cookbook.
+
 * `check_keys` Comma separated list of keys to export value and length/size, eg: `db3=user_count` will export key `user_count` from db `3`. db defaults to `0` if omitted. (default: "")
 * `check_single_keys` Comma separated list of single keys to export value and length/size.
 * `config_command` What to use for the CONFIG command (default: "CONFIG")
@@ -265,7 +267,7 @@ end
 Expects the Chocolatey package manager to already be installed.  This is up to individuals to provide by including the [Chocolatey cookbook](https://github.com/chocolatey/chocolatey-cookbook) in their own wrapper cookbooks.
 
 * `version`, String, default: '0.2.7'
-* `enabled_collectors`, String, default: 'cpu,cs,logical_disk,net,os,service,system'
+* `enabled_collectors`, String, default: 'cpu,cs,logical\_disk,net,os,service,system'
 * `listen_address`, String, default: '0.0.0.0'
 * `listen_port`, String, default: '9182'
 * `metrics_path`, Strin, default: '/metrics'
