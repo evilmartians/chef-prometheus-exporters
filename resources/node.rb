@@ -135,8 +135,8 @@ action :install do
   options += " --collector.qdisc.fixtures='#{new_resource.collector_qdisc_fixtures}'" if new_resource.collector_qdisc_fixtures
   options += " --collector.runit.servicedir='#{new_resource.collector_runit_servicedir}'" if new_resource.collector_runit_servicedir
   options += " --collector.supervisord.url='#{new_resource.collector_supervisord_url}'" if new_resource.collector_supervisord_url
-  options += " --collector.systemd.unit-whitelist='#{new_resource.collector_systemd_unit_whitelist}'" if new_resource.collector_systemd_unit_whitelist
-  options += " --collector.systemd.unit-blacklist='#{new_resource.collector_systemd_unit_blacklist}'" if new_resource.collector_systemd_unit_blacklist
+  options += " --collector.systemd.unit-whitelist=#{new_resource.collector_systemd_unit_whitelist}" if new_resource.collector_systemd_unit_whitelist
+  options += " --collector.systemd.unit-blacklist=#{new_resource.collector_systemd_unit_blacklist}" if new_resource.collector_systemd_unit_blacklist
   options += ' --collector.systemd.private' if new_resource.collector_systemd_private
   options += ' --collector.systemd.enable-task-metrics' if new_resource.collector_systemd_enable_task_metrics
   options += ' --collector.systemd.enable-restarts-metrics' if new_resource.collector_systemd_enable_restarts_metrics
