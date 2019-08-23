@@ -1,5 +1,9 @@
 # prometheus_exporters
 
+## 0.14.1
+
+- [Asher Yanich] Fix bad quoting on systemd\_unit\_whitelist and systemd\_unit\_blacklist resources.
+
 ## 0.14.0
 
 *Breaking changes*: 
