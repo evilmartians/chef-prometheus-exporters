@@ -29,3 +29,4 @@ default['prometheus_exporters']['node']['collectors_enabled'] = %w[
 
 default['prometheus_exporters']['node']['collectors_disabled'] = %w[]
 default['prometheus_exporters']['node']['port'] = 9100
+default['prometheus_exporters']['node']['user'] = 'root'
