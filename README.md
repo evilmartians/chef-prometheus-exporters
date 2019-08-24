@@ -80,7 +80,7 @@ blackbox_exporter 'main'
 * `collector_textfile_directory` Directory to read text files with metrics from. (default: "")
 * `collector_vmstat_fields` Regexp of fields to return for vmstat collector. (default: "^(oom\_kill|pgpg|pswp|pg.*fault).*")
 * `collector_wifi_fixtures` Test fixtures to use for wifi collector metrics.
-* `user` System user to run node exporter as. (default "root") CHANGE TO NON-ROOT USER IF POSSIBLE
+* `user` System user to run node exporter as. (default "root") **change this to a non-root user if possible**
 * `log_format` Where to send log files. (default: "logger:stdout")
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
 * `path_procfs` procfs mountpoint. (default: "/proc")
