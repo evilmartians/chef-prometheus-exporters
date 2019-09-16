@@ -4,16 +4,20 @@ property :config_file, String, default: "/opt/blackbox_exporter-#{node['promethe
 property :log_level, String, default: 'info'
 property :timeout_offset, String, default: '0.5'
 property :user, String, default: 'root'
+property :web_external_url, String, default: ''
 property :web_listen_address, String, default: '0.0.0.0:9115'
+property :web_route_prefix, String, default: ''
 
 action :install do
   service_name = "blackbox_exporter_#{new_resource.name}"
   node.default['prometheus_exporters']['blackbox']['enabled'] = true
 
-  options = "--web.listen-address #{new_resource.web_listen_address}"
-  options += " --config.file #{new_resource.config_file}"
-  options += " --timeout-offset #{new_resource.timeout_offset}"
-  options += " --log.level #{new_resource.log_level}"
+  options = "--web.listen-address=#{new_resource.web_listen_address}"
+  options += " --config.file=#{new_resource.config_file}"
+  options += " --timeout-offset=#{new_resource.timeout_offset}"
+  options += " --log.level=#{new_resource.log_level}"
+  options += " --web.external-url=#{new_resource.web_external_url}" if new_resource.web_external_url != ''
+  options += " --web.route-prefix=#{new_resource.web_route_prefix}" if new_resource.web_route_prefix != ''
 
   prometheus_user = new_resource.respond_to?(:user) ? new_resource.user : 'root'
 

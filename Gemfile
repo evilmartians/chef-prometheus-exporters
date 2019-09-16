@@ -7,7 +7,7 @@ group :development do
   gem 'foodcritic'
   gem 'inspec'
   gem 'ipaddr_extensions'
-  gem 'kitchen-docker'
+  gem 'kitchen-dokken'
   gem 'kitchen-inspec'
   gem 'kitchen-vagrant'
   gem 'pry'

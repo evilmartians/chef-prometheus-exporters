@@ -9,6 +9,7 @@
 
 resource_name :apache_exporter
 
+property :host_override, String, default: ''
 property :insecure, [TrueClass, FalseClass], default: false
 property :scrape_uri, String, default: 'http://localhost/server-status/?auto'
 property :telemetry_address, String, default: ':9117'
@@ -23,6 +24,7 @@ action :install do
   options += " -telemetry.endpoint #{new_resource.telemetry_endpoint}"
   options += " -scrape_uri #{new_resource.scrape_uri}"
   options += " -insecure #{new_resource.insecure}"
+  options += " -host_override #{new_resource.host_override}" if new_resource.host_override != ''
 
   service_name = "apache_exporter_#{new_resource.name}"
 

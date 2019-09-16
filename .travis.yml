@@ -17,29 +17,29 @@ script: bundle exec kitchen test ${INSTANCE} --destroy=always
 
 env:
   global:
-  - KITCHEN_YAML=.kitchen.docker.yml
+  - KITCHEN_YAML=.kitchen.yml
   matrix:
-  - INSTANCE=chef-15-ubuntu-1804-docker
-  - INSTANCE=chef-15-ubuntu-1604-docker
-  - INSTANCE=chef-15-ubuntu-1404-docker
-  - INSTANCE=chef-15-debian-9-docker
-  - INSTANCE=chef-15-debian-8-docker
-  - INSTANCE=chef-15-centos-7-docker
-  - INSTANCE=chef-15-centos-6-docker
-  - INSTANCE=chef-14-ubuntu-1804-docker
-  - INSTANCE=chef-14-ubuntu-1604-docker
-  - INSTANCE=chef-14-ubuntu-1404-docker
-  - INSTANCE=chef-14-debian-9-docker
-  - INSTANCE=chef-14-debian-8-docker
-  - INSTANCE=chef-14-centos-7-docker
-  - INSTANCE=chef-14-centos-6-docker
-  - INSTANCE=chef-13-ubuntu-1804-docker
-  - INSTANCE=chef-13-ubuntu-1604-docker
-  - INSTANCE=chef-13-ubuntu-1404-docker
-  - INSTANCE=chef-13-debian-9-docker
-  - INSTANCE=chef-13-debian-8-docker
-  - INSTANCE=chef-13-centos-7-docker
-  - INSTANCE=chef-13-centos-6-docker
+  - INSTANCE=chef-15-ubuntu-1804
+  - INSTANCE=chef-15-ubuntu-1604
+  - INSTANCE=chef-15-ubuntu-1404
+  - INSTANCE=chef-15-debian-9
+  - INSTANCE=chef-15-debian-8
+  - INSTANCE=chef-15-centos-7
+  - INSTANCE=chef-15-centos-6
+  - INSTANCE=chef-14-ubuntu-1804
+  - INSTANCE=chef-14-ubuntu-1604
+  - INSTANCE=chef-14-ubuntu-1404
+  - INSTANCE=chef-14-debian-9
+  - INSTANCE=chef-14-debian-8
+  - INSTANCE=chef-14-centos-7
+  - INSTANCE=chef-14-centos-6
+  - INSTANCE=chef-13-ubuntu-1804
+  - INSTANCE=chef-13-ubuntu-1604
+  - INSTANCE=chef-13-ubuntu-1404
+  - INSTANCE=chef-13-debian-9
+  - INSTANCE=chef-13-debian-8
+  - INSTANCE=chef-13-centos-7
+  - INSTANCE=chef-13-centos-6
 jobs:
   include:
   - stage: lint

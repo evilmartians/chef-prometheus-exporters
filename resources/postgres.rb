@@ -9,6 +9,7 @@
 
 resource_name :postgres_exporter
 
+property :auto_discover_databases, [TrueClass, FalseClass], default: false
 property :constant_labels, String
 property :data_source_name, String
 property :data_source_pass, String
@@ -36,6 +37,7 @@ action :install do
   options += " --extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
   options += ' --disable-default-metrics' if new_resource.disable_default_metrics
   options += " --constantLabels='#{new_resource.constant_labels}'" if new_resource.constant_labels
+  options += ' --auto-discover-databases' if new_resource.auto_discover_databases
 
   service_name = "postgres_exporter_#{new_resource.instance_name}"
 
