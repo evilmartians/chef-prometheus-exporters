@@ -67,7 +67,7 @@ describe service('postgres_exporter_chef') do
 end
 
 describe processes('postgres_exporter') do
-  its('users') { should eq %w(postgres opscode-pgsql) }
+  its('users') { should eq %w[postgres opscode-pgsql] }
 end
 
 # SNMP exporter
