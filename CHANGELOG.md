@@ -1,4 +1,8 @@
-# prometheus_exporters
+# prometheus\_exporters
+
+## 0.15.1
+
+- [Kirill Kuznetsov] - dummy release to test TravisCI flow.
 
 ## 0.15.0
 
