@@ -1,8 +1,30 @@
-# prometheus_exporters
+# prometheus\_exporters
+
+## 0.15.1
+
+- [Kirill Kuznetsov] - dummy release to test TravisCI flow.
+
+## 0.15.0
+
+- [Kirill Kuznetsov] - exporters update:
+  - apache\_exporter - `0.7.0`
+  - blackbox\_exporter - `0.15.0`
+  - mysqld\_exporter - `0.12.1`
+  - node\_exporter - `0.18.1`
+  - postgres\_exporter - `0.5.1`
+  - redis\_exporter - `1.1.1`
+  - statsd\_exporter - `0.12.2`
+  - wmi\_exporter - `0.8.3`
+- [Kirill Kuznetsov] - Test Kitchen & TravisCI now use Dokken for tests
+- [Kirill Kuznetsov] - bundle update
+
+## 0.14.1
+
+- [Asher Yanich] Fix bad quoting on systemd\_unit\_whitelist and systemd\_unit\_blacklist resources.
 
 ## 0.14.0
 
-*Breaking changes*: 
+*Breaking changes*:
 
 If you want to use Redis exporter < `1.0.0` consider a version of this cookbook lower than `0.14.0`.
 

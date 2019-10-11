@@ -1,10 +1,18 @@
 ---
 driver:
-  name: vagrant
+  name: dokken
+  privileged: true
+  volumes: [
+    '/var/lib/docker'
+  ]
+
+transport:
+  name: dokken
 
 provisioner:
-  name: chef_zero
   chef_license: accept
+  name: dokken
+  product_name: chef
 
 verifier:
   name: inspec
@@ -12,21 +20,69 @@ verifier:
     - path: test/integration/default
 
 platforms:
-  - name: centos-6
-  - name: centos-7
+  - name: amazonlinux
+    driver:
+      image: dokken/amazonlinux
+      pid_one_command: /sbin/init
+
+  - name: amazonlinux-2
+    driver:
+      image: dokken/amazonlinux-2
+      pid_one_command: /usr/lib/systemd/systemd
+
   - name: debian-8
+    driver:
+      image: dokken/debian-8
+      pid_one_command: /bin/systemd
+
   - name: debian-9
-  - name: ubuntu-14.04
+    driver:
+      image: dokken/debian-9
+      pid_one_command: /bin/systemd
+
+  - name: debian-10
+    driver:
+      image: dokken/debian-10
+      pid_one_command: /bin/systemd
+
+  - name: centos-7
+    driver:
+      image: dokken/centos-7
+      privileged: true
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: fedora-28
+    driver:
+      image: dokken/fedora-28
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: fedora-29
+    driver:
+      image: dokken/fedora-29
+      pid_one_command: /usr/lib/systemd/systemd
+
+  # Fedora 30 (at the moment of this file creation)
+  - name: fedora-latest
+    driver:
+      image: dokken/fedora-latest
+      pid_one_command: /usr/lib/systemd/systemd
+
   - name: ubuntu-16.04
+    driver:
+      image: dokken/ubuntu-16.04
+      pid_one_command: /bin/systemd
+
   - name: ubuntu-18.04
+    driver:
+      image: dokken/ubuntu-18.04
+      pid_one_command: /bin/systemd
 
 suites:
   - name: chef-13
     run_list:
       - recipe[testrig]
-    provisioner:
-      product_name: chef
-      product_version: 13
+    driver:
+      chef_version: 13
     attributes:
       prometheus_exporters:
         node:
@@ -34,9 +90,8 @@ suites:
   - name: chef-14
     run_list:
       - recipe[testrig]
-    provisioner:
-      product_name: chef
-      product_version: 14
+    driver:
+      chef_version: 14
     attributes:
       prometheus_exporters:
         node:
@@ -44,9 +99,8 @@ suites:
   - name: chef-15
     run_list:
       - recipe[testrig]
-    provisioner:
-      product_name: chef
-      product_version: 15
+    driver:
+      chef_version: 15
     attributes:
       prometheus_exporters:
         node:

@@ -1,0 +1,53 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  chef_license: accept
+
+verifier:
+  name: inspec
+  inspec_tests:
+    - path: test/integration/default
+
+platforms:
+  - name: centos-6
+  - name: centos-7
+  - name: debian-8
+  - name: debian-9
+  - name: ubuntu-14.04
+  - name: ubuntu-16.04
+  - name: ubuntu-18.04
+
+suites:
+  - name: chef-13
+    run_list:
+      - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 13
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]
+  - name: chef-14
+    run_list:
+      - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 14
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]
+  - name: chef-15
+    run_list:
+      - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 15
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]

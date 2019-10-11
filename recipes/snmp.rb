@@ -11,6 +11,7 @@ listen_ip = node['network']['interfaces'][node['prometheus_exporters']['listen_i
 
 snmp_exporter 'main' do
   web_listen_address "#{listen_ip}:9116"
+  user default['prometheus_exporters']['snmp']['user']
 
   action %i[install enable start]
 
