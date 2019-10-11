@@ -114,4 +114,10 @@ describe 'testrig::default' do
     expect(chef_run).to enable_statsd_exporter('main')
     expect(chef_run).to start_statsd_exporter('main')
   end
+
+  it 'installs, enables and varnish statsd_exporter' do
+    expect(chef_run).to install_varnish_exporter('main')
+    expect(chef_run).to enable_varnish_exporter('main')
+    expect(chef_run).to start_varnish_exporter('main')
+  end
 end

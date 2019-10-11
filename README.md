@@ -36,6 +36,7 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 - [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
 - [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 - [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
+- [varnish_exporter](https://github.com/evilmartians/chef-prometheus-exporters#varnish_exporter)
 
 # Resources
 
@@ -372,6 +373,32 @@ Use the given defaults or set the attributes...
 * `node['prometheus_exporters']['statsd']['user']`
 
 and add `recipe['prometheus_exporters::statsd]` to your run_list.
+
+
+## varnish_exporter
+
+* `varnishstat` Path to varnishstat. (default "varnishstat")
+* `telemetry_address` Address on which to expose metrics. (default ":9131")
+* `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
+* `user` User under whom to start varnish exporter. (default: "root")
+
+```ruby
+varnish_exporter 'main' do
+  varnishstat "/my/own/varnishstat"
+  telemetry_address "1.2.3.4:9132"
+  telemetry_endpoint "/_metrics"
+  user "my_user"
+end
+```
+
+Use the given defaults or set the attributes...
+
+* `node['prometheus_exporters']['varnish']['varnishstat']`
+* `node['prometheus_exporters']['varnish']['telemetry_address']`
+* `node['prometheus_exporters']['varnish']['telemetry_address']`
+* `node['prometheus_exporters']['varnish']['user']`
+
+and add `recipe['prometheus_exporters::varnish]` to your run_list.
 
 
 # Discovery
