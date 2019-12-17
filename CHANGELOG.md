@@ -1,5 +1,16 @@
 # prometheus\_exporters
 
+## 0.15.2.
+
+- [Kirill Kuznetsov] - exporters update:
+  - blackbox\_exporter - `0.16.0`
+  - postgres\_exporter - `0.8.0`
+  - redis\_exporter - `1.3.5`
+  - snmp\_exporter - `0.16.1`
+  - statsd\_exporter - `0.13.0`
+  - wmi\_exporter - `0.9.0`
+- [Kirill Kuznetsov] - TravisCI ruby 2.6.5
+
 ## 0.15.1
 
 - [Kirill Kuznetsov] - dummy release to test TravisCI flow.
