@@ -1,5 +1,11 @@
 # prometheus\_exporters
 
+## 0.15.4
+
+- [Kirill Kuznetsov] one more bundle update
+- [Kirill Kuznetsov] fix travisci.yaml bundle preparation
+- [Wolfgang Schnerring] postgres\_exporter `disable\_settings\_metrics` option support
+
 ## 0.15.3
 
 - [Kirill Kuznetsov] - bundle update
