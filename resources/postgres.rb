@@ -18,6 +18,7 @@ property :data_source_uri, String
 property :data_source_user, String
 property :data_source_user_file, String
 property :disable_default_metrics, [TrueClass, FalseClass], default: false
+property :disable_settings_metrics, [TrueClass, FalseClass], default: false
 property :extend_query_path, String
 property :instance_name, String, name_property: true
 property :log_format, String, default: 'logger:stdout?json=false'
@@ -36,6 +37,7 @@ action :install do
   options += " --log.format '#{new_resource.log_format}'"
   options += " --extend.query-path #{new_resource.extend_query_path}" if new_resource.extend_query_path
   options += ' --disable-default-metrics' if new_resource.disable_default_metrics
+  options += ' --disable-settings-metrics' if new_resource.disable_settings_metrics
   options += " --constantLabels='#{new_resource.constant_labels}'" if new_resource.constant_labels
   options += ' --auto-discover-databases' if new_resource.auto_discover_databases
 
