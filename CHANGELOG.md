@@ -1,6 +1,10 @@
 # prometheus\_exporters
 
-## 0.15.2.
+## 0.15.3
+
+- [Kirill Kuznetsov] - bundle update
+
+## 0.15.2
 
 - [Kirill Kuznetsov] - exporters update:
   - blackbox\_exporter - `0.16.0`
