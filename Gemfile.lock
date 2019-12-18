@@ -271,7 +271,7 @@ GEM
     equatable (0.6.1)
     erubi (1.9.0)
     erubis (2.7.0)
-    excon (0.71.0)
+    excon (0.71.1)
     faraday (0.17.1)
       multipart-post (>= 1.2, < 3)
     faraday-cookie_jar (0.0.6)
