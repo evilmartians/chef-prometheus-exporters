@@ -114,3 +114,7 @@ end
 statsd_exporter 'main' do
   action %i[install enable start]
 end
+
+varnish_exporter 'main' do
+  action %i[install enable start]
+end
