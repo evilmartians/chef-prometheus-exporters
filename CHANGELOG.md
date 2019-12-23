@@ -1,6 +1,6 @@
 # prometheus\_exporters
 
-## UNRELEASED
+## 0.15.5
 
 - [Stephan Scheying] initial varnish exporter support
 - [Kirill Kuznetsov] full support for cmd line parameters for varnish exporter.
