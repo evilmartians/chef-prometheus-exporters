@@ -87,7 +87,7 @@ blackbox_exporter 'main'
 * `path_procfs` procfs mountpoint. (default: "/proc")
 * `path_rootfs` rootfs mountpoint. (default: "/")
 * `path_sysfs` sysfs mountpoint. (default: "/sys")
-* `web_disable_exporter_metrics` Exclude metrics about the exporter itself. (promhttp_*, process_*, go_*) 
+* `web_disable_exporter_metrics` Exclude metrics about the exporter itself. (promhttp_*, process_*, go_*)
 * `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
 * `web_max_requests` Maximum number of parallel scrape requests. Use 0 to disable. (default: "40")
 * `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
@@ -377,25 +377,37 @@ and add `recipe['prometheus_exporters::statsd]` to your run_list.
 
 ## varnish_exporter
 
-* `varnishstat` Path to varnishstat. (default "varnishstat")
-* `telemetry_address` Address on which to expose metrics. (default ":9131")
-* `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
+* `varnishstat_path` Path to varnishstat. (default: "varnishstat")
+* `web_listen_address` Address on which to expose metrics. (default: ":9131")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `N` varnishstat -N value.
+* `docker_container_name` Docker container name to exec varnishstat in.
+* `exit_on_errors` Exit process on scrape errors. (default: "false")
+* `n` varnishstat -n value.
+* `verbose` Verbose logging. (default: "false")
+* `with_go_metrics` Export go runtime and http handler metrics. (default: "false")
 * `user` User under whom to start varnish exporter. (default: "root")
 
 ```ruby
 varnish_exporter 'main' do
-  varnishstat "/my/own/varnishstat"
-  telemetry_address "1.2.3.4:9132"
-  telemetry_endpoint "/_metrics"
+  varnishstat_path "/my/own/varnishstat"
+  web_listen_address "1.2.3.4:9132"
+  web_telemetry_path "/_metrics"
   user "my_user"
 end
 ```
 
 Use the given defaults or set the attributes...
 
-* `node['prometheus_exporters']['varnish']['varnishstat']`
-* `node['prometheus_exporters']['varnish']['telemetry_address']`
-* `node['prometheus_exporters']['varnish']['telemetry_address']`
+* `node['prometheus_exporters']['listen_interface']`
+* `node['prometheus_exporters']['varnish']['varnishstat_path']`
+* `node['prometheus_exporters']['varnish']['telemetry_path']`
+* `node['prometheus_exporters']['varnish']['N']`
+* `node['prometheus_exporters']['varnish']['docker_container_name']`
+* `node['prometheus_exporters']['varnish']['exit_on_errors']`
+* `node['prometheus_exporters']['varnish']['n']`
+* `node['prometheus_exporters']['varnish']['verbose']`
+* `node['prometheus_exporters']['varnish']['with_go_metrics']`
 * `node['prometheus_exporters']['varnish']['user']`
 
 and add `recipe['prometheus_exporters::varnish]` to your run_list.

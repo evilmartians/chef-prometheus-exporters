@@ -9,18 +9,30 @@
 
 resource_name :varnish_exporter
 
-property :varnishstat, String, default: 'varnishstat'
-property :telemetry_address, String, default: ':9131'
-property :telemetry_endpoint, String, default: '/metrics'
+property :varnishstat_path, String, default: 'varnishstat'
+property :web_listen_address, String, default: ':9131'
+property :web_telemetry_path, String, default: '/metrics'
+property :N, String
+property :docker_container_name, String
+property :exit_on_errors, [TrueClass, FalseClass], default: false
+property :n, String
+property :verbose, [TrueClass, FalseClass], default: false
+property :with_go_metrics, [TrueClass, FalseClass], default: false
 property :user, String, default: 'root'
 
 action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['varnish']['enabled'] = true
 
-  options = "-web.listen-address #{new_resource.telemetry_address}"
-  options += " -web.telemetry-path #{new_resource.telemetry_endpoint}"
-  options += " -varnishstat-path #{new_resource.varnishstat}"
+  options = "-web.listen-address #{new_resource.web_listen_address}"
+  options += " -web.telemetry-path #{new_resource.web_telemetry_path}"
+  options += " -varnishstat-path #{new_resource.varnishstat_path}"
+  options += " -N #{new_resource.N}" if new_resource.N
+  options += " -docker-container-name #{new_resource.docker_container_name}" if new_resource.docker_container_name
+  options += ' -exit-on-errors' if new_resource.exit_on_errors
+  options += " -n #{new_resource.n}" if new_resource.n
+  options += ' -verbose' if new_resource.verbose
+  options += ' -with-go-metrics' if new_resource.with_go_metrics
 
   service_name = "varnish_exporter_#{new_resource.name}"
 
@@ -40,7 +52,7 @@ action :install do
   end
 
   link '/usr/local/sbin/varnish_exporter' do
-    to "/opt/prometheus_varnish_exporter-#{node['prometheus_exporters']['varnish']['version']}.linux-386/prometheus_varnish_exporter"
+    to "/opt/prometheus_varnish_exporter-#{node['prometheus_exporters']['varnish']['version']}.linux-amd64/prometheus_varnish_exporter"
   end
 
   service service_name do
