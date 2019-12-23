@@ -1,5 +1,9 @@
 # prometheus\_exporters
 
+## 0.15.6
+
+- [Kirill Kuznetsov] varnish recipe fix.
+
 ## 0.15.5
 
 - [Stephan Scheying] initial varnish exporter support
