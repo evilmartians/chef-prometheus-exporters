@@ -125,8 +125,6 @@ elasticsearch_exporter 'main' do
   action %i[install enable start]
 end
 
-# include_recipe "sc-mongodb::default"
-
 mongodb_exporter 'main' do
   action %i[install enable start]
 end
