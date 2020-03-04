@@ -120,4 +120,16 @@ describe 'testrig::default' do
     expect(chef_run).to enable_varnish_exporter('main')
     expect(chef_run).to start_varnish_exporter('main')
   end
+
+  it 'installs, enables and starts elasticsearch_exporter' do
+    expect(chef_run).to install_elasticsearch_exporter('main')
+    expect(chef_run).to enable_elasticsearch_exporter('main')
+    expect(chef_run).to start_elasticsearch_exporter('main')
+  end
+
+  it 'installs, enables and starts mongodb_exporter' do
+    expect(chef_run).to install_mongodb_exporter('main')
+    expect(chef_run).to enable_mongodb_exporter('main')
+    expect(chef_run).to start_mongodb_exporter('main')
+  end
 end
