@@ -4,13 +4,13 @@ property :web_auth_file, String
 property :web_ssl_cert_file, String
 property :web_ssl_key_file, String
 property :collect_database, [TrueClass, FalseClass], default: false
-property :collect_collectin, [TrueClass, FalseClass], default: false
+property :collect_collection, [TrueClass, FalseClass], default: false
 property :collect_topmetrics, [TrueClass, FalseClass], default: false
 property :collect_indexusage, [TrueClass, FalseClass], default: false
 property :collect_connpoolstats, [TrueClass, FalseClass], default: false
 property :mongodb_uri, String, default: 'mongodb://localhost:27017'
 property :mongodb_authentication_database, String
-property :monogodb_max_connections, Integer
+property :mongodb_max_connections, Integer
 property :mongodb_socket_timeout, String
 property :mongodb_sync_timeout, String
 property :log_format, String, default: 'logger:stderr'
@@ -29,13 +29,13 @@ action :install do
   options += " --web.ssl-cert-file=#{new_resource.web_ssl_cert_file}" if new_resource.web_ssl_cert_file
   options += " --web.ssl-key-file=#{new_resource.web_ssl_key_file}" if new_resource.web_ssl_key_file
   options += ' --collect.database' if new_resource.collect_database
-  options += ' --collect.collection' if new_resource.collect_collectin
+  options += ' --collect.collection' if new_resource.collect_collection
   options += ' --collect.topmetrics' if new_resource.collect_topmetrics
   options += ' --collect.indexusage' if new_resource.collect_indexusage
   options += ' --collect.connpoolstats' if new_resource.collect_connpoolstats
   options += " --mongodb.uri=#{new_resource.mongodb_uri}" if new_resource.mongodb_uri
   options += " --mongodb.authentification-database=#{new_resource.mongodb_authentication_database}" if new_resource.mongodb_authentication_database
-  options += " --mongodb.max-connections=#{new_resource.monogodb_max_connections}" if new_resource.monogodb_max_connections
+  options += " --mongodb.max-connections=#{new_resource.mongodb_max_connections}" if new_resource.mongodb_max_connections
   options += " --mongodb.socket-timeout=#{new_resource.mongodb_socket_timeout}" if new_resource.mongodb_socket_timeout
   options += " --mongodb.sync-timeout=#{new_resource.mongodb_sync_timeout}" if new_resource.mongodb_sync_timeout
   options += " --log.level=#{new_resource.log_level}" if new_resource.log_level
