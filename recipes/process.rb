@@ -8,7 +8,7 @@ unless node['prometheus_exporters']['disable']
 
   process_exporter 'main' do
     web_listen_address "#{listen_ip}:#{node_port}"
-    config_file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
+    config_path "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
     user default['prometheus_exporters']['process']['user']
 
     action %i[install enable]
