@@ -25,22 +25,38 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 
 # Resource List
 
+- [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 - [blackbox_exporter](https://github.com/evilmartians/chef-prometheus-exporters#blackbox_exporter)
-- [node_exporter](https://github.com/evilmartians/chef-prometheus-exporters#node_exporter)
+- [elasticsearch_exporter](https://github.com/evilmartians/chef-prometheus-exporters#elasticsearch_exporter)
+- [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
+- [mongodb_exporter](https://github.com/evilmartians/chef-prometheus-exporters#mongodb_exporter)
 - [mysqld_exporter](https://github.com/evilmartians/chef-prometheus-exporters#mysqld_exporter)
+- [node_exporter](https://github.com/evilmartians/chef-prometheus-exporters#node_exporter)
 - [postgres_exporter](https://github.com/evilmartians/chef-prometheus-exporters#postgres_exporter)
 - [process_exporter](https://github.com/evilmartians/chef-prometheus-exporters#process_exporter)
 - [redis_exporter](https://github.com/evilmartians/chef-prometheus-exporters#redis_exporter)
 - [snmp_exporter](https://github.com/evilmartians/chef-prometheus-exporters#snmp_exporter)
-- [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
-- [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
-- [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 - [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
 - [varnish_exporter](https://github.com/evilmartians/chef-prometheus-exporters#varnish_exporter)
-- [elasticsearch_exporter](https://github.com/justwatchcom/elasticsearch_exporter)
-- [mongodb_exporter](https://github.com/percona/mongodb_exporter)
+- [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
 
 # Resources
+
+## apache_exporter
+
+* `insecure` Ignore server certificate if using https. (default false)
+* `scrape_uri` URI to apache stub status page. (default "http://localhost/server-status/?auto")
+* `telemetry_address` Address on which to expose metrics. (default ":9117")
+* `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
+* `user` User under whom to start apache exporter. (default: "root")
+
+```ruby
+apache_exporter 'main' do
+  scrape_uri "http://localhost:8090/server-status/?auto"
+  telemetry_address ":9118"
+  telemetry_endpoint "/_metrics"
+end
+```
 
 ## blackbox_exporter
 
@@ -56,80 +72,112 @@ This exporter requires a config file. Read more [here](https://github.com/promet
 blackbox_exporter 'main'
 ```
 
-## node_exporter
+## elasticsearch_exporter
 
-* `collectors_disabled` An array of explicitly disabled collectors.
-* `collectors_enabled` An array of explicitly enabled collectors.
-* `collector_diskstats_ignored_devices` Regexp of devices to ignore for diskstats. (default: "^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$")
-* `collector_filesystem_ignored_fs_types` Regexp of filesystem types to ignore for filesystem collector. (default: "^(sys|proc|auto)fs$")
-* `collector_filesystem_ignored_mount_points` Regexp of mount points to ignore for filesystem collector. (default: "^/(sys|proc|dev)($|/)")
-* `collector_netclass_ignored_devices` Regexp of net devices to ignore for netclass collector. (default: "^$")
-* `collector_netdev_ignored_devices` Regexp of net devices to ignore for netdev collector. (default: "^$")
-* `collector_ntp_ip_ttl` IP TTL to use while sending NTP query. (default: "1")
-* `collector_ntp_local_offset_tolerance` Offset between local clock and local ntpd time to tolerate. (default: "1ms")
-* `collector_ntp_max_distance` Max accumulated distance to the root. (default: "3.46608s")
-* `collector_ntp_protocol_version` NTP protocol version. (default: "4")
-* `collector_ntp_server_is_local` Certify that collector.ntp.server address is the same local host as this collector.
-* `collector_ntp_server` NTP server to use for ntp collector. (default: "127.0.0.1")
-* `collector_qdisc_fixtures` Test fixtures to use for qdisc collector end-to-end testing.
-* `collector_runit_servicedir` Path to runit service directory.
-* `collector_supervisord_url` XML RPC endpoint. (default: "http://localhost:9001/RPC2")
-* `collector_systemd_enable_restarts_metrics` Enables service unit metric service\_restart\_total
-* `collector_systemd_enable_start_time_metrics` Enables service unit metric unit\_start\_time\_seconds
-* `collector_systemd_enable_task_metrics` Enables service unit tasks metrics unit\_tasks\_current and unit\_tasks\_max
-* `collector_systemd_private` Establish a private, direct connection to systemd without dbus.
-* `collector_systemd_unit_blacklist` Regexp of systemd units to blacklist. Units must both match whitelist and not match blacklist to be included. (default: ".+\\.(automount|device|mount|scope|slice)")
-* `collector_systemd_unit_whitelist` Regexp of systemd units to whitelist. Units must both match whitelist and not match blacklist to be included. (defaut: ".+")
-* `collector_textfile_directory` Directory to read text files with metrics from. (default: "")
-* `collector_vmstat_fields` Regexp of fields to return for vmstat collector. (default: "^(oom\_kill|pgpg|pswp|pg.*fault).*")
-* `collector_wifi_fixtures` Test fixtures to use for wifi collector metrics.
-* `user` System user to run node exporter as. (default "root") **change this to a non-root user if possible**
-* `log_format` Where to send log files. (default: "logger:stdout")
+* `es_all` If true, query stats for all nodes in the cluster, rather than just the node we connect to. (default: false)
+* `es_ca` Path to PEM file that contains trusted Certificate Authorities for the Elasticsearch connection.
+* `es_client_cert` Path to PEM file that contains the corresponding cert for the private key to connect to Elasticsearch.
+* `es_client_private_key	` Path to PEM file that contains the private key for client auth when connecting to Elasticsearch.
+* `es_cluster_settings` If true, query stats for cluster settings. (default: false)
+* `es_clusterinfo_interval` Cluster info update interval for the cluster label. (default: 5m)
+* `es_indices_settings` If true, query settings stats for all indices in the cluster. (default: false)
+* `es_indices` If true, query stats for all indices in the cluster. (default: false)
+* `es_shards` If true, query stats for all indices in the cluster, including shard-level stats (implies es.indices=true). (default: false)
+* `es_snapshots` If true, query stats for the cluster snapshots. (default: false)
+* `es_ssl_skip_verify` Skip SSL verification when connecting to Elasticsearch. (default: false)
+* `es_timeout` Timeout for trying to get stats from Elasticsearch. (ex: 20s) (default: 5s)
+* `es_uri` Address (host and port) of the Elasticsearch node we should connect to. (default: "http://localhost:9200")
+* `log_format` Set the log target and format. Valid values are: [json, logfmt]
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
-* `path_procfs` procfs mountpoint. (default: "/proc")
-* `path_rootfs` rootfs mountpoint. (default: "/")
-* `path_sysfs` sysfs mountpoint. (default: "/sys")
-* `web_disable_exporter_metrics` Exclude metrics about the exporter itself. (promhttp_*, process_*, go_*)
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
-* `web_max_requests` Maximum number of parallel scrape requests. Use 0 to disable. (default: "40")
+* `user` User under whom to start elasticsearch exporter. (default: "root")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9114")
 * `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `custom_options` Use for your configuration if defined proterties are not satisfying your needs.
 
 ```ruby
-
-listen_ip = '127.0.0.1'
-
-node_exporter 'main' do
-  web_listen_address "#{listen_ip}:9100"
-  action [:enable, :start]
+elasticsearch_exporter 'main' do
+  action %i[install enable start]
 end
 ```
 
-or just set
+## haproxy_exporter
+
+Monitor HAProxy metrics and stats. Read more [here](https://github.com/prometheus/haproxy_exporter).
+
+* `haproxy_pid_file` Path to HAProxy pid file.
+* `haproxy_scrape_uri` URI on which to scrape HAProxy.
+* `haproxy_server_metric_fields` Comma-separated list of exported server metrics.
+* `haproxy_ssl_verify` Flag that enables SSL certificate verification for the scrape URI.
+* `haproxy_timeout` Timeout for trying to get stats from HAProxy.
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
+* `user` User under whom to start haproxy exporter. (default: "root")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9116")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+
+```ruby
+haproxy_exporter 'main' do
+  haproxy_scrape_uri 'http://user:pass@haproxy.example.com/haproxy?stats;csv'
+end
+
+haproxy_exporter 'main' do
+  haproxy_scrape_uri 'unix:/run/haproxy/admin.sock'
+  user 'haproxy'
+end
+```
+
+Use the given defaults or set the attributes...
 
 * `node['prometheus_exporters']['listen_interface']`
-* `node['prometheus_exporters']['node']['collectors']`
-* `node['prometheus_exporters']['node']['textfile_directory']`
-* `node['prometheus_exporters']['node']['ignored_net_devs']`
-* `node['prometheus_exporters']['node']['user']`
+* `node['prometheus_exporters']['haproxy']['port']`
+* `node['prometheus_exporters']['haproxy']['scrape_uri']`
+* `node['prometheus_exporters']['haproxy']['ssl_verify']`
+* `node['prometheus_exporters']['haproxy']['user']`
 
-and add `recipe['prometheus_exporters::node]` to your run_list.
+and add `recipe['prometheus_exporters::haproxy]` to your run_list.
+
+## mongodb_exporter
+
+* `collect_collection` Enable collection of Collection metrics
+* `collect_connpoolstats` Collect MongoDB connpoolstats
+* `collect_database` Enable collection of Database metrics
+* `collect_indexusage` Enable collection of per index usage stats
+* `collect_topmetrics` Enable collection of table top metrics
+* `log_format` Set the log target and format. Example: "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true"
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+* `mongodb_authentication_database` Specifies the database in which the user is created
+* `mongodb_max_connections` Max number of pooled connections to the database. (default: 1)
+* `mongodb_socket_timeout` Amount of time to wait for a non-responding socket to the database before it is forcefully closed. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'. (default: 3s)
+* `mongodb_sync_timeout` Amount of time an operation with this session will wait before returning an error in case a connection to a usable server can't be established. (default: 1m)
+* `mongodb_uri` MongoDB URI, format ([mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options])
+* `user` User under whom to start mongodb exporter. (default: "root")
+* `web_auth_file` Path to YAML file with server_user, server_password keys for HTTP Basic authentication (overrides HTTP_AUTH environment variable).
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9216")
+* `web_ssl_cert_file` Path to SSL certificate file.
+* `web_ssl_key_file` Path to SSL key file.
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+
+```ruby
+mongodb_exporter 'main' do
+  action %i[install enable start]
+end
+```
 
 ## mysqld_exporter
 
 The mysqld_exporter resource supports running multiple copies of the MySQL exporter on the same system.
 
-* `instance_name` name of MySQL exporter instance. (**name attribute**)
-* `data_source_name` MySQL connection string
+* `collector_flags` Specify which collector flags you wish to use. default: see belo
 * `config_my_cnf` Path to .my.cnf file to read MySQL credentials from. (default: ~/.my.cnf)
+* `data_source_name` MySQL connection string
+* `instance_name` name of MySQL exporter instance. (**name attribute**)
 * `log_format` If set use a syslog logger or JSON logging. Example: logger:syslog?appname=bob&local=7 or logger:stdout?json=true. Defaults to stderr.
 * `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal].
+* `user` System user to run exporter as. (default "mysql")
 * `web_listen_address` Address to listen on for web interface and telemetry. (default "127.0.0.1:9104")
 * `web_telemetry_path` Path under which to expose metrics. (default "/metrics")
-* `user` System user to run exporter as. (default "mysql")
-* `collector_flags` Specify which collector flags you wish to use.
 
-(default)
+(default collector flags)
+
 ```
 '\
 -collect.global_status \
@@ -155,6 +203,65 @@ mysqld_exporter 'main' do
 end
 ```
 
+## node_exporter
+
+* `collector_diskstats_ignored_devices` Regexp of devices to ignore for diskstats. (default: "^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$")
+* `collector_filesystem_ignored_fs_types` Regexp of filesystem types to ignore for filesystem collector. (default: "^(sys|proc|auto)fs$")
+* `collector_filesystem_ignored_mount_points` Regexp of mount points to ignore for filesystem collector. (default: "^/(sys|proc|dev)($|/)")
+* `collector_netclass_ignored_devices` Regexp of net devices to ignore for netclass collector. (default: "^$")
+* `collector_netdev_ignored_devices` Regexp of net devices to ignore for netdev collector. (default: "^$")
+* `collector_ntp_ip_ttl` IP TTL to use while sending NTP query. (default: "1")
+* `collector_ntp_local_offset_tolerance` Offset between local clock and local ntpd time to tolerate. (default: "1ms")
+* `collector_ntp_max_distance` Max accumulated distance to the root. (default: "3.46608s")
+* `collector_ntp_protocol_version` NTP protocol version. (default: "4")
+* `collector_ntp_server_is_local` Certify that collector.ntp.server address is the same local host as this collector.
+* `collector_ntp_server` NTP server to use for ntp collector. (default: "127.0.0.1")
+* `collector_qdisc_fixtures` Test fixtures to use for qdisc collector end-to-end testing.
+* `collector_runit_servicedir` Path to runit service directory.
+* `collector_supervisord_url` XML RPC endpoint. (default: "http://localhost:9001/RPC2")
+* `collector_systemd_enable_restarts_metrics` Enables service unit metric service\_restart\_total
+* `collector_systemd_enable_start_time_metrics` Enables service unit metric unit\_start\_time\_seconds
+* `collector_systemd_enable_task_metrics` Enables service unit tasks metrics unit\_tasks\_current and unit\_tasks\_max
+* `collector_systemd_private` Establish a private, direct connection to systemd without dbus.
+* `collector_systemd_unit_blacklist` Regexp of systemd units to blacklist. Units must both match whitelist and not match blacklist to be included. (default: ".+\\.(automount|device|mount|scope|slice)")
+* `collector_systemd_unit_whitelist` Regexp of systemd units to whitelist. Units must both match whitelist and not match blacklist to be included. (defaut: ".+")
+* `collector_textfile_directory` Directory to read text files with metrics from. (default: "")
+* `collector_vmstat_fields` Regexp of fields to return for vmstat collector. (default: "^(oom\_kill|pgpg|pswp|pg.*fault).*")
+* `collector_wifi_fixtures` Test fixtures to use for wifi collector metrics.
+* `collectors_disabled` An array of explicitly disabled collectors.
+* `collectors_enabled` An array of explicitly enabled collectors.
+* `custom_options` Use for your configuration if defined proterties are not satisfying your needs.
+* `log_format` Where to send log files. (default: "logger:stdout")
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+* `path_procfs` procfs mountpoint. (default: "/proc")
+* `path_rootfs` rootfs mountpoint. (default: "/")
+* `path_sysfs` sysfs mountpoint. (default: "/sys")
+* `user` System user to run node exporter as. (default "root") **change this to a non-root user if possible**
+* `web_disable_exporter_metrics` Exclude metrics about the exporter itself. (promhttp_*, process_*, go_*)
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9100")
+* `web_max_requests` Maximum number of parallel scrape requests. Use 0 to disable. (default: "40")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+
+```ruby
+
+listen_ip = '127.0.0.1'
+
+node_exporter 'main' do
+  web_listen_address "#{listen_ip}:9100"
+  action [:enable, :start]
+end
+```
+
+or just set
+
+* `node['prometheus_exporters']['listen_interface']`
+* `node['prometheus_exporters']['node']['collectors']`
+* `node['prometheus_exporters']['node']['textfile_directory']`
+* `node['prometheus_exporters']['node']['ignored_net_devs']`
+* `node['prometheus_exporters']['node']['user']`
+
+and add `recipe['prometheus_exporters::node]` to your run_list.
+
 ## postgres_exporter
 
 The postgres_exporter resource supports running multiple copies of PostgreSQL exporter the same system. This is useful if you have multiple copies of PostgreSQL running on the same system
@@ -162,11 +269,11 @@ The postgres_exporter resource supports running multiple copies of PostgreSQL ex
 
 * `constant_labels` A list of label=value separated by comma(,).
 * `data_source_name` PostgreSQL connection string. E.g. `postgresql://login:password@hostname:port/dbname`
-* `data_source_pass` When using `data_source_uri`, this option is used to specify the password to connect with.
 * `data_source_pass_file` The same as above but reads the password from a file.
+* `data_source_pass` When using `data_source_uri`, this option is used to specify the password to connect with.
 * `data_source_uri` An alternative to `data_source_name` which exclusively accepts the raw URI without a username and password component.
-* `data_source_user` When using `data_source_uri`, this option is used to specify the username.
 * `data_source_user_file` The same, but reads the username from a file.
+* `data_source_user` When using `data_source_uri`, this option is used to specify the username.
 * `disable_default_metrics` Use only metrics supplied from `queries.yaml` via `--extend.query-path`.
 * `extend_query_path` Path to a YAML file containing custom queries to run.
 * `instance_name` name of PostgreSQL exporter instance. (**name attribute**)
@@ -267,93 +374,21 @@ snmp_exporter 'main' do
 end
 ```
 
-## wmi_exporter
-
-Expects the Chocolatey package manager to already be installed.  This is up to individuals to provide by including the [Chocolatey cookbook](https://github.com/chocolatey/chocolatey-cookbook) in their own wrapper cookbooks.
-
-* `version`, String, default: '0.2.7'
-* `enabled_collectors`, String, default: 'cpu,cs,logical\_disk,net,os,service,system'
-* `listen_address`, String, default: '0.0.0.0'
-* `listen_port`, String, default: '9182'
-* `metrics_path`, Strin, default: '/metrics'
-
-Use the given defaults or set the attributes...
-
-* `node['prometheus_exporters']['wmi']['version']['listen_interface']`
-* `node['prometheus_exporters']['wmi']['listen_address']`
-* `node['prometheus_exporters']['wmi']['listen_port']`
-* `node['prometheus_exporters']['wmi']['metrics_path']`
-
-and add `recipe['prometheus_exporters::wmi]` to your run_list.
-
-## haproxy_exporter
-
-Monitor HAProxy metrics and stats. Read more [here](https://github.com/prometheus/haproxy_exporter).
-
-* `haproxy_pid_file` Path to HAProxy pid file.
-* `haproxy_scrape_uri` URI on which to scrape HAProxy.
-* `haproxy_server_metric_fields` Comma-separated list of exported server metrics.
-* `haproxy_ssl_verify` Flag that enables SSL certificate verification for the scrape URI.
-* `haproxy_timeout` Timeout for trying to get stats from HAProxy.
-* `log_format` Where to send log files. (default: "logger:stdout")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
-* `user` User under whom to start haproxy exporter. (default: "root")
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9116")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-
-```ruby
-haproxy_exporter 'main' do
-  haproxy_scrape_uri 'http://user:pass@haproxy.example.com/haproxy?stats;csv'
-end
-
-haproxy_exporter 'main' do
-  haproxy_scrape_uri 'unix:/run/haproxy/admin.sock'
-  user 'haproxy'
-end
-```
-
-Use the given defaults or set the attributes...
-
-* `node['prometheus_exporters']['listen_interface']`
-* `node['prometheus_exporters']['haproxy']['port']`
-* `node['prometheus_exporters']['haproxy']['scrape_uri']`
-* `node['prometheus_exporters']['haproxy']['ssl_verify']`
-* `node['prometheus_exporters']['haproxy']['user']`
-
-and add `recipe['prometheus_exporters::haproxy]` to your run_list.
-
-
-## apache_exporter
-
-* `insecure` Ignore server certificate if using https. (default false)
-* `scrape_uri` URI to apache stub status page. (default "http://localhost/server-status/?auto")
-* `telemetry_address` Address on which to expose metrics. (default ":9117")
-* `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
-* `user` User under whom to start apache exporter. (default: "root")
-
-```ruby
-apache_exporter 'main' do
-  scrape_uri "http://localhost:8090/server-status/?auto"
-  telemetry_address ":9118"
-  telemetry_endpoint "/_metrics"
-end
-```
-
 ## statsd_exporter
 
 Monitor statsd metrics and stats. Read more [here](https://github.com/prometheus/statsd_exporter).
 
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9102")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
 * `log_format` Where to send log files. (default: "logger:stdout")
-* `statsd_listen_udp` UDP address on which to receive statsd metric lines
-* `statsd_listen_tcp` TCP address on which to receive statsd metric lines
-* `statsd_listen_unixgram` Unixgram socket path on which to receive statsd metric lines
-* `statsd_listen_unixgram_mode` Unixgram socket permission mode
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]. (default: "info")
 * `statsd_listen_mapping_config` Metric mapping configuration file name
 * `statsd_listen_read_buffer` Size (in bytes) of the operating system's transmit read buffer associated with the UDP or Unixgram connection
+* `statsd_listen_tcp` TCP address on which to receive statsd metric lines
+* `statsd_listen_udp` UDP address on which to receive statsd metric lines
+* `statsd_listen_unixgram_mode` Unixgram socket permission mode
+* `statsd_listen_unixgram` Unixgram socket path on which to receive statsd metric lines
 * `user` User under whom to start the exporter. (default: "root")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: "0.0.0.0:9102")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
 
 ```ruby
 statsd_exporter 'main' do
@@ -379,16 +414,16 @@ and add `recipe['prometheus_exporters::statsd]` to your run_list.
 
 ## varnish_exporter
 
-* `varnishstat_path` Path to varnishstat. (default: "varnishstat")
-* `web_listen_address` Address on which to expose metrics. (default: ":9131")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `N` varnishstat -N value.
 * `docker_container_name` Docker container name to exec varnishstat in.
 * `exit_on_errors` Exit process on scrape errors. (default: "false")
 * `n` varnishstat -n value.
-* `verbose` Verbose logging. (default: "false")
-* `with_go_metrics` Export go runtime and http handler metrics. (default: "false")
+* `N` varnishstat -N value.
 * `user` User under whom to start varnish exporter. (default: "root")
+* `varnishstat_path` Path to varnishstat. (default: "varnishstat")
+* `verbose` Verbose logging. (default: "false")
+* `web_listen_address` Address on which to expose metrics. (default: ":9131")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `with_go_metrics` Export go runtime and http handler metrics. (default: "false")
 
 ```ruby
 varnish_exporter 'main' do
@@ -414,60 +449,24 @@ Use the given defaults or set the attributes...
 
 and add `recipe['prometheus_exporters::varnish]` to your run_list.
 
+## wmi_exporter
 
-## elasticsearch_exporter
+Expects the Chocolatey package manager to already be installed.  This is up to individuals to provide by including the [Chocolatey cookbook](https://github.com/chocolatey/chocolatey-cookbook) in their own wrapper cookbooks.
 
-* `uri` Address (host and port) of the Elasticsearch node we should connect to. (default: "http://localhost:9200")
-* `all` If true, query stats for all nodes in the cluster, rather than just the node we connect to. (default: false)
-* `cluster_settings` If true, query stats for cluster settings. (default: false)
-* `indices` If true, query stats for all indices in the cluster. (default: false)
-* `indices_settings` If true, query settings stats for all indices in the cluster. (default: false)
-* `shards` If true, query stats for all indices in the cluster, including shard-level stats (implies es.indices=true). (default: false)
-* `snapshots` If true, query stats for the cluster snapshots. (default: false)
-* `timeout` Timeout for trying to get stats from Elasticsearch. (ex: 20s) (default: 5s)
-* `ca` Path to PEM file that contains trusted Certificate Authorities for the Elasticsearch connection.
-* `client_private_key	` Path to PEM file that contains the private key for client auth when connecting to Elasticsearch.
-* `client_cert` Path to PEM file that contains the corresponding cert for the private key to connect to Elasticsearch.
-* `clusterinfo_interval` Cluster info update interval for the cluster label. (default: 5m)
-* `ssl_skip_verify` Skip SSL verification when connecting to Elasticsearch. (default: false)
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9114")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `user` User under whom to start elasticsearch exporter. (default: "root")
+* `enabled_collectors`, String, default: 'cpu,cs,logical\_disk,net,os,service,system'
+* `listen_address`, String, default: '0.0.0.0'
+* `listen_port`, String, default: '9182'
+* `metrics_path`, Strin, default: '/metrics'
+* `version`, String, default: '0.2.7'
 
-```ruby
-elasticsearch_exporter 'main' do
-  action %i[install enable start]
-end
-```
+Use the given defaults or set the attributes...
 
+* `node['prometheus_exporters']['wmi']['version']['listen_interface']`
+* `node['prometheus_exporters']['wmi']['listen_address']`
+* `node['prometheus_exporters']['wmi']['listen_port']`
+* `node['prometheus_exporters']['wmi']['metrics_path']`
 
-## mongodb_exporter
-
-* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9216")
-* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
-* `web_auth_file` Path to YAML file with server_user, server_password keys for HTTP Basic authentication (overrides HTTP_AUTH environment variable).
-* `web_ssl_cert_file` Path to SSL certificate file.
-* `web_ssl_key_file` Path to SSL key file.
-* `collect_database` Enable collection of Database metrics
-* `collect_collection` Enable collection of Collection metrics
-* `collect_topmetrics` Enable collection of table top metrics
-* `collect_indexusage` Enable collection of per index usage stats
-* `collect_connpoolstats` Collect MongoDB connpoolstats
-* `mongodb_uri` MongoDB URI, format ([mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options])
-* `mongodb_authentication_database` Specifies the database in which the user is created
-* `mongodb_max_connections` Max number of pooled connections to the database. (default: 1)
-* `mongodb_socket_timeout` Amount of time to wait for a non-responding socket to the database before it is forcefully closed. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'. (default: 3s)
-* `mongodb_sync_timeout` Amount of time an operation with this session will wait before returning an error in case a connection to a usable server can't be established. (default: 1m)
-* `log_format` Set the log target and format. Example: "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true"
-* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
-* `user` User under whom to start mongodb exporter. (default: "root")
-
-```ruby
-mongodb_exporter 'main' do
-  action %i[install enable start]
-end
-```
-
+and add `recipe['prometheus_exporters::wmi]` to your run_list.
 
 # Discovery
 

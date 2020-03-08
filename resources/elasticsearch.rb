@@ -1,18 +1,20 @@
 resource_name :elasticsearch_exporter
 
-property :uri, String, default: 'http://localhost:9200'
-property :all, [TrueClass, FalseClass], default: false
-property :cluster_settings, [TrueClass, FalseClass], default: false
-property :indices, [TrueClass, FalseClass], default: false
-property :indices_settings, [TrueClass, FalseClass], default: false
-property :shards, [TrueClass, FalseClass], default: false
-property :snapshots, [TrueClass, FalseClass], default: false
-property :timeout, String, default: '5s'
-property :ca, String
-property :client_private_key, String
-property :client_cert, String
-property :clusterinfo_interval, String, default: '5m'
-property :ssl_skip_verify, [TrueClass, FalseClass], default: false
+property :es_uri, String, default: 'http://localhost:9200'
+property :es_all, [TrueClass, FalseClass], default: false
+property :es_indices, [TrueClass, FalseClass], default: false
+property :es_indices_settings, [TrueClass, FalseClass], default: false
+property :es_cluster_settings, [TrueClass, FalseClass], default: false
+property :es_shards, [TrueClass, FalseClass], default: false
+property :es_snapshots, [TrueClass, FalseClass], default: false
+property :es_timeout, String, default: '5s'
+property :es_clusterinfo_interval, String, default: '5m'
+property :es_ca, String
+property :es_client_private_key, String
+property :es_client_cert, String
+property :es_ssl_skip_verify, [TrueClass, FalseClass], default: false
+property :log_format, String, default: 'logfmt'
+property :log_level, String, default: 'info'
 property :user, String, default: 'root'
 property :web_listen_address, String, default: ':9114'
 property :web_telemetry_path, String, default: '/metrics'
@@ -23,18 +25,22 @@ action :install do
 
   options = "--web.listen-address=#{new_resource.web_listen_address}"
   options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
-  options += " --es.uri=#{new_resource.uri}"
-  options += ' --es.all' if new_resource.all
-  options += ' --es.indices' if new_resource.indices
-  options += ' --es.indices_settings' if new_resource.indices_settings
-  options += ' --es.shards' if new_resource.shards
-  options += ' --es.snapshots' if new_resource.snapshots
-  options += " --es.timeout=#{new_resource.timeout}"
-  options += " --es.ca=#{new_resource.ca}" if new_resource.ca
-  options += " --es.client-private-key=#{new_resource.client_private_key}" if new_resource.client_private_key
-  options += " --es.client-cert=#{new_resource.client_cert}" if new_resource.client_cert
-  options += " --es.clusterinfo.interval=#{new_resource.clusterinfo_interval}"
-  options += ' --es.ssl-skip-verify' if new_resource.ssl_skip_verify
+  options += " --log.level=#{new_resource.log_level}"
+  options += " --log.format=#{new_resource.log_format}"
+  options += " --es.uri=#{new_resource.es_uri}"
+  options += ' --es.all' if new_resource.es_all
+  options += ' --es.indices' if new_resource.es_indices
+  options += ' --es.indices_settings' if new_resource.es_indices_settings
+  options += ' --es.cluster_settings' if new_resource.es_cluster_settings
+  options += ' --es.shards' if new_resource.es_shards
+  options += ' --es.snapshots' if new_resource.es_snapshots
+  options += " --es.timeout=#{new_resource.es_timeout}"
+  options += " --es.clusterinfo.interval=#{new_resource.es_clusterinfo_interval}"
+  options += " --es.ca=#{new_resource.es_ca}" if new_resource.es_ca
+  options += " --es.client-private-key=#{new_resource.es_client_private_key}" if new_resource.es_client_private_key
+  options += " --es.client-cert=#{new_resource.es_client_cert}" if new_resource.es_client_cert
+  options += ' --es.ssl-skip-verify' if new_resource.es_ssl_skip_verify
+
 
   service_name = "elasticsearch_exporter_#{new_resource.name}"
 

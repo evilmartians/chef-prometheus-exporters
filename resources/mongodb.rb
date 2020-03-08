@@ -1,22 +1,22 @@
 resource_name :mongodb_exporter
 
-property :web_auth_file, String
-property :web_ssl_cert_file, String
-property :web_ssl_key_file, String
-property :collect_database, [TrueClass, FalseClass], default: false
 property :collect_collection, [TrueClass, FalseClass], default: false
-property :collect_topmetrics, [TrueClass, FalseClass], default: false
-property :collect_indexusage, [TrueClass, FalseClass], default: false
 property :collect_connpoolstats, [TrueClass, FalseClass], default: false
-property :mongodb_uri, String, default: 'mongodb://localhost:27017'
+property :collect_database, [TrueClass, FalseClass], default: false
+property :collect_indexusage, [TrueClass, FalseClass], default: false
+property :collect_topmetrics, [TrueClass, FalseClass], default: false
+property :log_format, String, default: 'logger:stderr'
+property :log_level, String, default: 'info'
 property :mongodb_authentication_database, String
 property :mongodb_max_connections, Integer
 property :mongodb_socket_timeout, String
 property :mongodb_sync_timeout, String
-property :log_format, String, default: 'logger:stderr'
-property :log_level, String
+property :mongodb_uri, String, default: 'mongodb://localhost:27017'
 property :user, String, default: 'root'
+property :web_auth_file, String
 property :web_listen_address, String, default: ':9216'
+property :web_ssl_cert_file, String
+property :web_ssl_key_file, String
 property :web_telemetry_path, String, default: '/metrics'
 
 action :install do

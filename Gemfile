@@ -4,6 +4,7 @@ gem 'berkshelf'
 
 group :development do
   gem 'chefspec'
+  gem 'cookstyle'
   gem 'foodcritic'
   gem 'inspec'
   gem 'ipaddr_extensions'
@@ -14,6 +15,5 @@ group :development do
   gem 'rubocop'
   gem 'stove'
   gem 'test-kitchen'
-  gem 'thor'
   gem 'vagrant-berkshelf'
 end
