@@ -1,5 +1,11 @@
 # prometheus\_exporters
 
+## unreleased
+
+- [Adam Kobi] elasticsearch_exporter
+- [Adam Kobi] mongodb_exporter
+- [Kirill Kuznetsov] README update & alphabetical sort
+
 ## 0.15.6
 
 - [Kirill Kuznetsov] varnish recipe fix.
