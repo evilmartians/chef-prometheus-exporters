@@ -12,10 +12,12 @@ datadir		= /var/lib/mysql
 '
   action :create
 end
+
 user 'mysql' do
   comment 'Mock Mysql user'
   system true
 end
+
 user 'prometheus' do
   comment 'Prometheus user'
   system true
@@ -116,5 +118,13 @@ statsd_exporter 'main' do
 end
 
 varnish_exporter 'main' do
+  action %i[install enable start]
+end
+
+elasticsearch_exporter 'main' do
+  action %i[install enable start]
+end
+
+mongodb_exporter 'main' do
   action %i[install enable start]
 end

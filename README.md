@@ -37,6 +37,8 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 - [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 - [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
 - [varnish_exporter](https://github.com/evilmartians/chef-prometheus-exporters#varnish_exporter)
+- [elasticsearch_exporter](https://github.com/justwatchcom/elasticsearch_exporter)
+- [mongodb_exporter](https://github.com/percona/mongodb_exporter)
 
 # Resources
 
@@ -411,6 +413,60 @@ Use the given defaults or set the attributes...
 * `node['prometheus_exporters']['varnish']['user']`
 
 and add `recipe['prometheus_exporters::varnish]` to your run_list.
+
+
+## elasticsearch_exporter
+
+* `uri` Address (host and port) of the Elasticsearch node we should connect to. (default: "http://localhost:9200")
+* `all` If true, query stats for all nodes in the cluster, rather than just the node we connect to. (default: false)
+* `cluster_settings` If true, query stats for cluster settings. (default: false)
+* `indices` If true, query stats for all indices in the cluster. (default: false)
+* `indices_settings` If true, query settings stats for all indices in the cluster. (default: false)
+* `shards` If true, query stats for all indices in the cluster, including shard-level stats (implies es.indices=true). (default: false)
+* `snapshots` If true, query stats for the cluster snapshots. (default: false)
+* `timeout` Timeout for trying to get stats from Elasticsearch. (ex: 20s) (default: 5s)
+* `ca` Path to PEM file that contains trusted Certificate Authorities for the Elasticsearch connection.
+* `client_private_key	` Path to PEM file that contains the private key for client auth when connecting to Elasticsearch.
+* `client_cert` Path to PEM file that contains the corresponding cert for the private key to connect to Elasticsearch.
+* `clusterinfo_interval` Cluster info update interval for the cluster label. (default: 5m)
+* `ssl_skip_verify` Skip SSL verification when connecting to Elasticsearch. (default: false)
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9114")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `user` User under whom to start elasticsearch exporter. (default: "root")
+
+```ruby
+elasticsearch_exporter 'main' do
+  action %i[install enable start]
+end
+```
+
+
+## mongodb_exporter
+
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9216")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `web_auth_file` Path to YAML file with server_user, server_password keys for HTTP Basic authentication (overrides HTTP_AUTH environment variable).
+* `web_ssl_cert_file` Path to SSL certificate file.
+* `web_ssl_key_file` Path to SSL key file.
+* `collect_database` Enable collection of Database metrics
+* `collect_collection` Enable collection of Collection metrics
+* `collect_topmetrics` Enable collection of table top metrics
+* `collect_indexusage` Enable collection of per index usage stats
+* `collect_connpoolstats` Collect MongoDB connpoolstats
+* `mongodb_uri` MongoDB URI, format ([mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options])
+* `mongodb_authentication_database` Specifies the database in which the user is created
+* `mongodb_max_connections` Max number of pooled connections to the database. (default: 1)
+* `mongodb_socket_timeout` Amount of time to wait for a non-responding socket to the database before it is forcefully closed. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'. (default: 3s)
+* `mongodb_sync_timeout` Amount of time an operation with this session will wait before returning an error in case a connection to a usable server can't be established. (default: 1m)
+* `log_format` Set the log target and format. Example: "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true"
+* `log_level` Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+* `user` User under whom to start mongodb exporter. (default: "root")
+
+```ruby
+mongodb_exporter 'main' do
+  action %i[install enable start]
+end
+```
 
 
 # Discovery
