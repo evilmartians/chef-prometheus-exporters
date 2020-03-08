@@ -5,7 +5,7 @@ language: ruby
 cache: bundler
 sudo: false
 rvm:
-- 2.6.5
+- 2.7.0
 
 bundler_args: "--without kitchen_vagrant"
 
@@ -52,8 +52,8 @@ jobs:
   include:
   - stage: lint
     script:
-    - bundle exec rubocop --version
-    - bundle exec rubocop
+    - bundle exec cookstyle --version
+    - bundle exec cookstyle
     - bundle exec foodcritic --version
     - bundle exec foodcritic --contex --epic-fail any .
     - bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.rb

@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: apache
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -10,7 +10,7 @@
 resource_name :apache_exporter
 
 property :host_override, String, default: ''
-property :insecure, [TrueClass, FalseClass], default: false
+property :insecure, [true, false], default: false
 property :scrape_uri, String, default: 'http://localhost/server-status/?auto'
 property :telemetry_address, String, default: ':9117'
 property :telemetry_endpoint, String, default: '/metrics'
@@ -53,10 +53,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

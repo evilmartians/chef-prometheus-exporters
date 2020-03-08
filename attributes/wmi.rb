@@ -1,6 +1,6 @@
 default['prometheus_exporters']['wmi']['version'] = '0.9.0'
 
-default['prometheus_exporters']['wmi']['enabled_collectors'] = %w[
+default['prometheus_exporters']['wmi']['enabled_collectors'] = %w(
   cpu
   cs
   logical_disk
@@ -8,7 +8,7 @@ default['prometheus_exporters']['wmi']['enabled_collectors'] = %w[
   os
   service
   system
-]
+)
 
 default['prometheus_exporters']['wmi']['listen_address'] = '0.0.0.0'
 default['prometheus_exporters']['wmi']['listen_port'] = '9182'

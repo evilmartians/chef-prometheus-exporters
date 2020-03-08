@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: redis
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -13,19 +13,19 @@ property :check_keys, String
 property :check_single_keys, String
 property :config_command, String
 property :connection_timeout, String
-property :debug, [TrueClass, FalseClass], default: false
-property :include_system_metrics, [TrueClass, FalseClass], default: false
-property :is_tile38, [TrueClass, FalseClass], default: false
+property :debug, [true, false], default: false
+property :include_system_metrics, [true, false], default: false
+property :is_tile38, [true, false], default: false
 property :log_format, String, default: 'txt'
 property :namespace, String, default: 'redis'
 property :redis_addr, String, default: 'redis://localhost:6379'
 property :redis_alias, String
 property :redis_file, String
-property :redis_only_metrics, [TrueClass, FalseClass], default: false
+property :redis_only_metrics, [true, false], default: false
 property :redis_password, String
 property :redis_password_file, String
 property :script, String
-property :skip_tls_verification, [TrueClass, FalseClass], default: false
+property :skip_tls_verification, [true, false], default: false
 property :user, String, default: 'root'
 property :web_listen_address, String, default: '0.0.0.0:9121'
 property :web_telemetry_path, String, default: '/metrics'
@@ -79,10 +79,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

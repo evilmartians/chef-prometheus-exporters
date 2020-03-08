@@ -1,18 +1,18 @@
 resource_name :elasticsearch_exporter
 
 property :es_uri, String, default: 'http://localhost:9200'
-property :es_all, [TrueClass, FalseClass], default: false
-property :es_indices, [TrueClass, FalseClass], default: false
-property :es_indices_settings, [TrueClass, FalseClass], default: false
-property :es_cluster_settings, [TrueClass, FalseClass], default: false
-property :es_shards, [TrueClass, FalseClass], default: false
-property :es_snapshots, [TrueClass, FalseClass], default: false
+property :es_all, [true, false], default: false
+property :es_indices, [true, false], default: false
+property :es_indices_settings, [true, false], default: false
+property :es_cluster_settings, [true, false], default: false
+property :es_shards, [true, false], default: false
+property :es_snapshots, [true, false], default: false
 property :es_timeout, String, default: '5s'
 property :es_clusterinfo_interval, String, default: '5m'
 property :es_ca, String
 property :es_client_private_key, String
 property :es_client_cert, String
-property :es_ssl_skip_verify, [TrueClass, FalseClass], default: false
+property :es_ssl_skip_verify, [true, false], default: false
 property :log_format, String, default: 'logfmt'
 property :log_level, String, default: 'info'
 property :user, String, default: 'root'
@@ -40,7 +40,6 @@ action :install do
   options += " --es.client-private-key=#{new_resource.es_client_private_key}" if new_resource.es_client_private_key
   options += " --es.client-cert=#{new_resource.es_client_cert}" if new_resource.es_client_cert
   options += ' --es.ssl-skip-verify' if new_resource.es_ssl_skip_verify
-
 
   service_name = "elasticsearch_exporter_#{new_resource.name}"
 
@@ -72,10 +71,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

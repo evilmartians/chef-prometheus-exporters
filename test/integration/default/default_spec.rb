@@ -20,10 +20,10 @@ end
   end
 end
 
-%w[
+%w(
   first
   second
-].each do |node_exporter_name|
+).each do |node_exporter_name|
   describe service("node_exporter_#{node_exporter_name}") do
     # Chef 14 resource service is broken on a first run on Ubuntu 14.
     it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
@@ -67,7 +67,7 @@ describe service('postgres_exporter_chef') do
 end
 
 describe processes('postgres_exporter') do
-  its('users') { should eq %w[postgres opscode-pgsql] }
+  its('users') { should eq %w(postgres opscode-pgsql) }
 end
 
 # SNMP exporter

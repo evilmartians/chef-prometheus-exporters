@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: statsd
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -26,6 +26,6 @@ unless node['prometheus_exporters']['disable']
     statsd_read_buffer node['prometheus_exporters']['statsd']['read_buffer']
     user node['prometheus_exporters']['statsd']['user']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end

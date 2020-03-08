@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: wmi
 #
 # The wmi recipe makes use of the Chef chocolatey_package resource.  This will perform a default install of the Chocolatey package management system if it doesn't already exist.

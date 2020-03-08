@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: snmp
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -13,7 +13,7 @@ snmp_exporter 'main' do
   web_listen_address "#{listen_ip}:9116"
   user default['prometheus_exporters']['snmp']['user']
 
-  action %i[install enable start]
+  action %i(install enable start)
 
   not_if { node['prometheus_exporters']['disable'] }
 end

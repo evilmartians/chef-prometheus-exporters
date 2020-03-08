@@ -1,10 +1,10 @@
 resource_name :mongodb_exporter
 
-property :collect_collection, [TrueClass, FalseClass], default: false
-property :collect_connpoolstats, [TrueClass, FalseClass], default: false
-property :collect_database, [TrueClass, FalseClass], default: false
-property :collect_indexusage, [TrueClass, FalseClass], default: false
-property :collect_topmetrics, [TrueClass, FalseClass], default: false
+property :collect_collection, [true, false], default: false
+property :collect_connpoolstats, [true, false], default: false
+property :collect_database, [true, false], default: false
+property :collect_indexusage, [true, false], default: false
+property :collect_topmetrics, [true, false], default: false
 property :log_format, String, default: 'logger:stderr'
 property :log_level, String, default: 'info'
 property :mongodb_authentication_database, String
@@ -80,10 +80,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

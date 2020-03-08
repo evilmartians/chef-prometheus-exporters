@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: haproxy
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -21,6 +21,6 @@ unless node['prometheus_exporters']['disable']
     haproxy_ssl_verify node['prometheus_exporters']['haproxy']['ssl_verify']
     user node['prometheus_exporters']['haproxy']['user']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end

@@ -1,15 +1,15 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: postgres
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
 
 resource_name :postgres_exporter
 
-property :auto_discover_databases, [TrueClass, FalseClass], default: false
+property :auto_discover_databases, [true, false], default: false
 property :constant_labels, String
 property :data_source_name, String
 property :data_source_pass, String
@@ -17,8 +17,8 @@ property :data_source_pass_file, String
 property :data_source_uri, String
 property :data_source_user, String
 property :data_source_user_file, String
-property :disable_default_metrics, [TrueClass, FalseClass], default: false
-property :disable_settings_metrics, [TrueClass, FalseClass], default: false
+property :disable_default_metrics, [true, false], default: false
+property :disable_settings_metrics, [true, false], default: false
 property :extend_query_path, String
 property :instance_name, String, name_property: true
 property :log_format, String, default: 'logger:stdout?json=false'
@@ -78,10 +78,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

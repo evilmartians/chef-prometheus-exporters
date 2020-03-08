@@ -3,8 +3,8 @@ require 'chefspec/berkshelf'
 
 describe 'testrig::default' do
   let(:chef_run) do
-    ChefSpec::Runner.new(platform: 'ubuntu', version: '18.04')
-                    .converge(described_recipe)
+    ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '18.04')
+                        .converge(described_recipe)
   end
 
   mysqld_exporter_properties = {

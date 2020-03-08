@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: haproxy
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -12,7 +12,7 @@ resource_name :haproxy_exporter
 property :haproxy_pid_file, String
 property :haproxy_scrape_uri, String
 property :haproxy_server_metric_fields, String
-property :haproxy_ssl_verify, [TrueClass, FalseClass], default: false
+property :haproxy_ssl_verify, [true, false], default: false
 property :haproxy_timeout, String
 property :log_format, String, default: 'logger:stdout'
 property :log_level, String, default: 'info'
@@ -64,10 +64,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

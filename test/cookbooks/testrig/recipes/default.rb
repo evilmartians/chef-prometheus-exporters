@@ -38,11 +38,11 @@ mysqld_exporter 'main' do
   config_my_cnf '/etc/mysqld/my.cnf'
   user 'mysql'
 
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 node_exporter 'first' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 node_exporter 'second' do
@@ -53,21 +53,21 @@ node_exporter 'second' do
   collector_netdev_ignored_devices node['prometheus_exporters']['node']['ignored_net_devs']
   collector_filesystem_ignored_mount_points node['prometheus_exporters']['node']['ignored_mount_points']
 
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 redis_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 snmp_exporter 'main' do
   config_file "/opt/snmp_exporter-#{node['prometheus_exporters']['snmp']['version']}.linux-amd64/snmp.yml"
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 postgres_exporter 'main' do
   data_source_name 'postgres'
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 # Second PostgreSQL exporter instance with the settings needed to
@@ -77,7 +77,7 @@ postgres_exporter 'chef' do
   data_source_name 'user=opscode-pgsql host=/tmp/ sslmode=disable'
   user 'opscode-pgsql'
 
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 blackbox_exporter 'main' do
@@ -86,7 +86,7 @@ blackbox_exporter 'main' do
   timeout_offset '0.5'
   log_level 'info'
 
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 file '/etc/process_exporter_test.yml' do
@@ -101,30 +101,30 @@ end
 process_exporter 'main' do
   config_path '/etc/process_exporter_test.yml'
 
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 haproxy_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 # Apache Exporter Stuff
 apache_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 statsd_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 varnish_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 elasticsearch_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end
 
 mongodb_exporter 'main' do
-  action %i[install enable start]
+  action %i(install enable start)
 end

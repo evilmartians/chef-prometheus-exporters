@@ -11,7 +11,7 @@ unless node['prometheus_exporters']['disable']
     config_path "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml"
     user node['prometheus_exporters']['process']['user']
 
-    action %i[install enable]
+    action %i(install enable)
   end
 
   file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']}.linux-amd64/all.yml" do
