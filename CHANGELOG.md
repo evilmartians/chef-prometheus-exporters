@@ -1,14 +1,17 @@
 # prometheus\_exporters
 
-## unreleased
+## 0.15.7
 
 - [Adam Kobi] elasticsearch_exporter
 - [Adam Kobi] mongodb_exporter
 - [Kirill Kuznetsov] README update & alphabetical sort
+- [Kirill Kuznetsov] Chef 13 tests were dropped
+- [Kirill Kuznetsov] Fedora 30/31 tests only
+- [Kirill Kuznetsov] Ubuntu 14 support was dropped
 
 ## 0.15.6
 
-- [Kirill Kuznetsov] varnish recipe fix.
+- [Kirill Kuznetsov] varnish recipe fix
 
 ## 0.15.5
 

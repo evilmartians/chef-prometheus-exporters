@@ -14,7 +14,7 @@ supports 'debian', '>= 8.0'
 supports 'fedora', '>= 28.0'
 supports 'oracle'
 supports 'scientific'
-supports 'ubuntu', '>= 14.04'
+supports 'ubuntu', '>= 16.04'
 supports 'windows'
 
 issues_url 'https://github.com/evilmartians/chef-prometheus-exporters/issues'
