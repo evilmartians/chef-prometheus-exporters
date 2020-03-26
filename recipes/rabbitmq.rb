@@ -11,6 +11,7 @@ unless node['prometheus_exporters']['disable']
     web_listen_port node['prometheus_exporters']['rabbitmq']['port']
     output_format node['prometheus_exporters']['rabbitmq']['output_format']
     log_level node['prometheus_exporters']['rabbitmq']['log_level']
+    rabbitmq_rabbit_capabilities node['prometheus_exporters']['rabbitmq']['rabbit_capabilities']
     user node['prometheus_exporters']['rabbitmq']['user']
 
     action %i[install enable start]

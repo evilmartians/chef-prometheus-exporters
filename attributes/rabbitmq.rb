@@ -7,5 +7,6 @@ default['prometheus_exporters']['rabbitmq']['port'] = 9419
 default['prometheus_exporters']['rabbitmq']['scrape_url'] = 'http://127.0.0.1:15672'
 default['prometheus_exporters']['rabbitmq']['output_format'] = 'TTY'
 default['prometheus_exporters']['rabbitmq']['log_level'] = 'info'
+default['prometheus_exporters']['rabbitmq']['rabbit_capabilities'] = 'nobert'
 
 
