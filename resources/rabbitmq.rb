@@ -7,6 +7,7 @@ resource_name :rabbitmq_exporter
 
 property :user, String, default: 'root'
 property :rabbitmq_scrape_url, String, default: 'http://127.0.0.1:15672'
+property :rabbitmq_rabbit_capabilities, String, default: 'nobert'
 property :rabbitmq_user, String
 property :rabbitmq_password, String
 property :web_listen_port, String, default: '9419'
@@ -20,6 +21,7 @@ action :install do
   options = "RABBIT_URL=#{new_resource.rabbitmq_scrape_url}"
   options += " RABBIT_USER=#{new_resource.rabbitmq_user}" if new_resource.rabbitmq_user
   options += " RABBIT_PASSWORD=#{new_resource.rabbitmq_password}" if new_resource.rabbitmq_password
+  options += " RABBIT_CAPABILITIES=#{new_resource.rabbitmq_rabbit_capabilities}"
   options += " PUBLISH_PORT=#{new_resource.web_listen_port}"
   options += " OUTPUT_FORMAT=#{new_resource.output_format}"
   options += " LOG_LEVEL=#{new_resource.log_level}"
@@ -45,6 +47,22 @@ action :install do
 
   link '/usr/local/sbin/rabbitmq_exporter' do
     to "/opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/rabbitmq_exporter"
+  end
+
+  directory "/usr/bin/#{service_name}" do
+    action :create
+  end
+
+  template "/usr/bin/#{service_name}/launch.sh" do
+    cookbook 'prometheus_exporters'
+    source 'rabbitmq/rabbitmq_exporter_launch.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      options: options,
+      launch_path: "/usr/local/sbin/rabbitmq_exporter"
+    )
   end
 
   # Configure to run as a service
@@ -83,7 +101,7 @@ action :install do
       variables(
         name: service_name,
         user: new_resource.user,
-        cmd: "#{options} /usr/local/sbin/rabbitmq_exporter",
+        cmd: "/bin/bash /usr/bin/#{service_name}/launch.sh",
         service_description: 'Prometheus RabbitMQ Exporter',
       )
       notifies :restart, "service[#{service_name}]"
@@ -99,7 +117,7 @@ action :install do
         'Service' => {
           'Type' => 'simple',
           'User' => new_resource.user,
-          'ExecStart' => "#{options} /usr/local/sbin/rabbitmq_exporter",
+          'ExecStart' => "/bin/bash /usr/bin/#{service_name}/launch.sh",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
           'RestartSec' => '30s',
@@ -121,7 +139,7 @@ action :install do
       mode '0644'
       variables(
         user: new_resource.user,
-        cmd: "#{options} /usr/local/sbin/rabbitmq_exporter",
+        cmd: "/bin/bash /usr/bin/#{service_name}/launch.sh",
         service_description: 'Prometheus RabbitMQ Exporter',
       )
       notifies :restart, "service[#{service_name}]"
