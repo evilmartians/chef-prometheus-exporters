@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: snmp
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #

@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: statsd
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -66,10 +66,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

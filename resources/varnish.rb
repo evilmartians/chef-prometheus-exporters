@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: varnish
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -14,10 +14,10 @@ property :web_listen_address, String, default: ':9131'
 property :web_telemetry_path, String, default: '/metrics'
 property :N, String
 property :docker_container_name, String
-property :exit_on_errors, [TrueClass, FalseClass], default: false
+property :exit_on_errors, [true, false], default: false
 property :n, String
-property :verbose, [TrueClass, FalseClass], default: false
-property :with_go_metrics, [TrueClass, FalseClass], default: false
+property :verbose, [true, false], default: false
+property :with_go_metrics, [true, false], default: false
 property :user, String, default: 'root'
 
 action :install do
@@ -61,10 +61,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

@@ -1,13 +1,13 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: node
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
 
-COLLECTOR_LIST = %w[
+COLLECTOR_LIST = %w(
   arp
   bcache
   bonding
@@ -56,7 +56,7 @@ COLLECTOR_LIST = %w[
   wifi
   xfs
   zfs
-].freeze
+).freeze
 
 resource_name :node_exporter
 
@@ -81,14 +81,14 @@ property :collector_ntp_local_offset_tolerance, String
 property :collector_ntp_max_distance, String
 property :collector_ntp_protocol_version, [String, Integer]
 property :collector_ntp_server, String
-property :collector_ntp_server_is_local, [TrueClass, FalseClass]
+property :collector_ntp_server_is_local, [true, false]
 property :collector_qdisc_fixtures, String
 property :collector_runit_servicedir, String
 property :collector_supervisord_url, String
-property :collector_systemd_enable_restarts_metrics, [TrueClass, FalseClass], default: false
-property :collector_systemd_enable_start_time_metrics, [TrueClass, FalseClass], default: false
-property :collector_systemd_enable_task_metrics, [TrueClass, FalseClass], default: false
-property :collector_systemd_private, [TrueClass, FalseClass], default: false
+property :collector_systemd_enable_restarts_metrics, [true, false], default: false
+property :collector_systemd_enable_start_time_metrics, [true, false], default: false
+property :collector_systemd_enable_task_metrics, [true, false], default: false
+property :collector_systemd_private, [true, false], default: false
 property :collector_systemd_unit_blacklist, String
 property :collector_systemd_unit_whitelist, String
 property :collector_textfile_directory, String
@@ -100,7 +100,7 @@ property :path_procfs, String
 property :path_rootfs, String
 property :path_sysfs, String
 property :user, String, default: 'root'
-property :web_disable_exporter_metrics, [TrueClass, FalseClass], default: false
+property :web_disable_exporter_metrics, [true, false], default: false
 property :web_listen_address, String, default: ':9100'
 property :web_max_requests, [String, Integer], default: 40
 property :web_telemetry_path, String, default: '/metrics'
@@ -180,10 +180,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

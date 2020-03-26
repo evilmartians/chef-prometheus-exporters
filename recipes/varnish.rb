@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: varnish
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -29,6 +29,6 @@ unless node['prometheus_exporters']['disable']
     with_go_metrics varnish_conf['with_go_metrics'] if varnish_conf.key? 'with_go_metrics'
     user varnish_conf['user']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end

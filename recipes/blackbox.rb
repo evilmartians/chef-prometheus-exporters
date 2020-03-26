@@ -6,6 +6,6 @@ unless node['prometheus_exporters']['disable']
     timeout_offset node['prometheus_exporters']['blackbox']['timeout_offset']
     log_level node['prometheus_exporters']['blackbox']['log_level']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end

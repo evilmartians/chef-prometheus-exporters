@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: snmp
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -13,7 +13,7 @@ property :config_file, String, default: '/etc/snmp_exporter/snmp.yaml'
 property :custom_options, String
 property :log_format, String, default: 'logfmt'
 property :log_level, String, default: 'info'
-property :snmp_wrap_large_counters, [TrueClass, FalseClass], default: false
+property :snmp_wrap_large_counters, [true, false], default: false
 property :user, String, default: 'root'
 property :web_listen_address, String, default: ':9116'
 
@@ -55,10 +55,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

@@ -1,14 +1,14 @@
 resource_name :process_exporter
 
-property :children, [TrueClass, FalseClass], default: true
+property :children, [true, false], default: true
 property :config_path, String
 property :custom_options, String
-property :debug, [TrueClass, FalseClass], default: false
+property :debug, [true, false], default: false
 property :namemapping, String
 property :procfs, String
 property :procnames, String
-property :recheck, [TrueClass, FalseClass], default: false
-property :threads, [TrueClass, FalseClass], default: true
+property :recheck, [true, false], default: false
+property :threads, [true, false], default: true
 property :user, String, default: 'root'
 property :web_listen_address, String, default: ':9256'
 property :web_telemetry_path, String, default: '/metrics'
@@ -59,10 +59,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'

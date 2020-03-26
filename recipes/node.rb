@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: node
 #
-# Copyright 2017, Evil Martians
+# Copyright:: 2017, Evil Martians
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -24,6 +24,6 @@ unless node['prometheus_exporters']['disable']
     collector_filesystem_ignored_mount_points node['prometheus_exporters']['node']['ignored_mount_points']
     user node['prometheus_exporters']['node']['user']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end
