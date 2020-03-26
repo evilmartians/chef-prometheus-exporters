@@ -154,6 +154,32 @@ describe service('varnish_exporter_main') do
   it { should be_running }
 end
 
+# elasticsearch exporter
+describe port(9114) do
+  it { should be_listening }
+  its('processes') { should cmp(/^elasticsearch_e/) }
+end
+
+describe service('elasticsearch_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
+
+# mongodb exporter
+describe port(9216) do
+  # small hack to wait for exporter to fail connecting to mongodb(we don't have one) and expose its port
+  sleep(30)
+  it { should be_listening }
+  its('processes') { should cmp(/^mongodb_export/) }
+end
+
+describe service('mongodb_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
+
 # rabbitmq exporter
 describe port(9419) do
   it { should be_listening }
