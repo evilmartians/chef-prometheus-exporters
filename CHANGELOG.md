@@ -1,5 +1,10 @@
 # prometheus\_exporters
 
+## 0.15.9
+
+- [Kirill Kuznetsov] fix cookstyle bugs
+- [Kirill Kuznetsov] fix rabbitmq systemd unit env variable
+
 ## 0.15.8
 
 - [Lior Tzur] rabbitmq_exporter

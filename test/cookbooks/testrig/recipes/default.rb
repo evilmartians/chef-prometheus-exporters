@@ -1,4 +1,4 @@
-%w[
+%w(
   apache
   blackbox
   elastic
@@ -13,6 +13,6 @@
   snmp
   statsd
   varnish
-].each do |exporter_recipe|
+).each do |exporter_recipe|
   include_recipe "testrig::#{exporter_recipe}"
 end

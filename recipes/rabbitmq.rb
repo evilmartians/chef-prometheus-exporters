@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Recipe:: rabbitmq
 #
 
@@ -23,6 +23,6 @@ unless node['prometheus_exporters']['disable']
     skipverify node['prometheus_exporters']['rabbitmq']['skipverify']
     user node['prometheus_exporters']['rabbitmq']['user']
 
-    action %i[install enable start]
+    action %i(install enable start)
   end
 end

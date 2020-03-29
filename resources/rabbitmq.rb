@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: prometheus_exporters
+# Cookbook:: prometheus_exporters
 # Resource:: rabbitmq
 #
 
@@ -11,13 +11,13 @@ property :exclude_metrics, [String, Array]
 property :include_queues, String
 property :include_vhost, String
 property :keyfile, String
-property :log_level, String, default: 'info', equal_to: %w[debug info warning error fatal panic]
+property :log_level, String, default: 'info', equal_to: %w(debug info warning error fatal panic)
 property :max_queues, Integer, default: 0
-property :output_format, String, default: 'TTY', equal_to: %w[TTY JSON]
+property :output_format, String, default: 'TTY', equal_to: %w(TTY JSON)
 property :publish_addr, String
 property :publish_port, Integer, default: 9419
 property :rabbit_capabilities, String, default: 'bert,no_sort'
-property :rabbit_exporters, [String, Array], default: %w[exchange node overview queue]
+property :rabbit_exporters, [String, Array], default: %w(exchange node overview queue)
 property :rabbit_password, String, sensitive: true
 property :rabbit_timeout, Integer, default: 30
 property :rabbit_url, String, default: 'http://127.0.0.1:15672'
@@ -35,7 +35,7 @@ action :install do
   options['ca_file'] = new_resource.cafile if new_resource.cafile
   options['cert_file'] = new_resource.certfile if new_resource.certfile
   if new_resource.exclude_metrics
-    options['exclude_metrics'] = if new_resource.exclude_metrics.kind_of?(String)
+    options['exclude_metrics'] = if new_resource.exclude_metrics.is_a?(String)
                                    new_resource.exclude_metrics.split(/\s*,\s*/) - ['']
                                  else
                                    new_resource.exclude_metrics
@@ -50,7 +50,7 @@ action :install do
   options['publish_port'] = new_resource.publish_port
   options['rabbit_capabilities'] = new_resource.rabbit_capabilities
   if new_resource.rabbit_exporters
-    options['enabled_exporters'] = if new_resource.rabbit_exporters.kind_of?(String)
+    options['enabled_exporters'] = if new_resource.rabbit_exporters.is_a?(String)
                                      new_resource.rabbit_exporters.split(/\s*,\s*/) - ['']
                                    else
                                      new_resource.rabbit_exporters
@@ -102,10 +102,10 @@ action :install do
 
   case node['init_package']
   when /init/
-    %w[
+    %w(
       /var/run/prometheus
       /var/log/prometheus
-    ].each do |dir|
+    ).each do |dir|
       directory dir do
         owner 'root'
         group 'root'
@@ -133,7 +133,7 @@ action :install do
         user: new_resource.user,
         cmd: "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
         service_description: 'Prometheus RabbitMQ Exporter',
-        env: {'LOG_LEVEL' => new_resource.log_level},
+        env: { 'LOG_LEVEL' => new_resource.log_level },
       )
       notifies :restart, "service[#{service_name}]"
     end
@@ -148,7 +148,7 @@ action :install do
         'Service' => {
           'Type' => 'simple',
           'User' => new_resource.user,
-          'Environment' => {'LOG_LEVEL' => new_resource.log_level},
+          'Environment' => "\"LOG_LEVEL=#{new_resource.log_level}\"",
           'ExecStart' => "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
@@ -173,7 +173,7 @@ action :install do
         user: new_resource.user,
         cmd: "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
         service_description: 'Prometheus RabbitMQ Exporter',
-        env: {'LOG_LEVEL' => new_resource.log_level},
+        env: { 'LOG_LEVEL' => new_resource.log_level },
       )
       notifies :restart, "service[#{service_name}]"
     end
