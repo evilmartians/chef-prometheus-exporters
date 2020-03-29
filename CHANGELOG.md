@@ -1,5 +1,12 @@
 # prometheus\_exporters
 
+## 0.15.8
+
+- [Lior Tzur] rabbitmq_exporter
+- [Kirill Kuznetsov] rabbitmq_exporter resource refacotring
+- [Kirill Kuznetsov] bundler update
+- [Kirill Kuznetsov] testrig cookbook refacotring
+
 ## 0.15.7
 
 - [Adam Kobi] elasticsearch_exporter

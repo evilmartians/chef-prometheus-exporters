@@ -4,7 +4,7 @@ maintainer_email 'surrender@evilmartians.com'
 license          'Apache-2.0'
 description      'Installs / configures Prometheus exporters'
 
-version          '0.15.7'
+version          '0.15.8'
 
 chef_version '>= 12.11', '< 16.0'
 
