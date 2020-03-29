@@ -9,19 +9,20 @@ All of the exporters are available as chef custom resources that can be instanti
 
 # Supports
 
-* Ubuntu 14.04
 * Ubuntu 16.04
 * Ubuntu 18.04
-* Debian 8
+* Fedora 31
+* Fedora 30
+* Debian 4
 * Debian 9
-* CentOS 6
 * CentOS 7
+* Amazon Linux
 
 And probably other RHEL or Debian based distributions.
 
 * Windows Server 2012 & 2016 (wmi\_exporter recipe only)
 
-Tests are made using last available Chef 14 along with latest Chef 13.
+Tests are made using last available Chef 15 along with latest Chef 14.
 
 # Resource List
 
@@ -34,6 +35,7 @@ Tests are made using last available Chef 14 along with latest Chef 13.
 - [node_exporter](https://github.com/evilmartians/chef-prometheus-exporters#node_exporter)
 - [postgres_exporter](https://github.com/evilmartians/chef-prometheus-exporters#postgres_exporter)
 - [process_exporter](https://github.com/evilmartians/chef-prometheus-exporters#process_exporter)
+- [rabbitmq_exporter](https://github.com/evilmartians/chef-prometheus-exporters#rabbitmq_exporter)
 - [redis_exporter](https://github.com/evilmartians/chef-prometheus-exporters#redis_exporter)
 - [snmp_exporter](https://github.com/evilmartians/chef-prometheus-exporters#snmp_exporter)
 - [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
@@ -323,6 +325,38 @@ file "/opt/process-exporter-#{node['prometheus_exporters']['process']['version']
       - '.+'
 here
   notifies :start, 'process_exporter[main]'
+end
+```
+
+## rabbitmq_exporter
+
+* `cafile` Path to root certificate for access management plugin. Just needed if self signed certificate is used. Will be ignored if the file does not exist
+* `certfile` Path to client certificate used to verify the exporter's authenticity. Will be ignored if the file does not exist
+* `exclude_metrics` Metric names to exclude from export. Comma-seperated string or an array. e.g. "recv_oct,recv_cnt". See exporter_*.go for names
+* `include_queues` Regex queue filter. Just matching names are exported
+* `include_vhost` Regex vhost filter. Only queues in matching vhosts are exported
+* `keyfile` Path to private key used with certificate to verify the exporter's authenticity. Will be ignored if the file does not exist
+* `log_level` Log level. Possible values: "debug", "info", "warning", "error", "fatal", or "panic"
+* `max_queues` Max number of queues before we drop metrics (disabled if set to 0)
+* `output_format` Log ouput format. TTY and JSON are suported
+* `publish_addr` Listening host/IP for the exporter
+* `publish_port` Listening port for the exporter
+* `rabbit_capabilities` Comma-separated list or an array of extended scraping capabilities supported by the target RabbitMQ server
+* `rabbit_exporters` List of enabled modules. "connections" and shovel are disabled by default
+* `rabbit_password` Password for rabbitMQ management plugin
+* `rabbit_timeout` Timeout in seconds for retrieving data from management plugin
+* `rabbit_url` Url to rabbitMQ management plugin (must start with http(s)://)
+* `rabbit_user` Username for rabbitMQ management plugin. User needs monitoring tag!
+* `skip_queues` Regex, matching queue names are not exported (useful for short-lived rpc queues). First performed INCLUDE, after SKIP
+* `skip_vhost` Regex, matching vhost names are not exported. First performs INCLUDE_VHOST, then SKIP_VHOST
+* `skiverify` Will ignore certificate errors of the management plugin if true (default: "false")
+* `user` User under whom to start rabbitmq exporter. (default: "root")
+
+```ruby
+
+rabbitmq_exporter 'main' do
+  rabbit_user 'Roger'
+  rabbit_exporters %w[exchange node]
 end
 ```
 
