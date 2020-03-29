@@ -2,11 +2,20 @@ default['prometheus_exporters']['rabbitmq']['version'] = '1.0.0-RC6.1'
 default['prometheus_exporters']['rabbitmq']['url'] = "https://github.com/kbudde/rabbitmq_exporter/releases/download/v#{node['prometheus_exporters']['rabbitmq']['version']}/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64.tar.gz"
 default['prometheus_exporters']['rabbitmq']['checksum'] = 'd4a60a924bda5235159cad61cf60ec2da209e2ff07f6ddf31745b38b2d4246b2'
 
-default['prometheus_exporters']['rabbitmq']['user'] = 'root'
-default['prometheus_exporters']['rabbitmq']['port'] = 9419
-default['prometheus_exporters']['rabbitmq']['scrape_url'] = 'http://127.0.0.1:15672'
-default['prometheus_exporters']['rabbitmq']['output_format'] = 'TTY'
+default['prometheus_exporters']['rabbitmq']['exclude_metrics'] = ''
+default['prometheus_exporters']['rabbitmq']['include_queues'] = '.*'
+default['prometheus_exporters']['rabbitmq']['include_vhost'] = '.*'
 default['prometheus_exporters']['rabbitmq']['log_level'] = 'info'
-default['prometheus_exporters']['rabbitmq']['rabbit_capabilities'] = 'nobert'
-
-
+default['prometheus_exporters']['rabbitmq']['max_queues'] = 0
+default['prometheus_exporters']['rabbitmq']['output_format'] = 'TTY'
+default['prometheus_exporters']['rabbitmq']['publish_addr'] = '127.0.0.1'
+default['prometheus_exporters']['rabbitmq']['publish_port'] = 9419
+default['prometheus_exporters']['rabbitmq']['rabbit_capabilities'] = 'bert,no_sort'
+default['prometheus_exporters']['rabbitmq']['rabbit_exporters'] = %w[exchange node overview queue]
+default['prometheus_exporters']['rabbitmq']['rabbit_password'] = 'guest'
+default['prometheus_exporters']['rabbitmq']['rabbit_url'] = 'http://127.0.0.1:15672'
+default['prometheus_exporters']['rabbitmq']['rabbit_user'] = 'guest'
+default['prometheus_exporters']['rabbitmq']['skip_queues'] = '^$'
+default['prometheus_exporters']['rabbitmq']['skip_vhost'] = '^$'
+default['prometheus_exporters']['rabbitmq']['skipverify'] = false
+default['prometheus_exporters']['rabbitmq']['user'] = 'root'
