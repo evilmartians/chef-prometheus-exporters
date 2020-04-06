@@ -87,17 +87,22 @@ action :install do
     to "/opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/rabbitmq_exporter"
   end
 
+  # Create a launch script
+  template "/opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh" do
+    cookbook 'prometheus_exporters'
+    source 'rabbitmq/rabbitmq_exporter_launch.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      options: options,
+      launch_path: "/usr/local/sbin/rabbitmq_exporter"
+    )
+  end
+
   # Configure to run as a service
   service service_name do
     action :nothing
-  end
-
-  file "/etc/#{service_name}.json" do
-    owner 'root'
-    group 'root'
-    mode '0644'
-    content options.to_json
-    notifies :restart, "service[#{service_name}]", :delayed
   end
 
   case node['init_package']
@@ -131,7 +136,7 @@ action :install do
       variables(
         name: service_name,
         user: new_resource.user,
-        cmd: "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
+        cmd: "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
         service_description: 'Prometheus RabbitMQ Exporter',
         env: { 'LOG_LEVEL' => new_resource.log_level },
       )
@@ -149,7 +154,7 @@ action :install do
           'Type' => 'simple',
           'User' => new_resource.user,
           'Environment' => "\"LOG_LEVEL=#{new_resource.log_level}\"",
-          'ExecStart' => "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
+          'ExecStart' => "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
           'RestartSec' => '30s',
@@ -171,7 +176,7 @@ action :install do
       mode '0644'
       variables(
         user: new_resource.user,
-        cmd: "/usr/local/sbin/rabbitmq_exporter -config-file /etc/#{service_name}.json",
+        cmd: "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
         service_description: 'Prometheus RabbitMQ Exporter',
         env: { 'LOG_LEVEL' => new_resource.log_level },
       )
