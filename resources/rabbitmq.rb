@@ -7,7 +7,7 @@ resource_name :rabbitmq_exporter
 
 property :cafile, String
 property :certfile, String
-property :exclude_metrics, [String, Array]
+property :exclude_metrics, String
 property :include_queues, String
 property :include_vhost, String
 property :keyfile, String
@@ -17,7 +17,7 @@ property :output_format, String, default: 'TTY', equal_to: %w(TTY JSON)
 property :publish_addr, String
 property :publish_port, Integer, default: 9419
 property :rabbit_capabilities, String, default: 'bert,no_sort'
-property :rabbit_exporters, [String, Array], default: %w(exchange node overview queue)
+property :rabbit_exporters, String, default: 'exchange,node,overview,queue'
 property :rabbit_password, String, sensitive: true
 property :rabbit_timeout, Integer, default: 30
 property :rabbit_url, String, default: 'http://127.0.0.1:15672'
@@ -31,38 +31,25 @@ action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['rabbitmq']['enabled'] = true
 
-  options = {}
-  options['ca_file'] = new_resource.cafile if new_resource.cafile
-  options['cert_file'] = new_resource.certfile if new_resource.certfile
-  if new_resource.exclude_metrics
-    options['exclude_metrics'] = if new_resource.exclude_metrics.is_a?(String)
-                                   new_resource.exclude_metrics.split(/\s*,\s*/) - ['']
-                                 else
-                                   new_resource.exclude_metrics
-                                 end
-  end
-  options['include_queues'] = new_resource.include_queues if new_resource.include_queues
-  options['include_vhost'] = new_resource.include_vhost if new_resource.include_vhost
-  options['key_file'] = new_resource.keyfile if new_resource.keyfile
-  options['max_queues'] = new_resource.max_queues
-  options['output_format'] = new_resource.output_format
-  options['publish_addr'] = new_resource.publish_addr if new_resource.publish_addr
-  options['publish_port'] = new_resource.publish_port
-  options['rabbit_capabilities'] = new_resource.rabbit_capabilities
-  if new_resource.rabbit_exporters
-    options['enabled_exporters'] = if new_resource.rabbit_exporters.is_a?(String)
-                                     new_resource.rabbit_exporters.split(/\s*,\s*/) - ['']
-                                   else
-                                     new_resource.rabbit_exporters
-                                   end
-  end
-  options['rabbit_pass'] = new_resource.rabbit_password if new_resource.rabbit_password
-  options['timeout'] = new_resource.rabbit_timeout
-  options['rabbit_url'] = new_resource.rabbit_url
-  options['rabbit_user'] = new_resource.rabbit_user if new_resource.rabbit_user
-  options['skip_queues'] = new_resource.skip_queues if new_resource.skip_queues
-  options['skip_vhost'] = new_resource.skip_vhost if new_resource.skip_vhost
-  options['insecure_skip_verify'] = new_resource.skipverify
+  options = "RABBIT_URL=#{new_resource.rabbit_url}"
+  options = " CAFILE=#{new_resource.cafile}" if new_resource.cafile
+  options = " CERTFILE=#{new_resource.certfile}" if new_resource.certfile
+  options = " EXCLUDE_METRICS=#{new_resource.exclude_metrics}" if new_resource.exclude_metrics
+  options = " INCLUDE_QUEUES=#{new_resource.include_queues}" if new_resource.include_queues
+  options = " INCLUDE_VHOST=#{new_resource.include_vhost}" if new_resource.include_vhost
+  options = " KEYFILE=#{new_resource.keyfile}" if new_resource.keyfile
+  options = " MAX_QUEUES=#{new_resource.max_queues}"
+  options = " OUTPUT_FORMAT=#{new_resource.output_format}"
+  options = " PUBLISH_ADDR=#{new_resource.publish_addr}" if new_resource.publish_addr
+  options = " PUBLISH_PORT=#{new_resource.publish_port}"
+  options = " RABBIT_CAPABILITIES=#{new_resource.rabbit_capabilities}"
+  options = " RABBIT_EXPORTERS=#{new_resource.rabbit_exporters}"
+  options = " RABBIT_PASSWORD=#{new_resource.rabbit_password}" if new_resource.rabbit_password
+  options = " RABBIT_TIMEOUT=#{new_resource.rabbit_timeout}"
+  options = " RABBIT_USER=#{new_resource.rabbit_user}" if new_resource.rabbit_user
+  options = " SKIP_QUEUES=#{new_resource.skip_queues}" if new_resource.skip_queues
+  options = " SKIP_VHOST=#{new_resource.skip_vhost}" if new_resource.skip_vhost
+  options = " SKIPVERIFY=#{new_resource.skipverify}"
 
   service_name = "rabbitmq_exporter_#{new_resource.name}"
 
