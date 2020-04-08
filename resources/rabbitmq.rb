@@ -83,7 +83,7 @@ action :install do
     mode '0755'
     variables(
       options: options,
-      launch_path: "/usr/local/sbin/rabbitmq_exporter"
+      launch_path: '/usr/local/sbin/rabbitmq_exporter',
     )
   end
 
