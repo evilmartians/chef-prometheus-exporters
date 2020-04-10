@@ -1,5 +1,12 @@
 # prometheus\_exporters
 
+## 0.16.0
+
+- [Lior Tzur] switch the rabbitmq expoerter back to ENV-var style configuration
+- [Kirill Kuznetsov] update chefspec tests
+- [Kirill Kuznetsov] add tests that rabbitmq accepts its configuration
+- [Kirill Kuznetsov] TravisCI was switched to ruby 2.7.1
+
 ## 0.15.9
 
 - [Kirill Kuznetsov] fix cookstyle bugs
