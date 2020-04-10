@@ -31,25 +31,27 @@ action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['rabbitmq']['enabled'] = true
 
-  options = "RABBIT_URL=#{new_resource.rabbit_url}"
-  options = " CAFILE=#{new_resource.cafile}" if new_resource.cafile
-  options = " CERTFILE=#{new_resource.certfile}" if new_resource.certfile
-  options = " EXCLUDE_METRICS=#{new_resource.exclude_metrics}" if new_resource.exclude_metrics
-  options = " INCLUDE_QUEUES=#{new_resource.include_queues}" if new_resource.include_queues
-  options = " INCLUDE_VHOST=#{new_resource.include_vhost}" if new_resource.include_vhost
-  options = " KEYFILE=#{new_resource.keyfile}" if new_resource.keyfile
-  options = " MAX_QUEUES=#{new_resource.max_queues}"
-  options = " OUTPUT_FORMAT=#{new_resource.output_format}"
-  options = " PUBLISH_ADDR=#{new_resource.publish_addr}" if new_resource.publish_addr
-  options = " PUBLISH_PORT=#{new_resource.publish_port}"
-  options = " RABBIT_CAPABILITIES=#{new_resource.rabbit_capabilities}"
-  options = " RABBIT_EXPORTERS=#{new_resource.rabbit_exporters}"
-  options = " RABBIT_PASSWORD=#{new_resource.rabbit_password}" if new_resource.rabbit_password
-  options = " RABBIT_TIMEOUT=#{new_resource.rabbit_timeout}"
-  options = " RABBIT_USER=#{new_resource.rabbit_user}" if new_resource.rabbit_user
-  options = " SKIP_QUEUES=#{new_resource.skip_queues}" if new_resource.skip_queues
-  options = " SKIP_VHOST=#{new_resource.skip_vhost}" if new_resource.skip_vhost
-  options = " SKIPVERIFY=#{new_resource.skipverify}"
+  options = {}
+  options['CAFILE'] = new_resource.cafile if new_resource.cafile
+  options['CERTFILE'] = new_resource.certfile if new_resource.certfile
+  options['EXCLUDE_METRICS'] = new_resource.exclude_metrics if new_resource.exclude_metrics
+  options['INCLUDE_QUEUES'] = new_resource.include_queues if new_resource.include_queues
+  options['INCLUDE_VHOST'] = new_resource.include_vhost if new_resource.include_vhost
+  options['KEYFILE'] = new_resource.keyfile if new_resource.keyfile
+  options['LOG_LEVEL'] = new_resource.log_level
+  options['MAX_QUEUES'] = new_resource.max_queues
+  options['OUTPUT_FORMAT'] = new_resource.output_format
+  options['PUBLISH_ADDR'] = new_resource.publish_addr if new_resource.publish_addr
+  options['PUBLISH_PORT'] = new_resource.publish_port
+  options['RABBIT_CAPABILITIES'] = new_resource.rabbit_capabilities
+  options['RABBIT_EXPORTERS'] = new_resource.rabbit_exporters
+  options['RABBIT_PASSWORD'] = new_resource.rabbit_password if new_resource.rabbit_password
+  options['RABBIT_TIMEOUT'] = new_resource.rabbit_timeout
+  options['RABBIT_URL'] = new_resource.rabbit_url
+  options['RABBIT_USER'] = new_resource.rabbit_user if new_resource.rabbit_user
+  options['SKIP_QUEUES'] = new_resource.skip_queues if new_resource.skip_queues
+  options['SKIP_VHOST'] = new_resource.skip_vhost if new_resource.skip_vhost
+  options['SKIPVERIFY'] = new_resource.skipverify
 
   service_name = "rabbitmq_exporter_#{new_resource.name}"
 
@@ -72,19 +74,6 @@ action :install do
 
   link '/usr/local/sbin/rabbitmq_exporter' do
     to "/opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/rabbitmq_exporter"
-  end
-
-  # Create a launch script
-  template "/opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh" do
-    cookbook 'prometheus_exporters'
-    source 'rabbitmq/rabbitmq_exporter_launch.erb'
-    owner 'root'
-    group 'root'
-    mode '0755'
-    variables(
-      options: options,
-      launch_path: '/usr/local/sbin/rabbitmq_exporter',
-    )
   end
 
   # Configure to run as a service
@@ -123,9 +112,9 @@ action :install do
       variables(
         name: service_name,
         user: new_resource.user,
-        cmd: "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
+        cmd: '/usr/local/sbin/rabbitmq_exporter',
         service_description: 'Prometheus RabbitMQ Exporter',
-        env: { 'LOG_LEVEL' => new_resource.log_level },
+        env: options,
       )
       notifies :restart, "service[#{service_name}]"
     end
@@ -140,8 +129,8 @@ action :install do
         'Service' => {
           'Type' => 'simple',
           'User' => new_resource.user,
-          'Environment' => "\"LOG_LEVEL=#{new_resource.log_level}\"",
-          'ExecStart' => "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
+          'Environment' => options.map { |k, v| "\"#{k}=#{v}\"" }.join(' '),
+          'ExecStart' => '/usr/local/sbin/rabbitmq_exporter',
           'WorkingDirectory' => '/',
           'Restart' => 'on-failure',
           'RestartSec' => '30s',
@@ -163,9 +152,9 @@ action :install do
       mode '0644'
       variables(
         user: new_resource.user,
-        cmd: "/bin/bash /opt/rabbitmq_exporter-#{node['prometheus_exporters']['rabbitmq']['version']}.linux-amd64/launch.sh",
+        cmd: '/usr/local/sbin/rabbitmq_exporter',
         service_description: 'Prometheus RabbitMQ Exporter',
-        env: { 'LOG_LEVEL' => new_resource.log_level },
+        env: options,
       )
       notifies :restart, "service[#{service_name}]"
     end
