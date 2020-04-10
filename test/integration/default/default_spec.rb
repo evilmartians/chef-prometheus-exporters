@@ -1,6 +1,8 @@
 os_name = os.name
 os_release = os.release.to_f
 
+p ">>>> #{os_name} #{os_release}"
+
 # Mysqld exporter
 describe port(9104) do
   it { should be_listening }
@@ -190,4 +192,10 @@ describe service('rabbitmq_exporter_main') do
   # Chef 14 resource service is broken on a first run on Ubuntu 14.
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
+end
+
+if (os.debian? or os.redhat?) and os_name != 'amazon'
+  describe command('journalctl -u rabbitmq_exporter_main.service --no-pager') do
+    its('stdout') { should match(/INCLUDE_QUEUES="nya\.\*"/) }
+  end
 end
