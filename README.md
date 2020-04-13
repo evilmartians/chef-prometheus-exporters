@@ -28,6 +28,7 @@ Tests are made using last available Chef 15 along with latest Chef 14.
 
 - [apache_exporter](https://github.com/evilmartians/chef-prometheus-exporters#apache_exporter)
 - [blackbox_exporter](https://github.com/evilmartians/chef-prometheus-exporters#blackbox_exporter)
+- [consul_exporter](https://github.com/evilmartians/chef-prometheus-exporters#consul_exporter)
 - [elasticsearch_exporter](https://github.com/evilmartians/chef-prometheus-exporters#elasticsearch_exporter)
 - [haproxy_exporter](https://github.com/evilmartians/chef-prometheus-exporters#haproxy_exporter)
 - [mongodb_exporter](https://github.com/evilmartians/chef-prometheus-exporters#mongodb_exporter)
@@ -72,6 +73,27 @@ This exporter requires a config file. Read more [here](https://github.com/promet
 
 ```ruby
 blackbox_exporter 'main'
+```
+
+## consul_exporter
+
+* `ca_file` File path to a PEM-encoded certificate authority used to validate the authenticity of a server certificate.
+* `cert_file` File path to a PEM-encoded certificate used with the private key to verify the exporter's authenticity.
+* `key_file` File path to a PEM-encoded private key used with the certificate to verify the exporter's authenticity.
+* `health_summary` Collects and exports information about each registered service. (default: true)
+* `log_level` The logging level. (default: "info")
+* `require_consistent` Enforce fully consistency on Consul reads. (default: false)
+* `server` Address of the Consul instance to connect to. (default: "http://localhost:8500")
+* `server_name` Override the hostname for the TLS certificate. It can be used to ensure that the certificate name matches the decalred hostname.
+* `timeout` Timeout on HTTP requests to consul. (default: "500ms")
+* `web_listen_address` Address to listen on for web interface and telemetry. (default: ":9107")
+* `web_telemetry_path` Path under which to expose metrics. (default: "/metrics")
+* `user` User under whom to start elasticsearch exporter. (default: "root")
+
+```ruby
+consul_exporter 'main' do
+  action %i[install enable start]
+end
 ```
 
 ## elasticsearch_exporter
