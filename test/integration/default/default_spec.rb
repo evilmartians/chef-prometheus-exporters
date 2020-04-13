@@ -207,7 +207,7 @@ describe port(9107) do
 end
 
 describe service('consul_exporter_main') do
-  # Mitigation an issue with Chef 14 on Ubuntu 14
+  # Mitigation of an issue with Chef 14 on Ubuntu 14
   it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
   it { should be_running }
 end
