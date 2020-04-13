@@ -1,6 +1,7 @@
 %w(
   apache
   blackbox
+  consul
   elastic
   haproxy
   mongodb

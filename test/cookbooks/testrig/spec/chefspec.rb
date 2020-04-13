@@ -138,4 +138,10 @@ describe 'testrig::default' do
     expect(chef_run).to enable_varnish_exporter('main')
     expect(chef_run).to start_varnish_exporter('main')
   end
+
+  it 'installs, enables and starts consul_exporter' do
+    expect(chef_run).to install_consul_exporter('main')
+    expect(chef_run).to enable_consul_exporter('main')
+    expect(chef_run).to start_consul_exporter('main')
+  end
 end
