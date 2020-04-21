@@ -1,5 +1,10 @@
 # prometheus\_exporters
 
+## 0.16.1
+
+- [Lior Tzur] rabbitmq_exporter 1.0.0-RC7
+- [Lior Tzur] recipe[prometheus_exporters::rabbitmq] default publish address: ''
+
 ## 0.16.0
 
 - [Lior Tzur] switch the rabbitmq expoerter back to ENV-var style configuration
