@@ -1,5 +1,11 @@
 # prometheus\_exporters
 
+## 0.16.2
+
+- [Sergei Makarevich] consul exporter 0.6.0
+- [Kirill Kuznetsov] consul exporter resource refacotring
+- [Kirill Kuznetsov] Ubuntu 20.04 test suites
+
 ## 0.16.1
 
 - [Lior Tzur] rabbitmq_exporter 1.0.0-RC7

@@ -1,15 +1,19 @@
 resource_name :consul_exporter
 
-property :ca_file, String
-property :cert_file, String
-property :health_summary, [true, false], default: true
+property :consul_allow_stale, [true, false], default: false
+property :consul_ca_file, String
+property :consul_cert_file, String
+property :consul_health_summary, [true, false], default: true
+property :consul_insecure, [true, false], default: false
+property :consul_key_file, String
+property :consul_require_consistent, [true, false], default: false
+property :consul_server_name, String
+property :consul_server, String, default: 'http://localhost:8500'
+property :consul_timeout, String, default: '500ms'
+property :kv_prefix, String
+property :kv_filter, String, default: '.*'
 property :log_format, String, default: 'logfmt'
 property :log_level, String, default: 'info'
-property :key_file, String
-property :require_consistent, [true, false], default: false
-property :server, String, default: 'localhost:8500'
-property :server_name, String
-property :timeout, String, default: '500ms'
 property :user, String, default: 'root'
 property :web_listen_address, String, default: ':9107'
 property :web_telemetry_path, String, default: '/metrics'
@@ -19,17 +23,21 @@ action :install do
   node.default['prometheus_exporters']['consul']['enabled'] = true
 
   options = "--web.listen-address=#{new_resource.web_listen_address}"
-  options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
-  options += " --log.level=#{new_resource.log_level}"
+  options += ' --consul.allow_stale' if new_resource.consul_allow_stale
+  options += ' --consul.health-summary' if new_resource.consul_health_summary
+  options += ' --consul.insecure' if new_resource.consul_insecure
+  options += ' --consul.require_consistent' if new_resource.consul_require_consistent
+  options += " --consul.ca-file=#{new_resource.consul_ca_file}" if new_resource.consul_ca_file
+  options += " --consul.cert-file=#{new_resource.consul_cert_file}" if new_resource.consul_cert_file
+  options += " --consul.key-file=#{new_resource.consul_key_file}" if new_resource.consul_key_file
+  options += " --consul.server-name=#{new_resource.consul_server_name}" if new_resource.consul_server_name
+  options += " --consul.server=#{new_resource.consul_server}"
+  options += " --consul.timeout=#{new_resource.consul_timeout}"
+  options += " --kv.filter=#{new_resource.kv_filter}" if new_resource.kv_filter
+  options += " --kv.prefix=#{new_resource.kv_prefix}" if new_resource.kv_prefix
   options += " --log.format=#{new_resource.log_format}"
-  options += " --consul.server=#{new_resource.server}"
-  options += ' --consul.health-summary' if new_resource.health_summary
-  options += ' --consul.require_consistent' if new_resource.require_consistent
-  options += " --consul.ca-file=#{new_resource.ca_file}" if new_resource.ca_file
-  options += " --consul.cert-file=#{new_resource.cert_file}" if new_resource.cert_file
-  options += " --consul.key-file=#{new_resource.key_file}" if new_resource.key_file
-  options += " --consul.timeout=#{new_resource.timeout}"
-  options += ' --consul.server-name' if new_resource.server_name
+  options += " --log.level=#{new_resource.log_level}"
+  options += " --web.telemetry-path=#{new_resource.web_telemetry_path}"
 
   service_name = "consul_exporter_#{new_resource.name}"
 
