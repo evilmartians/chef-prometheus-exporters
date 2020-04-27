@@ -3,7 +3,7 @@ resource_name :consul_exporter
 property :consul_allow_stale, [true, false], default: false
 property :consul_ca_file, String
 property :consul_cert_file, String
-property :consul_health_summary, [true, false], default: true
+property :consul_health_summary, [true, false], default: false
 property :consul_insecure, [true, false], default: false
 property :consul_key_file, String
 property :consul_require_consistent, [true, false], default: false
