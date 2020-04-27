@@ -199,3 +199,15 @@ if (os.debian? or os.redhat?) and os_name != 'amazon'
     its('stdout') { should match(/INCLUDE_QUEUES="nya\.\*"/) }
   end
 end
+
+# consul exporter
+describe port(9107) do
+  it { should be_listening }
+  its('processes') { should cmp(/^consul_export/) }
+end
+
+describe service('consul_exporter_main') do
+  # Mitigation of an issue with Chef 14 on Ubuntu 14
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
