@@ -6,7 +6,7 @@ description      'Installs / configures Prometheus exporters'
 
 version          '0.16.3'
 
-chef_version '>= 12.11', '< 16.0'
+chef_version '>= 12.11', '< 17.0'
 
 supports 'amazon'
 supports 'centos', '>= 6.9'
