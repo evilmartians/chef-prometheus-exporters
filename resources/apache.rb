@@ -20,11 +20,11 @@ action :install do
   # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['apache']['enabled'] = true
 
-  options = "-telemetry.address #{new_resource.telemetry_address}"
-  options += " -telemetry.endpoint #{new_resource.telemetry_endpoint}"
-  options += " -scrape_uri #{new_resource.scrape_uri}"
-  options += " -insecure #{new_resource.insecure}"
-  options += " -host_override #{new_resource.host_override}" if new_resource.host_override != ''
+  options = "--telemetry.address #{new_resource.telemetry_address}"
+  options += " --telemetry.endpoint #{new_resource.telemetry_endpoint}"
+  options += " --scrape_uri #{new_resource.scrape_uri}"
+  options += " --insecure #{new_resource.insecure}"
+  options += " --host_override #{new_resource.host_override}" if new_resource.host_override != ''
 
   service_name = "apache_exporter_#{new_resource.name}"
 
