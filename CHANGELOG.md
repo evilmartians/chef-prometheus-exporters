@@ -1,5 +1,10 @@
 # prometheus\_exporters
 
+## unreleased
+
+- [Shai Atias] apache exporter 0.8.0
+- [Kirill Kuznetsov] fixed bug with `--insecure` arg for apache exporter
+
 ## 0.16.2
 
 - [Sergei Makarevich] consul exporter 0.6.0

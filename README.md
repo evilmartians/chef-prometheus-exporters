@@ -48,6 +48,8 @@ Tests are made using last available Chef 15 along with latest Chef 14.
 ## apache_exporter
 
 * `insecure` Ignore server certificate if using https. (default false)
+* `log_format` Output format of log messages. e.g. "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true" (default: "logger:stdout")
+* `log_level` The logging level. (default: "info")
 * `scrape_uri` URI to apache stub status page. (default "http://localhost/server-status/?auto")
 * `telemetry_address` Address on which to expose metrics. (default ":9117")
 * `telemetry_endpoint` Path under which to expose metrics. (default "/metrics")
