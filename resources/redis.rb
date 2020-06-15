@@ -54,7 +54,7 @@ action :install do
   service_name = "redis_exporter_#{new_resource.name}"
 
   remote_file 'redis_exporter' do
-    path "#{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz"
+    path "#{Chef::Config[:file_cache_path]}/redis_exporter-#{node['prometheus_exporters']['redis']['version']}.tar.gz"
     owner 'root'
     group 'root'
     mode '0644'
@@ -64,7 +64,7 @@ action :install do
   end
 
   bash 'untar redis_exporter' do
-    code "tar -xzf #{Chef::Config[:file_cache_path]}/redis_exporter.tar.gz -C /opt"
+    code "tar -xzf #{Chef::Config[:file_cache_path]}/redis_exporter-#{node['prometheus_exporters']['redis']['version']}.tar.gz -C /opt"
     action :nothing
     subscribes :run, 'remote_file[redis_exporter]', :immediately
   end
