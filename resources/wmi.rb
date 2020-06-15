@@ -8,6 +8,7 @@
 #
 
 resource_name :wmi_exporter
+provides :wmi_exporter
 
 property :version, String
 property :enabled_collectors, String, default: 'cpu,cs,logical_disk,net,os,service,system'

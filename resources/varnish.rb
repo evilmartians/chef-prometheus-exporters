@@ -8,6 +8,7 @@
 #
 
 resource_name :varnish_exporter
+provides :varnish_exporter
 
 property :varnishstat_path, String, default: 'varnishstat'
 property :web_listen_address, String, default: ':9131'

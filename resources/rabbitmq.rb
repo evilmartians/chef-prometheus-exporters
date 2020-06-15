@@ -4,6 +4,7 @@
 #
 
 resource_name :rabbitmq_exporter
+provides :rabbitmq_exporter
 
 property :cafile, String
 property :certfile, String

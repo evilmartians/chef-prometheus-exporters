@@ -1,4 +1,5 @@
 resource_name :blackbox_exporter
+provides :blackbox_exporter
 
 property :config_file, String, default: "/opt/blackbox_exporter-#{node['prometheus_exporters']['blackbox']['version']}.linux-amd64/blackbox.yml"
 property :log_level, String, default: 'info'

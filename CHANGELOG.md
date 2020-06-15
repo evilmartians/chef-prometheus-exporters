@@ -1,5 +1,10 @@
 # prometheus\_exporters
 
+## 0.17.1
+
+- [Kirill Kuznetsov] Fix cookstyle offences
+- [Kirill Kuznetsov] Bundle update
+
 ## 0.17.0
 
 - [Shai Atias] apache exporter 0.8.0

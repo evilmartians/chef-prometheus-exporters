@@ -8,6 +8,7 @@
 #
 
 resource_name :snmp_exporter
+provides :snmp_exporter
 
 property :config_file, String, default: '/etc/snmp_exporter/snmp.yaml'
 property :custom_options, String

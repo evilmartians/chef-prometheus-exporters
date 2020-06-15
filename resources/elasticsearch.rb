@@ -1,4 +1,5 @@
 resource_name :elasticsearch_exporter
+provides :elasticsearch_exporter
 
 property :es_uri, String, default: 'http://localhost:9200'
 property :es_all, [true, false], default: false

@@ -1,4 +1,5 @@
 resource_name :mongodb_exporter
+provides :mongodb_exporter
 
 property :collect_collection, [true, false], default: false
 property :collect_connpoolstats, [true, false], default: false

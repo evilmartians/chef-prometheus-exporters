@@ -8,6 +8,7 @@
 #
 
 resource_name :mysqld_exporter
+provides :mysqld_exporter
 
 property :instance_name, String, name_property: true
 property :data_source_name, String, required: true

@@ -8,6 +8,7 @@
 #
 
 resource_name :statsd_exporter
+provides :statsd_exporter
 
 property :web_listen_address, String, default: '0.0.0.0:9102'
 property :web_telemetry_path, String, default: '/metrics'

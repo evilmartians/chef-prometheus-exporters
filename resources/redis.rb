@@ -8,6 +8,7 @@
 #
 
 resource_name :redis_exporter
+provides :redis_exporter
 
 property :check_keys, String
 property :check_single_keys, String

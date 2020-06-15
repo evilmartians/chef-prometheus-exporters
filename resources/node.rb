@@ -59,6 +59,7 @@ COLLECTOR_LIST = %w(
 ).freeze
 
 resource_name :node_exporter
+provides :node_exporter
 
 property :collectors_enabled, Array, callbacks: {
   'should be a collector' => lambda do |collectors|

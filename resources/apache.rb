@@ -8,6 +8,7 @@
 #
 
 resource_name :apache_exporter
+provides :apache_exporter
 
 property :host_override, String, default: ''
 property :insecure, [true, false], default: false
@@ -24,7 +25,7 @@ action :install do
 
   options = "--telemetry.address #{new_resource.telemetry_address}"
   options += " --host_override #{new_resource.host_override}" if new_resource.host_override != ''
-  options += " --insecure" if new_resource.insecure
+  options += ' --insecure' if new_resource.insecure
   options += " --log.format=#{new_resource.log_format}"
   options += " --log.level=#{new_resource.log_level}"
   options += " --scrape_uri #{new_resource.scrape_uri}"

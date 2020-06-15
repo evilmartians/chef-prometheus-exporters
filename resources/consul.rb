@@ -1,4 +1,5 @@
 resource_name :consul_exporter
+provides :consul_exporter
 
 property :consul_allow_stale, [true, false], default: false
 property :consul_ca_file, String

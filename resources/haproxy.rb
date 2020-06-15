@@ -8,6 +8,7 @@
 #
 
 resource_name :haproxy_exporter
+provides :haproxy_exporter
 
 property :haproxy_pid_file, String
 property :haproxy_scrape_uri, String

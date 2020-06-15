@@ -1,4 +1,5 @@
 resource_name :process_exporter
+provides :process_exporter
 
 property :children, [true, false], default: true
 property :config_path, String
