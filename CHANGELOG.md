@@ -1,9 +1,21 @@
 # prometheus\_exporters
 
-## unreleased
+## 0.17.0
 
 - [Shai Atias] apache exporter 0.8.0
 - [Kirill Kuznetsov] fixed bug with `--insecure` arg for apache exporter
+- [Kirill Kuznetsov] mongodb exporter 0.11.0
+- [Kirill Kuznetsov] node exporter 1.0.0
+- [Kirill Kuznetsov] process exporter 0.6.0
+- [Kirill Kuznetsov] redis exporter 1.6.1
+- [Kirill Kuznetsov] snmp exporter 0.18.0
+- [Kirill Kuznetsov] statsd exporter 0.16.0
+- [Kirill Kuznetsov] wmi exporter 0.13.0
+- [Kirill Kuznetsov] node exporter resource attributes update
+
+## 0.16.3
+
+- [Kirill Kuznetsov] set consul exporter health summary property to false by default
 
 ## 0.16.2
 

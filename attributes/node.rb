@@ -1,6 +1,6 @@
-default['prometheus_exporters']['node']['version'] = '0.18.1'
+default['prometheus_exporters']['node']['version'] = '1.0.0'
 default['prometheus_exporters']['node']['url'] = "https://github.com/prometheus/node_exporter/releases/download/v#{node['prometheus_exporters']['node']['version']}/node_exporter-#{node['prometheus_exporters']['node']['version']}.linux-amd64.tar.gz"
-default['prometheus_exporters']['node']['checksum'] = 'b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424'
+default['prometheus_exporters']['node']['checksum'] = 'fae88be0aa33c8ae22340723f9b4a4e519e67d2969da7a27751e755db7e75788'
 
 default['prometheus_exporters']['node']['textfile_directory'] = '/var/lib/node_exporter/textfile_collector'
 

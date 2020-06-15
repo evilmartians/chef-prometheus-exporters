@@ -12,7 +12,7 @@ resource_name :statsd_exporter
 property :web_listen_address, String, default: '0.0.0.0:9102'
 property :web_telemetry_path, String, default: '/metrics'
 property :log_level, String, default: 'info'
-property :log_format, String, default: 'logger:stdout'
+property :log_format, String, default: 'logfmt'
 property :statsd_listen_udp, String
 property :statsd_listen_tcp, String
 property :statsd_listen_unixgram, String

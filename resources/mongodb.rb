@@ -7,10 +7,6 @@ property :collect_indexusage, [true, false], default: false
 property :collect_topmetrics, [true, false], default: false
 property :log_format, String, default: 'logger:stderr'
 property :log_level, String, default: 'info'
-property :mongodb_authentication_database, String
-property :mongodb_max_connections, Integer
-property :mongodb_socket_timeout, String
-property :mongodb_sync_timeout, String
 property :mongodb_uri, String, default: 'mongodb://localhost:27017'
 property :user, String, default: 'root'
 property :web_auth_file, String
@@ -34,10 +30,6 @@ action :install do
   options += ' --collect.indexusage' if new_resource.collect_indexusage
   options += ' --collect.connpoolstats' if new_resource.collect_connpoolstats
   options += " --mongodb.uri=#{new_resource.mongodb_uri}" if new_resource.mongodb_uri
-  options += " --mongodb.authentification-database=#{new_resource.mongodb_authentication_database}" if new_resource.mongodb_authentication_database
-  options += " --mongodb.max-connections=#{new_resource.mongodb_max_connections}" if new_resource.mongodb_max_connections
-  options += " --mongodb.socket-timeout=#{new_resource.mongodb_socket_timeout}" if new_resource.mongodb_socket_timeout
-  options += " --mongodb.sync-timeout=#{new_resource.mongodb_sync_timeout}" if new_resource.mongodb_sync_timeout
   options += " --log.level=#{new_resource.log_level}" if new_resource.log_level
   options += " --log.format=#{new_resource.log_format}"
 

@@ -239,8 +239,9 @@ end
 * `collector_diskstats_ignored_devices` Regexp of devices to ignore for diskstats. (default: "^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$")
 * `collector_filesystem_ignored_fs_types` Regexp of filesystem types to ignore for filesystem collector. (default: "^(sys|proc|auto)fs$")
 * `collector_filesystem_ignored_mount_points` Regexp of mount points to ignore for filesystem collector. (default: "^/(sys|proc|dev)($|/)")
-* `collector_netclass_ignored_devices` Regexp of net devices to ignore for netclass collector. (default: "^$")
-* `collector_netdev_ignored_devices` Regexp of net devices to ignore for netdev collector. (default: "^$")
+* `collector_netclass_ignored_devices` Regexp of net devices to blacklist (mutually exclusive to device-whitelist) (default: "^$")
+* `collector_netdev_device_blacklist` Regexp of net devices to ignore for netdev collector. (default: "^$")
+* `collector_netdev_device_whitelist` Regexp of net devices to whitelist (mutually exclusive to device-blacklist) (default: "^$")
 * `collector_ntp_ip_ttl` IP TTL to use while sending NTP query. (default: "1")
 * `collector_ntp_local_offset_tolerance` Offset between local clock and local ntpd time to tolerate. (default: "1ms")
 * `collector_ntp_max_distance` Max accumulated distance to the root. (default: "3.46608s")
@@ -248,6 +249,7 @@ end
 * `collector_ntp_server_is_local` Certify that collector.ntp.server address is the same local host as this collector.
 * `collector_ntp_server` NTP server to use for ntp collector. (default: "127.0.0.1")
 * `collector_qdisc_fixtures` Test fixtures to use for qdisc collector end-to-end testing.
+* `collector_perf_cpus` specify a list of alternate CPUs.
 * `collector_runit_servicedir` Path to runit service directory.
 * `collector_supervisord_url` XML RPC endpoint. (default: "http://localhost:9001/RPC2")
 * `collector_systemd_enable_restarts_metrics` Enables service unit metric service\_restart\_total
