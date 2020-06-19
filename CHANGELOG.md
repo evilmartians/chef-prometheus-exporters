@@ -1,5 +1,9 @@
 # prometheus\_exporters
 
+## 0.17.2
+
+- [Kirill Kuznetsov] Blackbox exporter 0.17.0
+
 ## 0.17.1
 
 - [Kirill Kuznetsov] Fix cookstyle offences
