@@ -26,7 +26,7 @@ action :install do
   options += ' -debug=true' if new_resource.debug
   options += " -namemapping='#{new_resource.namemapping}'" if new_resource.namemapping
   options += " -procfs=#{new_resource.procfs}" if new_resource.procfs
-  options += " -procnames='#{new_resource.procnames}'" if new_resource.procnames
+  options += " -procnames=#{new_resource.procnames}" if new_resource.procnames
   options += ' -recheck' if new_resource.recheck
   options += " #{new_resource.custom_options}" if new_resource.custom_options
 
