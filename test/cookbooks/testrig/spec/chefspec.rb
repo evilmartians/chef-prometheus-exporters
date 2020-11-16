@@ -46,6 +46,12 @@ describe 'testrig::default' do
     expect(chef_run).to start_haproxy_exporter('main')
   end
 
+  it 'installs, enables and starts nginx_exporter' do
+    expect(chef_run).to install_nginx_exporter('main')
+    expect(chef_run).to enable_nginx_exporter('main')
+    expect(chef_run).to start_nginx_exporter('main')
+  end
+
   it 'installs, enables and starts mongodb_exporter' do
     expect(chef_run).to install_mongodb_exporter('main')
     expect(chef_run).to enable_mongodb_exporter('main')

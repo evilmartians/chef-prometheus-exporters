@@ -14,6 +14,7 @@
   snmp
   statsd
   varnish
+  nginx
 ).each do |exporter_recipe|
   include_recipe "testrig::#{exporter_recipe}"
 end
