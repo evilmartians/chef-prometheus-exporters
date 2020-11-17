@@ -1,15 +1,15 @@
 resource_name :nginx_exporter
 provides :nginx_exporter
 
-property :nginx_retries, String, default: "5"
-property :nginx_retry_interval, String, default: "5s"
+property :nginx_retries, String, default: '5'
+property :nginx_retry_interval, String, default: '5s'
 property :nginx_scrape_uri, String, default: 'http://127.0.0.1:83/nginx_status'
 property :nginx_ssl_ca_cert, String
 property :nginx_ssl_client_cert, String
 property :nginx_ssl_client_key, String
 property :nginx_ssl_verify, [true, false], default: false
-property :nginx_timeout, String, default: "5s"
-property :prometheus_const_labels, String, default: ""
+property :nginx_timeout, String, default: '5s'
+property :prometheus_const_labels, String, default: ''
 property :web_listen_address, String, default: ':9113'
 property :web_telemetry_path, String, default: '/metrics'
 property :user, String, default: 'root'
