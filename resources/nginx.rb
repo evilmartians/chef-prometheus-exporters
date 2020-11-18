@@ -15,7 +15,6 @@ property :web_telemetry_path, String, default: '/metrics'
 property :user, String, default: 'root'
 
 action :install do
-  # Set property that can be queried with Chef search
   node.default['prometheus_exporters']['nginx']['enabled'] = true
 
   options = "-nginx.retries=#{new_resource.nginx_retries}"
