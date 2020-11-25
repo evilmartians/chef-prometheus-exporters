@@ -11,6 +11,7 @@ COLLECTOR_LIST = %w(
   arp
   bcache
   bonding
+  btrfs
   buddyinfo
   conntrack
   cpu
@@ -39,18 +40,24 @@ COLLECTOR_LIST = %w(
   nfsd
   ntp
   perf
+  powersupplyclass
   pressure
   processes
   qdisc
+  rapl
   runit
+  schedstat
   sockstat
+  softnet
   stat
   supervisord
   systemd
   tcpstat
   textfile
+  thermal_zone
   time
   timex
+  udp_queues
   uname
   vmstat
   wifi
