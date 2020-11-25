@@ -11,15 +11,18 @@ COLLECTOR_LIST = %w(
   arp
   bcache
   bonding
+  boottime
   btrfs
   buddyinfo
   conntrack
   cpu
   cpufreq
+  devstat
   diskstats
   drbd
   edac
   entropy
+  exec
   filefd
   filesystem
   hwmon
@@ -40,10 +43,10 @@ COLLECTOR_LIST = %w(
   nfsd
   ntp
   perf
-  powersupplyclass
   pressure
   processes
   qdisc
+  powersupplyclass
   rapl
   runit
   schedstat
