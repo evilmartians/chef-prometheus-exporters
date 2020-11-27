@@ -61,6 +61,18 @@ describe service('haproxy_exporter_main') do
   it { should be_running }
 end
 
+# Nginx exporter
+describe port(9113) do
+  it { should be_listening }
+  its('processes') { should cmp(/^nginx_expo/) }
+end
+
+describe service('nginx_exporter_main') do
+  # Chef 14 resource service is broken on a first run on Ubuntu 14.
+  it { should be_enabled } if os_name == 'ubuntu' and os_release > 14.04
+  it { should be_running }
+end
+
 # mongodb exporter
 describe port(9216) do
   # small hack to wait for exporter to fail to connect to mongodb(we don't have one) and expose its port
