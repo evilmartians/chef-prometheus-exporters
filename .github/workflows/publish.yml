@@ -1,0 +1,27 @@
+name: Test and publish prometheus-exporters cookbook to Supermarket
+on: [push, pull_request]
+
+env:
+  KITCHEN_YAML: .kitchen.yml
+
+jobs:
+  prepare-bundle:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Ruby 2.7.1
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Prepare bundle
+        run: |
+          bundle config path vendor/bundle
+          gem install bundler
+          bundle install
