@@ -5,7 +5,7 @@ env:
   KITCHEN_YAML: .kitchen.yml
 
 jobs:
-  prepare-bundle:
+  lint:
     runs-on: ubuntu-20.04
 
     steps:
@@ -25,3 +25,42 @@ jobs:
           bundle config path vendor/bundle
           gem install bundler
           bundle install
+      - name: Check cookbook code style
+        run: bundle exec cookstyle
+      - name: Lint cookbook
+        run: bundle exec foodcritic --context --epic-fail any .
+      - name: Run rspec tests
+        run: bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.r
+
+  kitchen-test:
+    runs-on: ubuntu-20.04
+    needs: lint
+
+    strategy:
+      matrix:
+        chef-version: [14, 15, 16]
+        os:
+          - amazonlinux
+          - amazonlinux-2
+          - centos-8
+          - ubuntu-2004
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Ruby 2.7.1
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Prepare bundle
+        run: |
+          bundle config path vendor/bundle
+          gem install bundler
+          bundle install
+      - name: Run Test Kitchen against chef-${{ matrix.chef-version}}-${{ matrix.os }}
+        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }}
