@@ -42,8 +42,15 @@ jobs:
         os:
           - amazonlinux
           - amazonlinux-2
-          - centos-8
-          - ubuntu-2004
+          - debian-8
+          - debian-9
+          - debian-10
+          - centos-7
+          - fedora-30
+          - fedora-31
+          - ubuntu-16.04
+          - ubuntu-18.04
+          - ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v1
