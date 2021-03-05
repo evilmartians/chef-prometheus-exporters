@@ -30,7 +30,7 @@ jobs:
       - name: Lint cookbook
         run: bundle exec foodcritic --context --epic-fail any .
       - name: Run rspec tests
-        run: bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.r
+        run: bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.rb
 
   kitchen-test:
     runs-on: ubuntu-20.04
