@@ -48,9 +48,9 @@ jobs:
           - centos-7
           - fedora-30
           - fedora-31
-          - ubuntu-16.04
-          - ubuntu-18.04
-          - ubuntu-20.04
+          - ubuntu-1604
+          - ubuntu-1804
+          - ubuntu-2004
 
     steps:
       - uses: actions/checkout@v1
@@ -70,4 +70,4 @@ jobs:
           gem install bundler
           bundle install
       - name: Run Test Kitchen against chef-${{ matrix.chef-version}}-${{ matrix.os }}
-        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }}
+        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }} -D -l debug
