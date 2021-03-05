@@ -42,7 +42,7 @@ Tests are made using last available Chef 15 along with latest Chef 14.
 - [statsd_exporter](https://github.com/evilmartians/chef-prometheus-exporters#statsd_exporter)
 - [varnish_exporter](https://github.com/evilmartians/chef-prometheus-exporters#varnish_exporter)
 - [wmi_exporter](https://github.com/evilmartians/chef-prometheus-exporters#wmi_exporter)
-
+- [nginx_exporter](https://github.com/evilmartians/chef-prometheus-exporters#nginx_exporter)
 # Resources
 
 ## apache_exporter
@@ -533,6 +533,25 @@ Use the given defaults or set the attributes...
 
 and add `recipe['prometheus_exporters::wmi]` to your run_list.
 
+## nginx_exporter
+
+* `nginx_retries`, String, default: 5
+* `nginx_retry_interval`, String, default: 5s
+* `nginx_scrape_uri`, String, default: 'http://127.0.0.1:83/nginx_status'
+* `nginx_ssl_ca_cert`, String
+* `nginx_ssl_client_cert`, String
+* `nginx_ssl_client_key`, String
+* `nginx_ssl_verify`, [true, false], default: false
+* `nginx_timeout`, String, default: 5s
+* `prometheus_const_labels`, String, default: ""
+* `web_listen_address`, String, default: ':9113'
+* `web_telemetry_path`, String, default: '/metrics'
+
+```ruby
+  nginx_exporter 'main' do
+    action %i(install enable start)
+  end
+```
 # Discovery
 
 Each exporter will set an attribute when it's enabled, in the form of `node['prometheus_exporters'][exporter_name]['enabled']`. This makes it possible to search for
