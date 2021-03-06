@@ -70,4 +70,4 @@ jobs:
           gem install bundler
           bundle install
       - name: Run Test Kitchen against chef-${{ matrix.chef-version}}-${{ matrix.os }}
-        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }} -D -l debug
+        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }} -l debug
