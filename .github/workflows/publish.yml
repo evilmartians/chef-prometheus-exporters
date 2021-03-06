@@ -30,7 +30,7 @@ jobs:
       - name: Lint cookbook
         run: bundle exec foodcritic --context --epic-fail any .
       - name: Run rspec tests
-        run: bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.r
+        run: bundle exec rspec -fd test/cookbooks/testrig/spec/chefspec.rb
 
   kitchen-test:
     runs-on: ubuntu-20.04
@@ -42,7 +42,14 @@ jobs:
         os:
           - amazonlinux
           - amazonlinux-2
-          - centos-8
+          - debian-8
+          - debian-9
+          - debian-10
+          - centos-7
+          - fedora-30
+          - fedora-31
+          - ubuntu-1604
+          - ubuntu-1804
           - ubuntu-2004
 
     steps:
@@ -63,4 +70,4 @@ jobs:
           gem install bundler
           bundle install
       - name: Run Test Kitchen against chef-${{ matrix.chef-version}}-${{ matrix.os }}
-        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }}
+        run: bundle exec kitchen test chef-${{ matrix.chef-version}}-${{ matrix.os }} -l debug
