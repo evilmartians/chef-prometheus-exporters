@@ -104,3 +104,12 @@ suites:
       prometheus_exporters:
         node:
           collectors_disabled: ["wifi"]
+  - name: chef-17
+    run_list:
+      - recipe[testrig]
+    driver:
+      chef_version: 17
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]

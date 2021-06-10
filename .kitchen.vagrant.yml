@@ -50,3 +50,13 @@ suites:
       prometheus_exporters:
         node:
           collectors_disabled: ["wifi"]
+  - name: chef-17
+    run_list:
+      - recipe[testrig]
+    provisioner:
+      product_name: chef
+      product_version: 16
+    attributes:
+      prometheus_exporters:
+        node:
+          collectors_disabled: ["wifi"]
