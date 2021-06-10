@@ -38,7 +38,7 @@ jobs:
 
     strategy:
       matrix:
-        chef-version: [14, 15, 16]
+        chef-version: [14, 15, 16, 17]
         os:
           - amazonlinux
           - amazonlinux-2

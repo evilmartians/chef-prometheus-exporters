@@ -15,7 +15,17 @@ env:
   global:
   - KITCHEN_YAML=.kitchen.yml
   matrix:
-  - INSTANCE=chef-16-ubuntu-1804
+  - INSTANCE=chef-17-ubuntu-1804
+  - INSTANCE=chef-17-ubuntu-1604
+  - INSTANCE=chef-17-fedora-31
+  - INSTANCE=chef-17-fedora-30
+  - INSTANCE=chef-17-centos-7
+  - INSTANCE=chef-17-debian-10
+  - INSTANCE=chef-17-debian-9
+  - INSTANCE=chef-17-debian-8
+  - INSTANCE=chef-17-amazonlinux-2
+  - INSTANCE=chef-17-amazonlinux
+  - INSTANCE=chef-17-ubuntu-1804
   - INSTANCE=chef-16-ubuntu-1604
   - INSTANCE=chef-16-fedora-31
   - INSTANCE=chef-16-fedora-30
