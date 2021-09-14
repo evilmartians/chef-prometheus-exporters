@@ -401,6 +401,7 @@ end
 * `connection_timeout` Timeout for connection to Redis instance (default: "15s")
 * `debug` Enable or disable debug output. (default: false)
 * `include_system_metrics` Whether to include system metrics like e.g. redis\_total\_system\_memory\_bytes
+* `ping_on_connect` Whether to ping the redis instance after connecting and record the duration as a metric. (default: false)
 * `is_tile38` Whether to scrape Tile38 specific metrics.
 * `log_format` In what format should logs be shown. (default: "txt")
 * `namespace` Namespace for the metrics. (default: "redis")

@@ -16,6 +16,7 @@ property :config_command, String
 property :connection_timeout, String
 property :debug, [true, false], default: false
 property :include_system_metrics, [true, false], default: false
+property :ping_on_connect, [true, false], default: false
 property :is_tile38, [true, false], default: false
 property :log_format, String, default: 'txt'
 property :namespace, String, default: 'redis'
@@ -45,6 +46,7 @@ action :install do
   options += " -connection-timeout '#{new_resource.connection_timeout}'" if new_resource.connection_timeout
   options += ' -debug' if new_resource.debug
   options += ' -include-system-metrics' if new_resource.include_system_metrics
+  options += ' -ping-on-connect' if new_resource.ping_on_connect
   options += ' -is-tile38' if new_resource.is_tile38
   options += " -redis.addr '#{new_resource.redis_addr}'" if new_resource.redis_addr
   options += ' -redis-only-metrics' if new_resource.redis_only_metrics
