@@ -371,7 +371,7 @@ GEM
       tty-table (~> 0.10)
     ipaddr_extensions (1.0.2)
     ipaddress (0.8.3)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     json (2.3.0)
     json_schemer (0.2.11)
       ecma-re-validator (~> 0.2)
